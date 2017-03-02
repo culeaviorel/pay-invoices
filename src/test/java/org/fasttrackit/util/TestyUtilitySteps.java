@@ -44,7 +44,14 @@ public class TestyUtilitySteps extends TestBase {
     @When("^I click on \"([^\"]*)\" button$")
     public void I_click_button(String text) {
         Button button = new Button().setText(text, SearchType.EQUALS, SearchType.TRIM, SearchType.DEEP_CHILD_NODE_OR_SELF).setResultIdx(Position.LAST);
+        scrollToWebLocator(button);
         button.click();
+    }
+
+    public static void scrollToWebLocator(WebLocator element) {
+        if (element.isElementPresent()) {
+            WebLocator.getExecutor().executeScript("arguments[0].scrollIntoView(true);", element.currentElement);
+        }
     }
 
     @Then("^I should see an element with text \"([^\"]*)\"$")

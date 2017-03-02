@@ -29,7 +29,7 @@ public class CardView extends WebLocator {
 
     public void setValues(BankCardDetails card) {
         String month = card.getMonth();
-        setValues(card.getNumber(), card.getCvv(), month, card.getYear(), card.getOwner());
+        setValues(card.getNumber(), card.getCvv(), month, card.getYear().substring(2), card.getOwner());
     }
 
     public void pay() {
