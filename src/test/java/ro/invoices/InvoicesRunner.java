@@ -13,7 +13,8 @@ import org.junit.runner.RunWith;
                 "ro.secure11gw",
                 "ro.mymoney",
                 "ro.rcsrds.digicare",
-                "ro.jira"
+                "ro.jira",
+                "ro.leiibvb"
         },
         features = {
                 "src/test/resources/feature/invoice/all-invoices.feature"
