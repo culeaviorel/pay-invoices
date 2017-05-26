@@ -1,5 +1,6 @@
 package ro.imobiliare;
 
+import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.link.WebLink;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class ListView extends WebLocator {
             int size = findElements().size();
             for (int i = 1; i < size; i++) {
                 setPosition(i);
-                scrollToWebLocator(this);
+                WebLocatorUtils.scrollToWebLocator(this);
                 String text = titleEl.getText();
                 if (!localizare.ready()) {
                     LOGGER.debug("loc");
@@ -59,26 +60,13 @@ public class ListView extends WebLocator {
                 if (pr > 0 && mp > 0) {
                     ff = pr / mp;
                 }
-//                link.sendKeys(Keys.CONTROL, Keys.RETURN);
                 link.mouseOver();
                 String href = link.getAttribute("href");
-//                WebDriverConfig.switchToLastTab();
-//                WebDriverConfig.getDriver().close();
-//                WebDriverConfig.switchToFirstTab();
-//                boolean added = true;
-//                for (Notice n : list) {
-//                    String nLink = n.getLink();
-//                    if (nLink.equals(href)) {
-//                        added = false;
-//                    }
-//                }
-//                if (added) {
                 list.add(new Notice(text, href, localizareText, caracteristiciText, pretText, ff));
-//                }
             }
             page++;
             WebLink next = new WebLink().setAttribute("data-pagina", page + "");
-            scrollToWebLocator(next);
+            WebLocatorUtils.scrollToWebLocator(next);
             next.click();
         } while (page < 7);
 
@@ -86,12 +74,6 @@ public class ListView extends WebLocator {
 
         for (Notice notice : list) {
             LOGGER.debug("{}", notice.toCSV());
-        }
-    }
-
-    public void scrollToWebLocator(WebLocator element) {
-        if (element.isElementPresent()) {
-            WebLocator.getExecutor().executeScript("arguments[0].scrollIntoView(true);", element.currentElement);
         }
     }
 }

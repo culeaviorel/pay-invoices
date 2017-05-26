@@ -23,7 +23,7 @@ public class InvoiceListView extends WebLocator {
         invoiceMenuItem.mouseOver();
         invoiceMenuItem.click();
         payOnline.click();
-        placeCombo.select(place);
+//        placeCombo.select(place);
         selectAllButton.click();
     }
 
