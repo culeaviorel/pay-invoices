@@ -32,7 +32,7 @@ public class View {
         name.setValue(denum);
         category.select(cat, 1000L);
         Utils.sleep(1000);
-        subCategory.select(sub, 1000L);
+        subCategory.doSelect(sub, 1000L);
         Utils.sleep(500);
         subCategory.select(sub, 1000L);
         sumaField.setValue(sum);

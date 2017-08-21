@@ -5,7 +5,7 @@ import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
 @CucumberOptions(
-        plugin = {"pretty", "html:target/cucumber","json:target/jsonReports/InvoicesTest.json"},
+        plugin = {"pretty", "html:target/cucumber", "json:target/jsonReports/InvoicesTest.json"},
         glue = {
                 "org.fasttrackit.util",
                 "ro.btrl",
@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
                 "ro.mymoney",
                 "ro.rcsrds.digicare",
                 "ro.jira",
+                "ro.eon",
                 "ro.leiibvb"
         },
         features = {

@@ -1,16 +1,16 @@
 package ro.eon;
 
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.java.en.Then;
+import cucumber.api.java.en.And;
 import org.fasttrackit.util.TestBase;
 import ro.electricafurnizare.oficiulvirtual.LoginView;
 
 public class EONSteps extends TestBase {
     private LoginView loginView = new LoginView();
 
-    @Then("^I login on E-ON using \"([^\"]*)\"/\"([^\"]*)\"$")
-    public void login(String user, String pass) {
-        loginView.login(user, pass);
+    @And("^I login on E-ON \"(.*?)\"/\"(.*?)\"$")
+    public void iLoginOnEON(String user, String password) {
+        loginView.login(user, password);
         Utils.sleep(2);
     }
 }
