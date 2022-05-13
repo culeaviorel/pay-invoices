@@ -26,6 +26,12 @@ public class FlowUtilitySteps extends TestBase {
         AppUtils.openUrl(url);
     }
 
+    @Given("I close the current browser")
+    public void closeBrowser() {
+        WebDriverConfig.getDriver().quit();
+        Driver.driver = null;
+    }
+
     @Given("^I set browser size to (\\d+), (\\d+)$")
     public void setBrowserSize(int width, int height) {
         LOGGER.info("I set browser size to ({}, {})", width, height);

@@ -10,13 +10,15 @@ import com.sdl.selenium.web.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+
 public class View {
     private static final Logger LOGGER = LoggerFactory.getLogger(View.class);
 
     public View() {
     }
 
-    private Grid grid = new Grid();
+    private final Grid grid = new Grid();
     private Button add = new Button(grid, "Add Transaction");
     private Window addNew = new Window("Add New");
     private TextField name = new TextField(addNew, "Name:");
@@ -27,14 +29,25 @@ public class View {
     private Button saveButton = new Button(addNew, "Save");
 
     public boolean addInsert(String denum, String cat, String sub, String sum) {
-        add.ready(10);
+        add.ready(Duration.ofSeconds(10));
         add.click();
         name.setValue(denum);
-        category.select(cat, 1000L);
+        category.select(cat, Duration.ofSeconds(1));
         Utils.sleep(1000);
-        subCategory.doSelect(sub, 1000L);
+        subCategory.doSelect(sub, Duration.ofSeconds(1));
         Utils.sleep(500);
-        subCategory.select(sub, 1000L);
+        subCategory.select(sub, Duration.ofSeconds(1));
+        sumaField.setValue(sum);
+        return saveButton.click();
+    }
+
+    public boolean addInsert(String denum, String cat, String sub, String data, String sum) {
+        add.ready(Duration.ofSeconds(10));
+        add.click();
+        name.setValue(denum);
+        category.select(cat, Duration.ofSeconds(1));
+        subCategory.select(sub, Duration.ofSeconds(1));
+        dateField.select(data, "dd/MM/yyyy");
         sumaField.setValue(sum);
         return saveButton.click();
     }
