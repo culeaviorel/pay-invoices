@@ -2,14 +2,16 @@ package org.fasttrackit.util;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.After;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class GlobalHooks {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalHooks.class);
@@ -22,8 +24,13 @@ public class GlobalHooks {
         if (isFailed) {
             LOGGER.warn(scenarioName + " Scenario has failed! Embed the screenshot in the report!--- ");
             byte[] screenshot = ((TakesScreenshot) WebDriverConfig.getDriver()).getScreenshotAs(OutputType.BYTES);
-            scenario.embed(screenshot, "image/png");
+            scenario.attach(screenshot, "image/png", scenarioName + " - screenshot");
         }
+    }
+
+    @Before("@start")
+    public void start(Scenario scenario) throws IOException {
+        Driver.initialize();
     }
 
     public void takeScreenShot(String screenShotName) {

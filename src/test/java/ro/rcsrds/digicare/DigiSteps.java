@@ -1,9 +1,8 @@
 package ro.rcsrds.digicare;
 
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.PendingException;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.fasttrackit.util.BankCardDetails;
 import org.fasttrackit.util.TestBase;
 import ro.euplatesc.secure.CardView;

@@ -1,11 +1,13 @@
 package ro.secure11gw;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.Then;
 import org.fasttrackit.util.BankCardDetails;
 import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class SecureGwSteps extends TestBase {
 
@@ -26,7 +28,7 @@ public class SecureGwSteps extends TestBase {
     public void iProceedToSecureGWPayment() {
         cardView.pay();
 
-        WebDriverWait wait = new WebDriverWait(WebDriverConfig.getDriver(), 5);
+        WebDriverWait wait = new WebDriverWait(WebDriverConfig.getDriver(), Duration.ofSeconds(5));
         wait.until(ExpectedConditions.alertIsPresent());
         WebDriverConfig.getDriver().switchTo().alert().accept();
     }

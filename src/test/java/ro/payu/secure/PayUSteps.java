@@ -1,7 +1,7 @@
 package ro.payu.secure;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.Then;
 import org.fasttrackit.util.BankCardDetails;
 import org.fasttrackit.util.TestBase;
 import ro.btrl.Secure3DPassword;

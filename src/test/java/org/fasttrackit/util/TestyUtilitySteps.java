@@ -7,8 +7,8 @@ import com.sdl.selenium.web.button.Button;
 import com.sdl.selenium.web.button.InputButton;
 import com.sdl.selenium.web.form.TextField;
 import com.sdl.selenium.web.link.WebLink;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import java.util.List;
 

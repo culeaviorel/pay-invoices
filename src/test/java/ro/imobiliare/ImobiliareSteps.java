@@ -1,8 +1,8 @@
 package ro.imobiliare;
 
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import org.fasttrackit.util.TestBase;
 
 /**

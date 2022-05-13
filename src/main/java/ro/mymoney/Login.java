@@ -13,9 +13,9 @@ public class Login extends Window {
         super("Login");
     }
 
-    private TextField emailField = new TextField(this, "Email:");
-    private TextField passwordField = new TextField(this, "Password:");
-    private Button loginButton = new Button(this, "Submit");
+    private final TextField emailField = new TextField(this, "Email:");
+    private final TextField passwordField = new TextField(this, "Password:");
+    private final Button loginButton = new Button(this, "Submit");
 
     public void login(String user, String pass) {
         ready();

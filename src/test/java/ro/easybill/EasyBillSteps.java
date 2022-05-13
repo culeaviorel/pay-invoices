@@ -1,7 +1,7 @@
 package ro.easybill;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import org.fasttrackit.util.TestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

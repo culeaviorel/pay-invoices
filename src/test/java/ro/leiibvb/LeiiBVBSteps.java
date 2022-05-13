@@ -1,6 +1,6 @@
 package ro.leiibvb;
 
-import cucumber.api.java.en.And;
+import io.cucumber.java.en.And;
 import org.fasttrackit.util.TestBase;
 
 import java.util.List;

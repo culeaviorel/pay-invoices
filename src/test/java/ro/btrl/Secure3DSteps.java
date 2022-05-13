@@ -4,7 +4,7 @@ import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.table.Cell;
 import com.sdl.selenium.web.table.Table;
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.Then;
 import org.fasttrackit.util.BankCardDetails;
 import org.fasttrackit.util.TestBase;
 import org.slf4j.Logger;

@@ -1,7 +1,7 @@
 package ro.eon;
 
 import com.sdl.selenium.web.utils.Utils;
-import cucumber.api.java.en.And;
+import io.cucumber.java.en.And;
 import org.fasttrackit.util.TestBase;
 import ro.electricafurnizare.oficiulvirtual.LoginView;
 
