@@ -27,12 +27,12 @@
             <groupId>com.sdl.lt</groupId>
             <artifactId>Testy</artifactId>
             <version>20.08.45.0_1b3bea3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-log4j12</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
