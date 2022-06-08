@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.sdl.selenium.extjs6.button.Button;
 import com.sdl.selenium.extjs6.grid.Cell;
 import com.sdl.selenium.extjs6.grid.Row;
+import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -47,15 +49,18 @@ public class MyMoneySteps extends TestBase {
     public void iReadCsvFileAndInsertDate() {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
+        List<Item> addItems = new ArrayList<>();
         List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Aprilie.csv");
         LocalDate d = LocalDate.parse(items.get(0).getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         Button button = new Button(null, monthAndYear);
-        boolean inCorrectView = false;
-        if (!button.ready()) {
-            view.getLeftButton().click();
-            inCorrectView = button.ready();
-        }
+        boolean inCorrectView = RetryUtils.retry(6, () -> {
+            boolean ready = button.ready();
+            if (!ready) {
+                view.getLeftButton().click();
+            }
+            return ready;
+        });
         if (inCorrectView) {
             view.getGrid().ready(true);
             for (Item item : items) {
@@ -64,11 +69,12 @@ public class MyMoneySteps extends TestBase {
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
                 Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum));
-                if (!row.waitToRender(Duration.ofSeconds(2), false) && !row.scrollTo()) {
+                if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
                     String subCategory = getSubCategory(item.getName());
                     if (Strings.isNullOrEmpty(subCategory)) {
                         notFoundSubCategory.add(item);
                     } else {
+                        addItems.add(item);
                         view.addInsert(subCategory, "Cheltuieli", subCategory, item.getDate(), item.getSum());
                     }
                 } else {
@@ -76,18 +82,25 @@ public class MyMoneySteps extends TestBase {
                 }
             }
         }
+        log.info("S-au adaugat:");
+        addItems.forEach(i -> log.info(i.toString()));
         log.info("Nu s-a putut gasi subcategori pentru:");
         notFoundSubCategory.forEach(i -> log.info(i.toString()));
         log.info("Deja erau adaugate:");
         isAlreadyExist.forEach(i -> log.info(i.toString()));
-        log.info("Diferenta: {}", items.size() - isAlreadyExist.size() - notFoundSubCategory.size());
+        log.info("Diferenta: {}", items.size() - isAlreadyExist.size() - notFoundSubCategory.size() - addItems.size());
         Utils.sleep(1);
     }
 
     private String getCorrectValue(String sum) {
         double s = Double.parseDouble(sum);
-        DecimalFormat df = new DecimalFormat("#.#");
-        return df.format(s).replace(",", ".");
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setGroupingSeparator(',');
+        dfs.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("#,###.#", dfs);
+        String format = df.format(s);
+        String value = format.contains(".") ? format : format + ".0";
+        return value;
     }
 
     public static void main(String[] args) {
@@ -101,7 +114,9 @@ public class MyMoneySteps extends TestBase {
         String subCategory = null;
         if (name.contains("Lidl") || name.contains("LIDL") || name.contains("AUCHAN") || name.contains("PENNY") || name.contains("KAUFLAND") ||
                 name.contains("MEGAIMAGE") || name.contains("BONAS") || name.contains("LA VESTAR") || name.contains("PROFI") ||
-                name.contains("CICMAR") || name.contains("VARGA") || name.contains("BUCURCRISS")
+                name.contains("CICMAR") || name.contains("VARGA") || name.contains("BUCURCRISS") || name.contains("FLAVIANDA CRISAN SRL") ||
+                name.contains("AGROPAN PRODCOM") || name.contains("TIENDA FRUTAS") || name.contains("PREMIO DISTRIBUTION")
+                || name.contains("PREMIER RESTAURANTS")
         ) {
             subCategory = "Produse alimentare";
         } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")) {
@@ -110,9 +125,9 @@ public class MyMoneySteps extends TestBase {
             subCategory = "Haine";
         } else if (name.contains("OMV")) {
             subCategory = "Masina";
-        } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL")) {
+        } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL") || name.contains("PAYU")) {
             subCategory = "Alte Cheltuieli";
-        } else if (name.contains("REMEDIUM")) {
+        } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")) {
             subCategory = "Medicamente";
         } else if (name.contains("ABURIDO SRL")) {
             subCategory = "Igiena";
