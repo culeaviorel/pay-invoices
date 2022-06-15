@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.sdl.selenium.extjs6.button.Button;
 import com.sdl.selenium.extjs6.grid.Cell;
 import com.sdl.selenium.extjs6.grid.Row;
+import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
@@ -50,8 +51,9 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Aprilie.csv");
-        LocalDate d = LocalDate.parse(items.get(0).getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Mai.csv");
+        String date1 = items.get(0).getDate();
+        LocalDate d = LocalDate.parse(date1, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         Button button = new Button(null, monthAndYear);
         boolean inCorrectView = RetryUtils.retry(6, () -> {
@@ -65,10 +67,10 @@ public class MyMoneySteps extends TestBase {
             view.getGrid().ready(true);
             for (Item item : items) {
                 view.getGrid().scrollTop();
-                LocalDate datetime = LocalDate.parse(item.getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                LocalDate datetime = LocalDate.parse(item.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
-                Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum));
+                Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
                 if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
                     String subCategory = getSubCategory(item.getName());
                     if (Strings.isNullOrEmpty(subCategory)) {
@@ -116,16 +118,21 @@ public class MyMoneySteps extends TestBase {
                 name.contains("MEGAIMAGE") || name.contains("BONAS") || name.contains("LA VESTAR") || name.contains("PROFI") ||
                 name.contains("CICMAR") || name.contains("VARGA") || name.contains("BUCURCRISS") || name.contains("FLAVIANDA CRISAN SRL") ||
                 name.contains("AGROPAN PRODCOM") || name.contains("TIENDA FRUTAS") || name.contains("PREMIO DISTRIBUTION")
-                || name.contains("PREMIER RESTAURANTS")
+                || name.contains("PREMIER RESTAURANTS") || name.contains("PANEMAR MORARIT")
+                || name.contains("ARTIMA SA") || name.contains("MAGAZIN LA 2 PASI")
+                || name.contains("Kaufland") || name.contains("INM KFL CLUJ FAB C1")
+                || name.contains("ANAMIR BIOMARKET SRL") || name.contains("MAVIOS IMPEX SRL")
         ) {
             subCategory = "Produse alimentare";
         } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")) {
             subCategory = "Casa";
-        } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO") || name.contains("ORGANIZATIA CRESTINA")) {
+        } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO")
+                || name.contains("ORGANIZATIA CRESTINA")) {
             subCategory = "Haine";
         } else if (name.contains("OMV")) {
             subCategory = "Masina";
-        } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL") || name.contains("PAYU")) {
+        } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL")
+                || name.contains("PAYU") || name.contains("IMPRIMERIA NATIONALA")) {
             subCategory = "Alte Cheltuieli";
         } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")) {
             subCategory = "Medicamente";
@@ -135,7 +142,12 @@ public class MyMoneySteps extends TestBase {
             subCategory = "Cadouri";
         } else if (name.contains("CTP") || name.contains("tpark.ro")) {
             subCategory = "Transport";
-        } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA") || name.contains("MOLDOVAN CARMANGERIE")) {
+        } else if (name.contains("WWW.GHISEUL.RO/MFINANT")) {
+            subCategory = "Taxe";
+        } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA")
+                || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
+                || name.contains("TARTINE FACTORY SRL")
+        ) {
             subCategory = "Restaurant";
         }
         return subCategory;
