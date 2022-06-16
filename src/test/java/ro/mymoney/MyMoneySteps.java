@@ -132,7 +132,9 @@ public class MyMoneySteps extends TestBase {
         } else if (name.contains("OMV")) {
             subCategory = "Masina";
         } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL")
-                || name.contains("PAYU") || name.contains("IMPRIMERIA NATIONALA")) {
+                || name.contains("PAYU") || name.contains("IMPRIMERIA NATIONALA")
+                || name.contains("MOTILOR")
+        ) {
             subCategory = "Alte Cheltuieli";
         } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")) {
             subCategory = "Medicamente";
