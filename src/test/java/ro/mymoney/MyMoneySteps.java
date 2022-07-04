@@ -51,7 +51,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Mai.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Iunie.csv");
         String date1 = items.get(0).getDate();
         LocalDate d = LocalDate.parse(date1, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
@@ -124,7 +124,9 @@ public class MyMoneySteps extends TestBase {
                 || name.contains("ANAMIR BIOMARKET SRL") || name.contains("MAVIOS IMPEX SRL")
         ) {
             subCategory = "Produse alimentare";
-        } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")) {
+        } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")
+                || name.contains("DEDEMAN") || name.contains("ALTEX ROMANIA")
+        ) {
             subCategory = "Casa";
         } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO")
                 || name.contains("ORGANIZATIA CRESTINA")) {
@@ -148,7 +150,9 @@ public class MyMoneySteps extends TestBase {
             subCategory = "Taxe";
         } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA")
                 || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
-                || name.contains("TARTINE FACTORY SRL")
+                || name.contains("TARTINE FACTORY SRL") || name.contains("OCEANUL PACIFIC")
+                || name.contains("CARESA CATERING")
+                || name.contains("BIANCO MILANO")
         ) {
             subCategory = "Restaurant";
         }
