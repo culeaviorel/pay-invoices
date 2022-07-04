@@ -6,6 +6,7 @@ import com.sdl.selenium.extjs6.form.DateField;
 import com.sdl.selenium.extjs6.form.TextField;
 import com.sdl.selenium.extjs6.grid.Grid;
 import com.sdl.selenium.extjs6.window.Window;
+import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.Getter;
@@ -23,13 +24,14 @@ public class View {
 
     private final Grid grid = new Grid().setExcludeClasses("x-grid-locked", "x-tree-panel", "x-grid-header-hidden");
     private final Button add = new Button(grid, "Add Transaction");
-    private final Window addNew = new Window("Add New");
-    private final TextField name = new TextField(addNew, "Name:");
-    private final ComboBox category = new ComboBox(addNew, "Category:").setLabelPosition("//following-sibling::*//");
-    private final ComboBox subCategory = new ComboBox(addNew, "Subcategory:").setLabelPosition("//following-sibling::*//");
-    private final DateField dateField = new DateField(addNew, "Data:");
-    private final TextField sumaField = new TextField(addNew, "Price:");
-    private final Button saveButton = new Button(addNew, "Save");
+    private final Window addNewOrEdit = new Window("|Add New|Edit", SearchType.CONTAINS_ANY);
+    private final TextField name = new TextField(addNewOrEdit, "Name:");
+    private final ComboBox category = new ComboBox(addNewOrEdit, "Category:").setLabelPosition("//following-sibling::*//");
+    private final ComboBox subCategory = new ComboBox(addNewOrEdit, "Subcategory:").setLabelPosition("//following-sibling::*//");
+    private final DateField dateField = new DateField(addNewOrEdit, "Data:");
+    private final TextField sumaField = new TextField(addNewOrEdit, "Price:");
+    private final Button saveButton = new Button(addNewOrEdit, "Save");
+    private final Button removeButton = new Button(addNewOrEdit, "Remove");
     private final Button leftButton = new Button().setIconCls("fa-chevron-left");
 
     public boolean addInsert(String denum, String cat, String sub, String sum) {

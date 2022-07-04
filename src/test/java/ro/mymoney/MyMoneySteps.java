@@ -1,9 +1,12 @@
 package ro.mymoney;
 
 import com.google.common.base.Strings;
+import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.extjs6.button.Button;
 import com.sdl.selenium.extjs6.grid.Cell;
+import com.sdl.selenium.extjs6.grid.Grid;
 import com.sdl.selenium.extjs6.grid.Row;
+import com.sdl.selenium.extjs6.window.MessageBox;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
@@ -55,14 +58,7 @@ public class MyMoneySteps extends TestBase {
         String date1 = items.get(0).getDate();
         LocalDate d = LocalDate.parse(date1, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
-        Button button = new Button(null, monthAndYear);
-        boolean inCorrectView = RetryUtils.retry(6, () -> {
-            boolean ready = button.ready();
-            if (!ready) {
-                view.getLeftButton().click();
-            }
-            return ready;
-        });
+        boolean inCorrectView = isInCorrectView(monthAndYear);
         if (inCorrectView) {
             view.getGrid().ready(true);
             for (Item item : items) {
@@ -84,14 +80,25 @@ public class MyMoneySteps extends TestBase {
                 }
             }
         }
+        log.info("Deja erau adaugate:");
+        isAlreadyExist.forEach(i -> log.info(i.toString()));
         log.info("S-au adaugat:");
         addItems.forEach(i -> log.info(i.toString()));
         log.info("Nu s-a putut gasi subcategori pentru:");
         notFoundSubCategory.forEach(i -> log.info(i.toString()));
-        log.info("Deja erau adaugate:");
-        isAlreadyExist.forEach(i -> log.info(i.toString()));
         log.info("Diferenta: {}", items.size() - isAlreadyExist.size() - notFoundSubCategory.size() - addItems.size());
         Utils.sleep(1);
+    }
+
+    private boolean isInCorrectView(String monthAndYear) {
+        Button button = new Button(null, monthAndYear);
+        return RetryUtils.retry(6, () -> {
+            boolean ready = button.ready();
+            if (!ready) {
+                view.getLeftButton().click();
+            }
+            return ready;
+        });
     }
 
     private String getCorrectValue(String sum) {
@@ -151,8 +158,9 @@ public class MyMoneySteps extends TestBase {
         } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA")
                 || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
                 || name.contains("TARTINE FACTORY SRL") || name.contains("OCEANUL PACIFIC")
-                || name.contains("CARESA CATERING")
-                || name.contains("BIANCO MILANO")
+                || name.contains("CARESA CATERING") || name.contains("BIANCO MILANO")
+                || name.contains("ADIADO")
+                || name.contains("PARFOIS")
         ) {
             subCategory = "Restaurant";
         }
@@ -176,5 +184,45 @@ public class MyMoneySteps extends TestBase {
             }
         }
         return list;
+    }
+
+    @And("I remove duplicate for {string} month")
+    public void iRemoveDuplicateFromMonth(String month) {
+        LocalDate d = LocalDate.now();
+        String monthAndYear = month + " " + d.getYear();
+        boolean inCorrectView = isInCorrectView(monthAndYear);
+        if (inCorrectView) {
+            Grid grid = view.getGrid();
+            grid.ready(true);
+            Row row = null;
+            while (row == null || getNextRow(row).isPresent()) {
+                List<String> values = row == null ? grid.getRow(1).getCellsText() : getNextRow(row).getCellsText();
+                log.info(values.toString());
+                row = grid.getRow(new Cell(1, values.get(0)),
+                        new Cell(2, values.get(1)),
+                        new Cell(3, values.get(2)),
+                        new Cell(4, values.get(3)),
+                        new Cell(5, values.get(4))
+                );
+                WebLocatorUtils.scrollToWebLocator(row);
+                int size = row.size();
+                log.info("size:{}", size);
+                for (int j = 2; j <= size; j++) {
+                    row.setResultIdx(2);
+                    Row finalRow = row;
+                    RetryUtils.retry(3, () -> {
+                        finalRow.doClick();
+                        return finalRow.doDoubleClickAt();
+                    });
+                    view.getRemoveButton().click();
+                    new MessageBox("Remove").getYesButton().click();
+                }
+                row.setResultIdx(-1);
+            }
+        }
+    }
+
+    public Row getNextRow(Row row) {
+        return new Row(row).setRoot("/").setTag("following-sibling::table[1]");
     }
 }
