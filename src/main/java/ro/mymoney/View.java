@@ -53,9 +53,13 @@ public class View {
         name.setValue(denum);
         RetryUtils.retry(2, () -> category.select(cat, Duration.ofSeconds(1)));
         RetryUtils.retry(2, () -> subCategory.select(sub, Duration.ofSeconds(1)));
-        dateField.select(data, "dd-MM-yyyy");
+        boolean select = dateField.select(data, "dd-MM-yyyy");
         sumaField.setValue(sum);
-        return saveButton.click();
+        if (select) {
+            return saveButton.click();
+        } else {
+            return false;
+        }
     }
 
     public static void main(String[] args) {

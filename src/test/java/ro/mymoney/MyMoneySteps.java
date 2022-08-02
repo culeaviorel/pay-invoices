@@ -54,7 +54,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Iunie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Iulie.csv");
         String date1 = items.get(0).getDate();
         LocalDate d = LocalDate.parse(date1, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
@@ -129,6 +129,7 @@ public class MyMoneySteps extends TestBase {
                 || name.contains("ARTIMA SA") || name.contains("MAGAZIN LA 2 PASI")
                 || name.contains("Kaufland") || name.contains("INM KFL CLUJ FAB C1")
                 || name.contains("ANAMIR BIOMARKET SRL") || name.contains("MAVIOS IMPEX SRL")
+                || name.contains("MCFLYING SRL")
         ) {
             subCategory = "Produse alimentare";
         } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")
@@ -136,7 +137,9 @@ public class MyMoneySteps extends TestBase {
         ) {
             subCategory = "Casa";
         } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO")
-                || name.contains("ORGANIZATIA CRESTINA")) {
+                || name.contains("ORGANIZATIA CRESTINA") || name.contains("KiK Textilien")
+                || name.contains("LANELKA")
+        ) {
             subCategory = "Haine";
         } else if (name.contains("OMV")) {
             subCategory = "Masina";
@@ -151,6 +154,10 @@ public class MyMoneySteps extends TestBase {
             subCategory = "Igiena";
         } else if (name.contains("ANDY EVENTS")) {
             subCategory = "Cadouri";
+        } else if (name.contains("Pago*CPL Concordia")) {
+            subCategory = "Gaz";
+        } else if (name.contains("TEENCHALLENGECLUJ.ORG")) {
+            subCategory = "Darnicie";
         } else if (name.contains("CTP") || name.contains("tpark.ro")) {
             subCategory = "Transport";
         } else if (name.contains("WWW.GHISEUL.RO/MFINANT")) {
@@ -159,7 +166,7 @@ public class MyMoneySteps extends TestBase {
                 || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
                 || name.contains("TARTINE FACTORY SRL") || name.contains("OCEANUL PACIFIC")
                 || name.contains("CARESA CATERING") || name.contains("BIANCO MILANO")
-                || name.contains("ADIADO")
+                || name.contains("ADIADO") || name.contains("MADO CORPORATION")
                 || name.contains("PARFOIS")
         ) {
             subCategory = "Restaurant";
