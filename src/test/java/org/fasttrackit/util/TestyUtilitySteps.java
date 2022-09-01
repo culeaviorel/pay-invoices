@@ -49,7 +49,7 @@ public class TestyUtilitySteps extends TestBase {
     }
 
     public static void scrollToWebLocator(WebLocator element) {
-        if (element.isElementPresent()) {
+        if (element.isPresent()) {
             WebLocator.getExecutor().executeScript("arguments[0].scrollIntoView(true);", element.currentElement);
         }
     }

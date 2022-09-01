@@ -7,6 +7,8 @@ import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 public class SecureGwSteps extends TestBase {
 
     private CardView cardView = new CardView();
@@ -26,7 +28,7 @@ public class SecureGwSteps extends TestBase {
     public void iProceedToSecureGWPayment() {
         cardView.pay();
 
-        WebDriverWait wait = new WebDriverWait(WebDriverConfig.getDriver(), 5);
+        WebDriverWait wait = new WebDriverWait(WebDriverConfig.getDriver(), Duration.ofSeconds(1));
         wait.until(ExpectedConditions.alertIsPresent());
         WebDriverConfig.getDriver().switchTo().alert().accept();
     }

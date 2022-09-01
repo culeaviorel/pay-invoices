@@ -1,7 +1,7 @@
 package ro.invoices;
 
-import io.cucumber.junit.CucumberOptions;
 import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @CucumberOptions(
@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
                 "ro.rcsrds.digicare",
                 "ro.jira",
                 "ro.eon",
+                "ro.nova",
                 "ro.leiibvb"
         },
         features = {
