@@ -54,16 +54,17 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Iulie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\August.csv");
         String date1 = items.get(0).getDate();
-        LocalDate d = LocalDate.parse(date1, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate d = LocalDate.parse(date1, formatter);
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         boolean inCorrectView = isInCorrectView(monthAndYear);
         if (inCorrectView) {
             view.getGrid().ready(true);
             for (Item item : items) {
                 view.getGrid().scrollTop();
-                LocalDate datetime = LocalDate.parse(item.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                LocalDate datetime = LocalDate.parse(item.getDate(), formatter);
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
                 Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
@@ -129,45 +130,69 @@ public class MyMoneySteps extends TestBase {
                 || name.contains("ARTIMA SA") || name.contains("MAGAZIN LA 2 PASI")
                 || name.contains("Kaufland") || name.contains("INM KFL CLUJ FAB C1")
                 || name.contains("ANAMIR BIOMARKET SRL") || name.contains("MAVIOS IMPEX SRL")
-                || name.contains("MCFLYING SRL")
+                || name.contains("MCFLYING SRL") || name.contains("CARREFOUR")
+                || name.contains("FLAVIANDA CRISAN") || name.contains("RES QUALITY FOOD")
+                || name.contains("Linela")
         ) {
             subCategory = "Produse alimentare";
         } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")
                 || name.contains("DEDEMAN") || name.contains("ALTEX ROMANIA")
+                || name.contains("MAXIMUM ELECTRONIC")
         ) {
             subCategory = "Casa";
         } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO")
                 || name.contains("ORGANIZATIA CRESTINA") || name.contains("KiK Textilien")
-                || name.contains("LANELKA")
+                || name.contains("LANELKA") || name.contains("MELI MELO")
+                || name.contains("SINSAY") || name.contains("REGALALIMENTNONSTO")
+                || name.contains("JYSK") || name.contains("THE BODY SHOP")
+                || name.contains("BRICOSTORE") || name.contains("C & A")
+                || name.contains("ROUMASPORT SRL")
+                || name.contains("Decathlon")
         ) {
             subCategory = "Haine";
-        } else if (name.contains("OMV")) {
+        } else if (name.contains("OMV") || name.contains("Pago*Roviniete")
+                || name.contains("Pago*Taxa De Pod")
+                || name.contains("SAFETY BROKER")
+        ) {
             subCategory = "Masina";
         } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL")
                 || name.contains("PAYU") || name.contains("IMPRIMERIA NATIONALA")
-                || name.contains("MOTILOR")
+                || name.contains("MOTILOR") || name.contains("WANG FU BUSINESS")
+                || name.contains("ALGO ENTERTAINMENT") || name.contains("FUNDATIA PRISON")
+                || name.contains("VELLA MED DISTRICT")
+                || name.contains("DRM CLUJ")
         ) {
             subCategory = "Alte Cheltuieli";
-        } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")) {
+        } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")
+                || name.contains("Farmactiv SRL")
+        ) {
             subCategory = "Medicamente";
-        } else if (name.contains("ABURIDO SRL")) {
+        } else if (name.contains("ABURIDO SRL") || name.contains("WWW.PROMOMIX.RO")
+                || name.contains("NALA COSMETICS SRL")
+        ) {
             subCategory = "Igiena";
-        } else if (name.contains("ANDY EVENTS")) {
+        } else if (name.contains("ANDY EVENTS") || name.contains("ORANGE SMART STORE CAH")) {
             subCategory = "Cadouri";
         } else if (name.contains("Pago*CPL Concordia")) {
             subCategory = "Gaz";
+        } else if (name.contains("Hotel at Booking.com") || name.contains("SUFRO COMPANY SRL")) {
+            subCategory = "Concedii";
         } else if (name.contains("TEENCHALLENGECLUJ.ORG")) {
             subCategory = "Darnicie";
-        } else if (name.contains("CTP") || name.contains("tpark.ro")) {
+        } else if (name.contains("CTP") || name.contains("tpark.ro") || name.contains("PARKING EXPERTS")) {
             subCategory = "Transport";
         } else if (name.contains("WWW.GHISEUL.RO/MFINANT")) {
             subCategory = "Taxe";
+        } else if (name.contains("Pago*Digi(RCS RDS)")) {
+            subCategory = "Internet";
         } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA")
                 || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
                 || name.contains("TARTINE FACTORY SRL") || name.contains("OCEANUL PACIFIC")
                 || name.contains("CARESA CATERING") || name.contains("BIANCO MILANO")
                 || name.contains("ADIADO") || name.contains("MADO CORPORATION")
-                || name.contains("PARFOIS")
+                || name.contains("PARFOIS") || name.contains("Onesti - Marasesti")
+                || name.contains("KFC") || name.contains("HANUL CU PESTE")
+                || name.contains("MARTY")
         ) {
             subCategory = "Restaurant";
         }
@@ -186,7 +211,7 @@ public class MyMoneySteps extends TestBase {
             if (val.contains("2022")) {
                 List<String> values = record.toList();
                 if ("Decontat".equals(values.get(2))) {
-                    list.add(new Item(values.get(0), values.get(2), values.get(3), values.get(5).replace(",", ".")));
+                    list.add(new Item(values.get(0), values.get(2), values.get(3), values.get(4).replace(",", ".")));
                 }
             }
         }
