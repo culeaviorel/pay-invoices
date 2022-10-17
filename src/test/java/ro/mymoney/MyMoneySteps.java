@@ -54,17 +54,17 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\August.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Septembrie.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate d = LocalDate.parse(date1, formatter);
+        LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         boolean inCorrectView = isInCorrectView(monthAndYear);
         if (inCorrectView) {
             view.getGrid().ready(true);
             for (Item item : items) {
                 view.getGrid().scrollTop();
-                LocalDate datetime = LocalDate.parse(item.getDate(), formatter);
+                LocalDate datetime = LocalDate.parse(item.getDate().split(" ")[0], formatter);
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
                 Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
@@ -74,6 +74,7 @@ public class MyMoneySteps extends TestBase {
                         notFoundSubCategory.add(item);
                     } else {
                         addItems.add(item);
+                        log.info(subCategory);
                         view.addInsert(subCategory, "Cheltuieli", subCategory, item.getDate(), item.getSum());
                     }
                 } else {
@@ -113,87 +114,74 @@ public class MyMoneySteps extends TestBase {
         return value;
     }
 
+    public List<String> casa = List.of("HORNBACH", "LEROY MERLIN", "DEDEMAN", "ALTEX ROMANIA", "MAXIMUM ELECTRONIC"
+            , "SC PRAGMATIC TCV SRL", "EPwifistore.ro"
+    );
+    public List<String> produseAlimentare = List.of("Lidl", "LIDL", "DEDEMAN", "AUCHAN", "PENNY", "KAUFLAND"
+            , "Kaufland", "MEGAIMAGE", "BONAS", "LA VESTAR", "PROFI", "CICMAR", "VARGA", "BUCURCRISS", "FLAVIANDA CRISAN"
+            , "AGROPAN PRODCOM", "TIENDA FRUTAS", "PREMIO DISTRIBUTION", "PREMIER RESTAURANTS", "PANEMAR", "ARTIMA SA"
+            , "MAGAZIN LA 2 PASI", "INM KFL CLUJ FAB C1", "ANAMIR BIOMARKET SRL", "MAVIOS IMPEX SRL", "MCFLYING SRL"
+            , "CARREFOUR", "RES QUALITY FOOD", "Linela", "SELGROS", "CARMIC IMPEX"
+    );
+    public List<String> haine = List.of("ZARA", "H&M", "PEPCO", "ORGANIZATIA CRESTINA", "KiK Textilien"
+            , "LANELKA", "MELI MELO", "SINSAY", "REGALALIMENTNONSTO", "JYSK", "THE BODY SHOP", "BRICOSTORE", "C & A"
+            , "ROUMASPORT SRL", "Decathlon"
+    );
+    public List<String> masina = List.of("OMV", "Pago*Roviniete", "Pago*Taxa De Pod", "SAFETY BROKER");
+    private List<String> alte = List.of("EXCELLENTE SOURCE", "EUROTRANS SRL", "PAYU", "IMPRIMERIA NATIONALA"
+            , "MOTILOR", "WANG FU BUSINESS", "ALGO ENTERTAINMENT", "FUNDATIA PRISON", "VELLA MED DISTRICT", "DRM CLUJ"
+            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "*MOBILPAYKASEWEB DISTR", "VO CHEF SRL"
+    );
+    private List<String> restaurant = List.of("LEMNUL VERDE", "ASI BAKLAVA", "MOLDOVAN CARMANGERIE", "HOMS FOOD"
+            , "TARTINE FACTORY SRL", "OCEANUL PACIFIC", "CARESA CATERING", "BIANCO MILANO", "ADIADO", "MADO CORPORATION"
+            , "PARFOIS", "Onesti - Marasesti", "KFC", "HANUL CU PESTE", "MARTY", "PEP & PEPPER", "STARBUCKS", "DASHI"
+            , "LC WAIKIKI"
+    );
+
     public static void main(String[] args) {
         MyMoneySteps d = new MyMoneySteps();
-        String correctValue = d.getCorrectValue("2.34");
-        String correctValue1 = d.getCorrectValue("2.56");
+//        String correctValue = d.getCorrectValue("2.34");
+//        String correctValue1 = d.getCorrectValue("2.56");
+        String name = "HORNBACH SA";
+        boolean contains = d.casa.stream().anyMatch(name::contains);
         Utils.sleep(1);
     }
 
     private String getSubCategory(String name) {
         String subCategory = null;
-        if (name.contains("Lidl") || name.contains("LIDL") || name.contains("AUCHAN") || name.contains("PENNY") || name.contains("KAUFLAND") ||
-                name.contains("MEGAIMAGE") || name.contains("BONAS") || name.contains("LA VESTAR") || name.contains("PROFI") ||
-                name.contains("CICMAR") || name.contains("VARGA") || name.contains("BUCURCRISS") || name.contains("FLAVIANDA CRISAN SRL") ||
-                name.contains("AGROPAN PRODCOM") || name.contains("TIENDA FRUTAS") || name.contains("PREMIO DISTRIBUTION")
-                || name.contains("PREMIER RESTAURANTS") || name.contains("PANEMAR MORARIT")
-                || name.contains("ARTIMA SA") || name.contains("MAGAZIN LA 2 PASI")
-                || name.contains("Kaufland") || name.contains("INM KFL CLUJ FAB C1")
-                || name.contains("ANAMIR BIOMARKET SRL") || name.contains("MAVIOS IMPEX SRL")
-                || name.contains("MCFLYING SRL") || name.contains("CARREFOUR")
-                || name.contains("FLAVIANDA CRISAN") || name.contains("RES QUALITY FOOD")
-                || name.contains("Linela")
-        ) {
+        if (produseAlimentare.stream().anyMatch(name::contains)) {
             subCategory = "Produse alimentare";
-        } else if (name.contains("HORNBACH") || name.contains("LEROY MERLIN")
-                || name.contains("DEDEMAN") || name.contains("ALTEX ROMANIA")
-                || name.contains("MAXIMUM ELECTRONIC")
-        ) {
+        } else if (casa.stream().anyMatch(name::contains)) {
             subCategory = "Casa";
-        } else if (name.contains("ZARA") || name.contains("H&M") || name.contains("PEPCO")
-                || name.contains("ORGANIZATIA CRESTINA") || name.contains("KiK Textilien")
-                || name.contains("LANELKA") || name.contains("MELI MELO")
-                || name.contains("SINSAY") || name.contains("REGALALIMENTNONSTO")
-                || name.contains("JYSK") || name.contains("THE BODY SHOP")
-                || name.contains("BRICOSTORE") || name.contains("C & A")
-                || name.contains("ROUMASPORT SRL")
-                || name.contains("Decathlon")
-        ) {
+        } else if (haine.stream().anyMatch(name::contains)) {
             subCategory = "Haine";
-        } else if (name.contains("OMV") || name.contains("Pago*Roviniete")
-                || name.contains("Pago*Taxa De Pod")
-                || name.contains("SAFETY BROKER")
-        ) {
+        } else if (masina.stream().anyMatch(name::contains)) {
             subCategory = "Masina";
-        } else if (name.contains("EXCELLENTE SOURCE") || name.contains("EUROTRANS SRL")
-                || name.contains("PAYU") || name.contains("IMPRIMERIA NATIONALA")
-                || name.contains("MOTILOR") || name.contains("WANG FU BUSINESS")
-                || name.contains("ALGO ENTERTAINMENT") || name.contains("FUNDATIA PRISON")
-                || name.contains("VELLA MED DISTRICT")
-                || name.contains("DRM CLUJ")
-        ) {
+        } else if (alte.stream().anyMatch(name::contains)) {
             subCategory = "Alte Cheltuieli";
-        } else if (name.contains("REMEDIUM") || name.contains("ALDEDRA")
-                || name.contains("Farmactiv SRL")
-        ) {
+        } else if (List.of("REMEDIUM", "ALDEDRA", "Farmactiv SRL").stream().anyMatch(name::contains)) {
             subCategory = "Medicamente";
-        } else if (name.contains("ABURIDO SRL") || name.contains("WWW.PROMOMIX.RO")
-                || name.contains("NALA COSMETICS SRL")
-        ) {
+        } else if (List.of("ABURIDO SRL", "WWW.PROMOMIX.RO", "NALA COSMETICS SRL").stream().anyMatch(name::contains)) {
             subCategory = "Igiena";
-        } else if (name.contains("ANDY EVENTS") || name.contains("ORANGE SMART STORE CAH")) {
+        } else if (List.of("ANDY EVENTS", "ORANGE SMART STORE CAH").stream().anyMatch(name::contains)) {
             subCategory = "Cadouri";
-        } else if (name.contains("Pago*CPL Concordia")) {
+        } else if (List.of("Pago*CPL Concordia").stream().anyMatch(name::contains)) {
             subCategory = "Gaz";
-        } else if (name.contains("Hotel at Booking.com") || name.contains("SUFRO COMPANY SRL")) {
+        } else if (List.of("Pago*Compania de Apa").stream().anyMatch(name::contains)) {
+            subCategory = "Apa";
+        } else if (List.of("Pago*Hidroelectrica").stream().anyMatch(name::contains)) {
+            subCategory = "Energie Electrica";
+        } else if (List.of("Hotel at Booking.com", "SUFRO COMPANY SRL").stream().anyMatch(name::contains)) {
             subCategory = "Concedii";
-        } else if (name.contains("TEENCHALLENGECLUJ.ORG")) {
+        } else if (List.of("TEENCHALLENGECLUJ.ORG").stream().anyMatch(name::contains)) {
             subCategory = "Darnicie";
-        } else if (name.contains("CTP") || name.contains("tpark.ro") || name.contains("PARKING EXPERTS")) {
+        } else if (List.of("CTP", "tpark.ro", "PARKING EXPERTS").stream().anyMatch(name::contains)) {
             subCategory = "Transport";
-        } else if (name.contains("WWW.GHISEUL.RO/MFINANT")) {
+        } else if (List.of("WWW.GHISEUL.RO/MFINANT").stream().anyMatch(name::contains)) {
             subCategory = "Taxe";
-        } else if (name.contains("Pago*Digi(RCS RDS)")) {
+        } else if (List.of("Pago*Digi(RCS RDS)").stream().anyMatch(name::contains)) {
             subCategory = "Internet";
-        } else if (name.contains("LEMNUL VERDE") || name.contains("ASI BAKLAVA")
-                || name.contains("MOLDOVAN CARMANGERIE") || name.contains("HOMS FOOD")
-                || name.contains("TARTINE FACTORY SRL") || name.contains("OCEANUL PACIFIC")
-                || name.contains("CARESA CATERING") || name.contains("BIANCO MILANO")
-                || name.contains("ADIADO") || name.contains("MADO CORPORATION")
-                || name.contains("PARFOIS") || name.contains("Onesti - Marasesti")
-                || name.contains("KFC") || name.contains("HANUL CU PESTE")
-                || name.contains("MARTY")
-        ) {
+        } else if (restaurant.stream().anyMatch(name::contains)) {
             subCategory = "Restaurant";
         }
         return subCategory;
