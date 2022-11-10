@@ -54,9 +54,9 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Septembrie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Octombrie.csv");
         String date1 = items.get(0).getDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         boolean inCorrectView = isInCorrectView(monthAndYear);
@@ -121,21 +121,24 @@ public class MyMoneySteps extends TestBase {
             , "Kaufland", "MEGAIMAGE", "BONAS", "LA VESTAR", "PROFI", "CICMAR", "VARGA", "BUCURCRISS", "FLAVIANDA CRISAN"
             , "AGROPAN PRODCOM", "TIENDA FRUTAS", "PREMIO DISTRIBUTION", "PREMIER RESTAURANTS", "PANEMAR", "ARTIMA SA"
             , "MAGAZIN LA 2 PASI", "INM KFL CLUJ FAB C1", "ANAMIR BIOMARKET SRL", "MAVIOS IMPEX SRL", "MCFLYING SRL"
-            , "CARREFOUR", "RES QUALITY FOOD", "Linela", "SELGROS", "CARMIC IMPEX"
+            , "CARREFOUR", "RES QUALITY FOOD", "Linela", "SELGROS", "CARMIC IMPEX", "BODRUM DONER MARASTI", "SC OPREA AVI COM SRL"
+            , "RODIMEX INVEST", "MELFRUCTUS SRL", "ADARIA SERV SRL"
     );
     public List<String> haine = List.of("ZARA", "H&M", "PEPCO", "ORGANIZATIA CRESTINA", "KiK Textilien"
             , "LANELKA", "MELI MELO", "SINSAY", "REGALALIMENTNONSTO", "JYSK", "THE BODY SHOP", "BRICOSTORE", "C & A"
             , "ROUMASPORT SRL", "Decathlon"
     );
-    public List<String> masina = List.of("OMV", "Pago*Roviniete", "Pago*Taxa De Pod", "SAFETY BROKER");
+    public List<String> masina = List.of("OMV", "Roviniete", "Taxa De Pod", "SAFETY BROKER", "SOS ITP SERVICE",
+            "MALL DOROBANTILOR SERVICE", "MC BUSINESS");
     private List<String> alte = List.of("EXCELLENTE SOURCE", "EUROTRANS SRL", "PAYU", "IMPRIMERIA NATIONALA"
             , "MOTILOR", "WANG FU BUSINESS", "ALGO ENTERTAINMENT", "FUNDATIA PRISON", "VELLA MED DISTRICT", "DRM CLUJ"
-            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "*MOBILPAYKASEWEB DISTR", "VO CHEF SRL"
+            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "MOBILPAYKASEWEB DISTR", "VO CHEF SRL", "OTEN V B SRL ARIESULUI"
+
     );
     private List<String> restaurant = List.of("LEMNUL VERDE", "ASI BAKLAVA", "MOLDOVAN CARMANGERIE", "HOMS FOOD"
             , "TARTINE FACTORY SRL", "OCEANUL PACIFIC", "CARESA CATERING", "BIANCO MILANO", "ADIADO", "MADO CORPORATION"
             , "PARFOIS", "Onesti - Marasesti", "KFC", "HANUL CU PESTE", "MARTY", "PEP & PEPPER", "STARBUCKS", "DASHI"
-            , "LC WAIKIKI"
+            , "LC WAIKIKI", "ART OF CAKES SRL", "CARIANA ALIMENTAR SRL", "KOPP KAFFE"
     );
 
     public static void main(String[] args) {
@@ -161,25 +164,25 @@ public class MyMoneySteps extends TestBase {
             subCategory = "Alte Cheltuieli";
         } else if (List.of("REMEDIUM", "ALDEDRA", "Farmactiv SRL").stream().anyMatch(name::contains)) {
             subCategory = "Medicamente";
-        } else if (List.of("ABURIDO SRL", "WWW.PROMOMIX.RO", "NALA COSMETICS SRL").stream().anyMatch(name::contains)) {
+        } else if (List.of("ABURIDO SRL", "WWW.PROMOMIX.RO", "NALA COSMETICS SRL", "GERMAN MARKET SRL").stream().anyMatch(name::contains)) {
             subCategory = "Igiena";
         } else if (List.of("ANDY EVENTS", "ORANGE SMART STORE CAH").stream().anyMatch(name::contains)) {
             subCategory = "Cadouri";
-        } else if (List.of("Pago*CPL Concordia").stream().anyMatch(name::contains)) {
+        } else if (List.of("CPL Concordia").stream().anyMatch(name::contains)) {
             subCategory = "Gaz";
-        } else if (List.of("Pago*Compania de Apa").stream().anyMatch(name::contains)) {
+        } else if (List.of("Compania de Apa").stream().anyMatch(name::contains)) {
             subCategory = "Apa";
-        } else if (List.of("Pago*Hidroelectrica").stream().anyMatch(name::contains)) {
+        } else if (List.of("Hidroelectrica").stream().anyMatch(name::contains)) {
             subCategory = "Energie Electrica";
         } else if (List.of("Hotel at Booking.com", "SUFRO COMPANY SRL").stream().anyMatch(name::contains)) {
             subCategory = "Concedii";
         } else if (List.of("TEENCHALLENGECLUJ.ORG").stream().anyMatch(name::contains)) {
             subCategory = "Darnicie";
-        } else if (List.of("CTP", "tpark.ro", "PARKING EXPERTS").stream().anyMatch(name::contains)) {
+        } else if (List.of("CTP", "tpark.ro", "PARKING EXPERTS", "ATTRIUS DEVELOPMENTS PALAS IASI").stream().anyMatch(name::contains)) {
             subCategory = "Transport";
         } else if (List.of("WWW.GHISEUL.RO/MFINANT").stream().anyMatch(name::contains)) {
             subCategory = "Taxe";
-        } else if (List.of("Pago*Digi(RCS RDS)").stream().anyMatch(name::contains)) {
+        } else if (List.of("Digi(RCS RDS)").stream().anyMatch(name::contains)) {
             subCategory = "Internet";
         } else if (restaurant.stream().anyMatch(name::contains)) {
             subCategory = "Restaurant";
@@ -190,16 +193,25 @@ public class MyMoneySteps extends TestBase {
     @SneakyThrows
     public List<Item> readCSV(String filePath) {
         BufferedReader reader = Files.newBufferedReader(Paths.get(filePath), StandardCharsets.ISO_8859_1);
-        CSVFormat csvFormat = CSVFormat.Builder.create().setDelimiter(';').build();
+        CSVFormat csvFormat = CSVFormat.Builder.create().setDelimiter(',').build();
         CSVParser csvParser = new CSVParser(reader, csvFormat);
         List<CSVRecord> records = csvParser.getRecords();
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(0);
-            if (val.contains("2022")) {
+            if (val.contains("-2022")) {
                 List<String> values = record.toList();
-                if ("Decontat".equals(values.get(2))) {
-                    list.add(new Item(values.get(0), values.get(2), values.get(3), values.get(4).replace(",", ".")));
+                String desc = values.get(2);
+                if (desc.contains("Plata la POS") && !desc.contains("Rata ")) {
+                    String date = values.get(0);
+                    String description = null;
+                    try {
+                        description = desc.split("TID|MID")[1].split("valoare tranzactie:")[0];
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        Utils.sleep(1);
+                    }
+                    String sum = values.get(4).replace(",", ".");
+                    list.add(new Item(date, description, sum));
                 }
             }
         }

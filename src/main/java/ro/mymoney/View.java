@@ -54,7 +54,7 @@ public class View {
         RetryUtils.retry(2, () -> category.select(cat, Duration.ofSeconds(1)));
         Utils.sleep(800);
         RetryUtils.retry(2, () -> subCategory.select(sub, Duration.ofSeconds(2)));
-        boolean select = dateField.select(data.split(" ")[0], "dd.MM.yyyy");
+        boolean select = dateField.select(data.split(" ")[0], "dd-MM-yyyy");
         sumaField.setValue(sum);
         if (select) {
             return saveButton.click();
