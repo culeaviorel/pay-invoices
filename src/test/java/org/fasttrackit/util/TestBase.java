@@ -14,7 +14,7 @@ import java.io.IOException;
 //@ContextConfiguration("classpath:cucumber.xml")
 public abstract class TestBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestBase.class);
-    
+
     public static WebDriver driver;
 
     static {

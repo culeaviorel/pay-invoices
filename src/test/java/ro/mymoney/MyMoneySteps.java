@@ -54,7 +54,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\Desktop\\BT\\Octombrie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - SDL\\Desktop\\BT\\Noiembrie.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -116,6 +116,7 @@ public class MyMoneySteps extends TestBase {
 
     public List<String> casa = List.of("HORNBACH", "LEROY MERLIN", "DEDEMAN", "ALTEX ROMANIA", "MAXIMUM ELECTRONIC"
             , "SC PRAGMATIC TCV SRL", "EPwifistore.ro"
+            , "INTERNATIONAL PAPER BUSI"
     );
     public List<String> produseAlimentare = List.of("Lidl", "LIDL", "DEDEMAN", "AUCHAN", "PENNY", "KAUFLAND"
             , "Kaufland", "MEGAIMAGE", "BONAS", "LA VESTAR", "PROFI", "CICMAR", "VARGA", "BUCURCRISS", "FLAVIANDA CRISAN"
@@ -127,18 +128,22 @@ public class MyMoneySteps extends TestBase {
     public List<String> haine = List.of("ZARA", "H&M", "PEPCO", "ORGANIZATIA CRESTINA", "KiK Textilien"
             , "LANELKA", "MELI MELO", "SINSAY", "REGALALIMENTNONSTO", "JYSK", "THE BODY SHOP", "BRICOSTORE", "C & A"
             , "ROUMASPORT SRL", "Decathlon"
+            , "TABITA IMPEX SRL"
     );
     public List<String> masina = List.of("OMV", "Roviniete", "Taxa De Pod", "SAFETY BROKER", "SOS ITP SERVICE",
-            "MALL DOROBANTILOR SERVICE", "MC BUSINESS");
+            "MALL DOROBANTILOR SERVICE", "MC BUSINESS", "ATTRIUS DEVELOPMENTS", "LUKOIL");
     private List<String> alte = List.of("EXCELLENTE SOURCE", "EUROTRANS SRL", "PAYU", "IMPRIMERIA NATIONALA"
             , "MOTILOR", "WANG FU BUSINESS", "ALGO ENTERTAINMENT", "FUNDATIA PRISON", "VELLA MED DISTRICT", "DRM CLUJ"
-            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "MOBILPAYKASEWEB DISTR", "VO CHEF SRL", "OTEN V B SRL ARIESULUI"
+            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "MOBILPAYKASEWEB DISTR", "VO CHEF SRL"
+            , "OTEN V B SRL ARIESULUI", "CINEMA CITY ROMANIA"
+            , "MACRIDELI FLOWERS SRL"
 
     );
     private List<String> restaurant = List.of("LEMNUL VERDE", "ASI BAKLAVA", "MOLDOVAN CARMANGERIE", "HOMS FOOD"
             , "TARTINE FACTORY SRL", "OCEANUL PACIFIC", "CARESA CATERING", "BIANCO MILANO", "ADIADO", "MADO CORPORATION"
             , "PARFOIS", "Onesti - Marasesti", "KFC", "HANUL CU PESTE", "MARTY", "PEP & PEPPER", "STARBUCKS", "DASHI"
-            , "LC WAIKIKI", "ART OF CAKES SRL", "CARIANA ALIMENTAR SRL", "KOPP KAFFE"
+            , "LC WAIKIKI", "ART OF CAKES SRL", "CARIANA ALIMENTAR SRL", "KOPP KAFFE", "MEAT UP"
+            , "MILENIUM LANDSCAPE DEV"
     );
 
     public static void main(String[] args) {
@@ -199,19 +204,10 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(0);
-            if (val.contains("-2022")) {
+            if (val.contains("2022")) {
                 List<String> values = record.toList();
-                String desc = values.get(2);
-                if (desc.contains("Plata la POS") && !desc.contains("Rata ")) {
-                    String date = values.get(0);
-                    String description = null;
-                    try {
-                        description = desc.split("TID|MID")[1].split("valoare tranzactie:")[0];
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        Utils.sleep(1);
-                    }
-                    String sum = values.get(4).replace(",", ".");
-                    list.add(new Item(date, description, sum));
+                if ("Decontat".equals(values.get(2))) {
+                    list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(5).replace(",", ".")));
                 }
             }
         }
