@@ -2,9 +2,9 @@ package org.fasttrackit.util;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import io.cucumber.java.After;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
@@ -32,6 +32,11 @@ public class GlobalHooks {
     public void start(Scenario scenario) throws IOException {
         Driver.initialize();
     }
+
+//    @AfterAll
+//    public void stop() {
+//        Driver.stop(true);
+//    }
 
     public void takeScreenShot(String screenShotName) {
         // trim screenshot name because deleting files from jenkins cannot delete files that have a long name

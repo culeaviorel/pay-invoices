@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 @Slf4j
 public class Driver {
@@ -26,10 +25,14 @@ public class Driver {
     }
 
     public static void initialize(boolean newDriver) throws IOException {
+        stop(newDriver);
+        initialize();
+    }
+
+    public static void stop(boolean newDriver) {
         if (newDriver && driver != null) {
             driver.quit();
             driver = null;
         }
-        initialize();
     }
 }
