@@ -123,7 +123,8 @@ public class MyMoneySteps extends TestBase {
             , "AGROPAN PRODCOM", "TIENDA FRUTAS", "PREMIO DISTRIBUTION", "PREMIER RESTAURANTS", "PANEMAR", "ARTIMA SA"
             , "MAGAZIN LA 2 PASI", "INM KFL CLUJ FAB C1", "ANAMIR BIOMARKET SRL", "MAVIOS IMPEX SRL", "MCFLYING SRL"
             , "CARREFOUR", "RES QUALITY FOOD", "Linela", "SELGROS", "CARMIC IMPEX", "BODRUM DONER MARASTI", "SC OPREA AVI COM SRL"
-            , "RODIMEX INVEST", "MELFRUCTUS SRL", "ADARIA SERV SRL"
+            , "RODIMEX INVEST", "MELFRUCTUS SRL", "ADARIA SERV SRL", "MEGA IMAGE"
+            , "ERGON"
     );
     public List<String> haine = List.of("ZARA", "H&M", "PEPCO", "ORGANIZATIA CRESTINA", "KiK Textilien"
             , "LANELKA", "MELI MELO", "SINSAY", "REGALALIMENTNONSTO", "JYSK", "THE BODY SHOP", "BRICOSTORE", "C & A"
@@ -228,7 +229,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(2);
-            if (val.contains("2023") && val.contains("/12/")) {
+            if (val.contains("2023") && val.contains("/01/")) {
                 List<String> values = record.toList();
                 if (values.get(4).contains("DEBIT")) {
                     list.add(new Item(clean(values.get(2)), clean(values.get(1)), clean(values.get(6).replace(",", ".").replace("-", ""))));
@@ -288,7 +289,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readUPCSV("C:\\Users\\vculea\\OneDrive - SDL\\Desktop\\BT\\data.csv");
+        List<Item> items = readUPCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\data.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate d = LocalDate.parse(date1, formatter);
