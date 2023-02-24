@@ -46,16 +46,21 @@ public class View {
         sumaField.setValue(sum);
         return saveButton.click();
     }
+
     public boolean addInsert(String denum, String cat, String sub, String data, String sum) {
         return addInsert(denum, cat, sub, data, "dd-MM-yyyy", sum);
     }
+
     public boolean addInsert(String denum, String cat, String sub, String data, String format, String sum) {
         add.ready(Duration.ofSeconds(10));
         add.click();
         name.setValue(denum);
         RetryUtils.retry(2, () -> category.select(cat, Duration.ofSeconds(1)));
         Utils.sleep(800);
-        RetryUtils.retry(2, () -> subCategory.select(sub, Duration.ofSeconds(2)));
+        RetryUtils.retry(4, () -> {
+            subCategory.select(sub, Duration.ofSeconds(2));
+            return subCategory.getValue().equals(sub);
+        });
         boolean select = dateField.select(data, format);
         sumaField.setValue(sum);
         if (select) {

@@ -326,4 +326,11 @@ public class MyMoneySteps extends TestBase {
         log.info("Diferenta: {}", items.size() - isAlreadyExist.size() - notFoundSubCategory.size() - addItems.size());
         Utils.sleep(1);
     }
+
+    @And("I add in MyVirtual transactions:")
+    public void iAddInMyVirtualTransactions(List<ItemTO> values) {
+        for (ItemTO value : values) {
+            view.addInsert(value.getName(), value.getCategory(), value.getSubCategory(), value.getData(),"dd.MM.yyyy", value.getValue());
+        }
+    }
 }
