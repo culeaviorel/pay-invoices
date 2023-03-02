@@ -33,6 +33,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Slf4j
 public class MyMoneySteps extends TestBase {
@@ -54,7 +55,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Ianuarie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Februarie.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -67,15 +68,17 @@ public class MyMoneySteps extends TestBase {
                 LocalDate datetime = LocalDate.parse(item.getDate().split(" ")[0], formatter);
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
-                Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
+                Transaction transaction = getSubCategory(item.getName());
+                String name = transaction.getName();
+                String subCategory = transaction.getSubCategory();
+                Row row = view.getGrid().getRow(new Cell(1, name), new Cell(3, subCategory), new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
                 if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
-                    String subCategory = getSubCategory(item.getName());
-                    if (Strings.isNullOrEmpty(subCategory)) {
+                    if (Strings.isNullOrEmpty(name)) {
                         notFoundSubCategory.add(item);
                     } else {
                         addItems.add(item);
-                        log.info(subCategory);
-                        view.addInsert(subCategory, "Cheltuieli", subCategory, item.getDate(), item.getSum());
+                        log.info(name);
+                        view.addInsert(name, "Cheltuieli", subCategory, item.getDate(), item.getSum());
                     }
                 } else {
                     isAlreadyExist.add(item);
@@ -114,91 +117,131 @@ public class MyMoneySteps extends TestBase {
         return value;
     }
 
-    public List<String> casa = List.of("HORNBACH", "LEROY MERLIN", "DEDEMAN", "ALTEX ROMANIA", "MAXIMUM ELECTRONIC"
-            , "SC PRAGMATIC TCV SRL", "EPwifistore.ro", "INTERNATIONAL PAPER BUSI"
-            , "KSA"
+    private final List<Category> casa = List.of(new Category("HORNBACH", "HORNBACH"), new Category("LEROY MERLIN", "LEROY MERLIN"), new Category("DEDEMAN", "DEDEMAN")
+            , new Category("ALTEX ROMANIA", "ALTEX ROMANIA"), new Category("MAXIMUM ELECTRONIC", "MAXIMUM ELECTRONIC")
+            , new Category("SC PRAGMATIC TCV SRL", "SC PRAGMATIC TCV SRL"), new Category("EPwifistore.ro", "EPwifistore.ro")
+            , new Category("INTERNATIONAL PAPER BUSI", "INTERNATIONAL PAPER BUSI"), new Category("KSA", "KSA")
+            , new Category("MOEMAX Cluj", "MOEMAX Cluj")
     );
-    public List<String> produseAlimentare = List.of("Lidl", "LIDL", "DEDEMAN", "AUCHAN", "PENNY", "KAUFLAND"
-            , "Kaufland", "MEGAIMAGE", "BONAS", "LA VESTAR", "PROFI", "CICMAR", "VARGA", "BUCURCRISS", "FLAVIANDA CRISAN"
-            , "AGROPAN PRODCOM", "TIENDA FRUTAS", "PREMIO DISTRIBUTION", "PREMIER RESTAURANTS", "PANEMAR", "ARTIMA SA"
-            , "MAGAZIN LA 2 PASI", "INM KFL CLUJ FAB C1", "ANAMIR BIOMARKET SRL", "MAVIOS IMPEX SRL", "MCFLYING SRL"
-            , "CARREFOUR", "RES QUALITY FOOD", "Linela", "SELGROS", "CARMIC IMPEX", "BODRUM DONER MARASTI", "SC OPREA AVI COM SRL"
-            , "RODIMEX INVEST", "MELFRUCTUS SRL", "ADARIA SERV SRL", "MEGA IMAGE"
-            , "ERGON"
+    private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
+            , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
+            , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS"), new Category("La Vestar", "LA VESTAR")
+            , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA"), new Category("BUCURCRISS", "BUCURCRISS")
+            , new Category("Flavianda", "FLAVIANDA CRISAN"), new Category("Agropan", "AGROPAN PRODCOM"), new Category("TIENDA FRUTAS", "TIENDA FRUTAS")
+            , new Category("PREMIO DISTRIBUTION", "PREMIO DISTRIBUTION"), new Category("Premier Restaurants", "PREMIER RESTAURANTS"), new Category("Panemar", "PANEMAR")
+            , new Category("ARTIMA SA", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI"), new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
+            , new Category("ANAMIR BIOMARKET SRL", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL"), new Category("MCFLYING SRL", "MCFLYING SRL")
+            , new Category("Carrefour", "CARREFOUR"), new Category("RES QUALITY FOOD", "RES QUALITY FOOD"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
+            , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI"), new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
+            , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS SRL", "MELFRUCTUS SRL"), new Category("ADARIA SERV SRL", "ADARIA SERV SRL")
+            , new Category("Ergon", "ERGON")
+            , new Category("Rebeca Fruct SRL", "REBECA FRUCT SRL")
     );
-    public List<String> haine = List.of("ZARA", "H&M", "PEPCO", "ORGANIZATIA CRESTINA", "KiK Textilien"
-            , "LANELKA", "MELI MELO", "SINSAY", "REGALALIMENTNONSTO", "JYSK", "THE BODY SHOP", "BRICOSTORE", "C & A"
-            , "ROUMASPORT SRL", "Decathlon", "TABITA IMPEX SRL", "KIK 9119 CLUJ"
-            , "SECONDTEXTILIASAM"
+    private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("PEPCO", "PEPCO")
+            , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK Textilien", "KiK Textilien")
+            , new Category("LANELKA", "LANELKA"), new Category("MELI MELO", "MELI MELO"), new Category("SINSAY", "SINSAY")
+            , new Category("REGALALIMENTNONSTO", "REGALALIMENTNONSTO"), new Category("JYSK", "JYSK"), new Category("THE BODY SHOP", "THE BODY SHOP")
+            , new Category("BRICOSTORE", "BRICOSTORE"), new Category("C & A", "C & A")
+            , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL"), new Category("KIK", "KIK 9119 CLUJ")
+            , new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
     );
-    public List<String> masina = List.of("OMV", "Roviniete", "Taxa De Pod", "SAFETY BROKER", "SOS ITP SERVICE",
-            "MALL DOROBANTILOR SERVICE", "MC BUSINESS", "ATTRIUS DEVELOPMENTS", "LUKOIL", "EURO PARTS DISTRIB");
-    private List<String> alte = List.of("EXCELLENTE SOURCE", "EUROTRANS SRL", "PAYU", "IMPRIMERIA NATIONALA"
-            , "MOTILOR", "WANG FU BUSINESS", "ALGO ENTERTAINMENT", "FUNDATIA PRISON", "VELLA MED DISTRICT", "DRM CLUJ"
-            , "HUSE COLORATE", "KIDDYPARK SRL", "SC PIATA MARASTI SRL", "MOBILPAYKASEWEB DISTR", "VO CHEF SRL"
-            , "OTEN V B SRL ARIESULUI", "CINEMA CITY ROMANIA", "MACRIDELI FLOWERS SRL", "LIBRARIA KERIGMA CLU"
-            , "NEW IDEA PRINT SRL", "FLORI BESTIALE SRL", "EROGLU ROMANIA SRL"
-            , "RATI INNOVATIONS SRL"
+    private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
+            , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
+            , new Category("MALL DOROBANTILOR SERVICE", "MALL DOROBANTILOR SERVICE"), new Category("MC BUSINESS", "MC BUSINESS")
+            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB"));
+    private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE"), new Category("EUROTRANS SRL", "EUROTRANS SRL")
+            , new Category("PAYU", "PAYU"), new Category("IMPRIMERIA NATIONALA", "IMPRIMERIA NATIONALA")
+            , new Category("MOTILOR", "MOTILOR"), new Category("WANG FU BUSINESS", "WANG FU BUSINESS"), new Category("ALGO ENTERTAINMENT", "ALGO ENTERTAINMENT")
+            , new Category("FUNDATIA PRISON", "FUNDATIA PRISON"), new Category("VELLA MED DISTRICT", "VELLA MED DISTRICT"), new Category("DRM CLUJ", "DRM CLUJ")
+            , new Category("HUSE COLORATE", "HUSE COLORATE"), new Category("KIDDYPARK SRL", "KIDDYPARK SRL"), new Category("SC PIATA MARASTI SRL", "SC PIATA MARASTI SRL")
+            , new Category("MOBILPAYKASEWEB DISTR", "MOBILPAYKASEWEB DISTR"), new Category("VO CHEF SRL", "VO CHEF SRL")
+            , new Category("OTEN V B SRL ARIESULUI", "OTEN V B SRL ARIESULUI"), new Category("CINEMA CITY", "CINEMA CITY ROMANIA")
+            , new Category("MACRIDELI FLOWERS SRL", "MACRIDELI FLOWERS SRL"), new Category("LIBRARIA KERIGMA CLU", "LIBRARIA KERIGMA CLU")
+            , new Category("NEW IDEA PRINT SRL", "NEW IDEA PRINT SRL"), new Category("FLORI BESTIALE SRL", "FLORI BESTIALE SRL")
+            , new Category("EROGLU ROMANIA SRL", "EROGLU ROMANIA SRL"), new Category("RATI INNOVATIONS SRL", "RATI INNOVATIONS SRL"), new Category("PayU*eMAG.ro", "PayU*eMAG.ro")
+            , new Category("JULC 60MIN RLX S R L", "JULC 60MIN RLX S R L")
+    );
+    private final List<Category> restaurant = List.of(new Category("LEMNUL VERDE", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
+            , new Category("MOLDOVAN CARMANGERIE", "MOLDOVAN CARMANGERIE"), new Category("HOMS FOOD", "HOMS FOOD")
+            , new Category("TARTINE FACTORY SRL", "TARTINE FACTORY SRL"), new Category("OCEANUL PACIFIC", "OCEANUL PACIFIC"), new Category("CARESA CATERING", "CARESA CATERING")
+            , new Category("BIANCO MILANO", "BIANCO MILANO"), new Category("ADIADO", "ADIADO"), new Category("MADO CORPORATION", "MADO CORPORATION")
+            , new Category("PARFOIS", "PARFOIS"), new Category("Onesti - Marasesti", "Onesti - Marasesti"), new Category("KFC", "KFC")
+            , new Category("Hanul cu Peste", "HANUL CU PESTE"), new Category("Marty", "MARTY"), new Category("PEP & PEPPER", "PEP & PEPPER")
+            , new Category("Starbucks", "STARBUCKS"), new Category("DASHI", "DASHI")
+            , new Category("LC WAIKIKI", "LC WAIKIKI"), new Category("ART OF CAKES SRL", "ART OF CAKES SRL"), new Category("CARIANA ALIMENTAR SRL", "CARIANA ALIMENTAR SRL")
+            , new Category("KOPP KAFFE", "KOPP KAFFE"), new Category("MEAT UP", "MEAT UP")
+            , new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV"), new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
+            , new Category("MARKET TWELVE SRL", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
+            , new Category("JAMON FOOD SRL", "JAMON FOOD SRL"), new Category("ROSA FOOD ART SRL", "ROSA FOOD ART SRL")
+            , new Category("MADISONBAGEL", "MADISONBAGEL")
+    );
 
-    );
-    private List<String> restaurant = List.of("LEMNUL VERDE", "ASI BAKLAVA", "MOLDOVAN CARMANGERIE", "HOMS FOOD"
-            , "TARTINE FACTORY SRL", "OCEANUL PACIFIC", "CARESA CATERING", "BIANCO MILANO", "ADIADO", "MADO CORPORATION"
-            , "PARFOIS", "Onesti - Marasesti", "KFC", "HANUL CU PESTE", "MARTY", "PEP & PEPPER", "STARBUCKS", "DASHI"
-            , "LC WAIKIKI", "ART OF CAKES SRL", "CARIANA ALIMENTAR SRL", "KOPP KAFFE", "MEAT UP"
-            , "MILENIUM LANDSCAPE DEV", "SAVANNAH DRINKS", "SONMARE SRL", "MARKET TWELVE SRL", "Eurest Rom SRL Bosch"
-            , "JAMON FOOD SRL"
-            , "ROSA FOOD ART SRL"
+    List<Category> medicamente = List.of(
+            new Category("Remedium", "REMEDIUM"),
+            new Category("Aldedra", "ALDEDRA"),
+            new Category("Farmactiv", "Farmactiv SRL")
     );
 
-    public static void main(String[] args) {
-        MyMoneySteps d = new MyMoneySteps();
-//        String correctValue = d.getCorrectValue("2.34");
-//        String correctValue1 = d.getCorrectValue("2.56");
-        String name = "HORNBACH SA";
-        boolean contains = d.casa.stream().anyMatch(name::contains);
-        Utils.sleep(1);
+    List<Category> igiena = List.of(new Category("ABURIDO SRL", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO"), new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL")
+            , new Category("GERMAN MARKET", "GERMAN MARKET SRL"));
+    List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE CAH", "ORANGE SMART STORE CAH")
+            , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"));
+
+    private Finder find(List<Category> categories, String name) {
+        Optional<Category> category = categories.stream().filter(i -> doFind(name, i.getValues())).findFirst();
+        return category.map(value -> new Finder(value.getName(), true)).orElseGet(() -> new Finder("", false));
     }
 
-    private String getSubCategory(String name) {
-        String subCategory = null;
-        if (produseAlimentare.stream().anyMatch(name::contains)) {
-            subCategory = "Produse alimentare";
-        } else if (casa.stream().anyMatch(name::contains)) {
-            subCategory = "Casa";
-        } else if (haine.stream().anyMatch(name::contains)) {
-            subCategory = "Haine";
-        } else if (masina.stream().anyMatch(name::contains)) {
-            subCategory = "Masina";
-        } else if (alte.stream().anyMatch(name::contains)) {
-            subCategory = "Alte Cheltuieli";
-        } else if (List.of("REMEDIUM", "ALDEDRA", "Farmactiv SRL").stream().anyMatch(name::contains)) {
-            subCategory = "Medicamente";
-        } else if (List.of("ABURIDO SRL", "WWW.PROMOMIX.RO", "NALA COSMETICS SRL", "GERMAN MARKET SRL").stream().anyMatch(name::contains)) {
-            subCategory = "Igiena";
-        } else if (List.of("ANDY EVENTS", "ORANGE SMART STORE CAH", "EC GARDEN MANAGEMENT").stream().anyMatch(name::contains)) {
-            subCategory = "Cadouri";
-        } else if (List.of("CPL Concordia").stream().anyMatch(name::contains)) {
-            subCategory = "Gaz";
-        } else if (List.of("Compania de Apa").stream().anyMatch(name::contains)) {
-            subCategory = "Apa";
-        } else if (List.of("Hidroelectrica").stream().anyMatch(name::contains)) {
-            subCategory = "Energie Electrica";
-        } else if (List.of("Hotel at Booking.com", "SUFRO COMPANY SRL").stream().anyMatch(name::contains)) {
-            subCategory = "Concedii";
-        } else if (List.of("TEENCHALLENGECLUJ.ORG").stream().anyMatch(name::contains)) {
-            subCategory = "Darnicie";
-        } else if (List.of("CTP", "tpark.ro", "PARKING EXPERTS", "ATTRIUS DEVELOPMENTS PALAS IASI").stream().anyMatch(name::contains)) {
-            subCategory = "Transport";
-        } else if (List.of("WWW.GHISEUL.RO/MFINANT").stream().anyMatch(name::contains)) {
-            subCategory = "Taxe";
-        } else if (List.of("Digi(RCS RDS)").stream().anyMatch(name::contains)) {
-            subCategory = "Internet";
-        } else if (List.of("Platforma E-BLOC.RO").stream().anyMatch(name::contains)) {
-            subCategory = "Investitii";
-        } else if (restaurant.stream().anyMatch(name::contains)) {
-            subCategory = "Restaurant";
+    private boolean doFind(String name, List<String> values) {
+        for (String value : values) {
+            return name.contains(value);
         }
-        return subCategory;
+        return false;
+    }
+
+    private Transaction getSubCategory(String name) {
+        Transaction transaction = null;
+        Finder finder = find(produseAlimentare, name);
+        if (finder.getPresent()) {
+            transaction = new Transaction(finder.getName(), "Produse alimentare");
+        } else if ((finder = find(casa, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Casa");
+        } else if ((finder = find(haine, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Haine");
+        } else if ((finder = find(masina, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Masina");
+        } else if ((finder = find(alte, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Alte Cheltuieli");
+        } else if ((finder = find(medicamente, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Medicamente");
+        } else if ((finder = find(igiena, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Igiena");
+        } else if ((finder = find(cadouri, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Cadouri");
+        } else if ((finder = find(List.of(new Category("CPL Concordia", "CPL Concordia")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Gaz");
+        } else if ((finder = find(List.of(new Category("Compania de Apa", "Compania de Apa")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Apa");
+        } else if ((finder = find(List.of(new Category("Hidroelectrica", "Hidroelectrica")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Energie Electrica");
+        } else if ((finder = find(List.of(new Category("Hotel at Booking.com", "Hotel at Booking.com"), new Category("SUFRO COMPANY SRL", "SUFRO COMPANY SRL")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Concedii");
+        } else if ((finder = find(List.of(new Category("TEENCHALLENGECLUJ.ORG", "TEENCHALLENGECLUJ.ORG")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Darnicie");
+        } else if ((finder = find(List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro"), new Category("PARKING EXPERTS", "PARKING EXPERTS"), new Category("ATTRIUS DEVELOPMENTS PALAS IASI", "ATTRIUS DEVELOPMENTS PALAS IASI")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Transport");
+        } else if ((finder = find(List.of(new Category("WWW.GHISEUL.RO/MFINANT", "WWW.GHISEUL.RO/MFINANT")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Taxe");
+        } else if ((finder = find(List.of(new Category("Digi(RCS RDS)", "Digi(RCS RDS)")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Internet");
+        } else if ((finder = find(List.of(new Category("Platforma E-BLOC.RO", "Platforma E-BLOC.RO")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Investitii");
+        } else if ((finder = find(List.of(new Category("NAPOCA  7", "NAPOCA  7")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Incaltaminte");
+        } else if ((finder = find(restaurant, name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Restaurant");
+        }
+        return transaction;
     }
 
     @SneakyThrows
@@ -213,7 +256,7 @@ public class MyMoneySteps extends TestBase {
             if (val.contains("2023")) {
                 List<String> values = record.toList();
                 if ("Decontat".equals(values.get(2))) {
-                    list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(5).replace(",", ".")));
+                    list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(4).replace(",", ".")));
                 }
             }
         }
@@ -229,7 +272,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(2);
-            if (val.contains("2023") && val.contains("/01/")) {
+            if (val.contains("2023") && val.contains("/02/")) {
                 List<String> values = record.toList();
                 if (values.get(4).contains("DEBIT")) {
                     list.add(new Item(clean(values.get(2)), clean(values.get(1)), clean(values.get(6).replace(",", ".").replace("-", ""))));
@@ -302,15 +345,17 @@ public class MyMoneySteps extends TestBase {
                 LocalDate datetime = LocalDate.parse(item.getDate(), formatter);
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
-                Row row = view.getGrid().getRow(new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
+                Transaction transaction = getSubCategory(item.getName());
+                String name = transaction.getName();
+                String subCategory = transaction.getSubCategory();
+                Row row = view.getGrid().getRow(new Cell(1, name), new Cell(3, subCategory), new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
                 if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
-                    String subCategory = getSubCategory(item.getName());
-                    if (Strings.isNullOrEmpty(subCategory)) {
+                    if (Strings.isNullOrEmpty(name)) {
                         notFoundSubCategory.add(item);
                     } else {
                         addItems.add(item);
-                        log.info(subCategory);
-                        view.addInsert(subCategory, "Cheltuieli", subCategory, item.getDate(), "dd/MM/yyyy", item.getSum());
+                        log.info(name);
+                        view.addInsert(name, "Cheltuieli", subCategory, item.getDate(), "dd/MM/yyyy", item.getSum());
                     }
                 } else {
                     isAlreadyExist.add(item);
@@ -330,7 +375,7 @@ public class MyMoneySteps extends TestBase {
     @And("I add in MyVirtual transactions:")
     public void iAddInMyVirtualTransactions(List<ItemTO> values) {
         for (ItemTO value : values) {
-            view.addInsert(value.getName(), value.getCategory(), value.getSubCategory(), value.getData(),"dd.MM.yyyy", value.getValue());
+            view.addInsert(value.getName(), value.getCategory(), value.getSubCategory(), value.getData(), "dd.MM.yyyy", value.getValue());
         }
     }
 }
