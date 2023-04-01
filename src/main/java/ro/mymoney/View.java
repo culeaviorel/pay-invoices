@@ -57,7 +57,7 @@ public class View {
         name.setValue(denum);
         RetryUtils.retry(2, () -> category.select(cat, Duration.ofSeconds(1)));
         Utils.sleep(800);
-        RetryUtils.retry(4, () -> {
+        RetryUtils.retry(6, () -> {
             subCategory.select(sub, Duration.ofSeconds(2));
             return subCategory.getValue().equals(sub);
         });

@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.sdl.lt</groupId>
             <artifactId>Testy</artifactId>
-            <version>20.08.160.0_7f8f06f</version>
+            <version>20.08.183.0_2f09a6f</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
