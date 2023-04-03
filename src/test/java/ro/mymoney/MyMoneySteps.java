@@ -151,7 +151,6 @@ public class MyMoneySteps extends TestBase {
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL"), new Category("KIK", "KIK 9119 CLUJ")
             , new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED")
-            , new Category("Meron", "MERON POLUS")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
             , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
@@ -188,16 +187,14 @@ public class MyMoneySteps extends TestBase {
             , new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV"), new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
             , new Category("Twelve", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
             , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
-            , new Category("MADISONBAGEL", "MADISONBAGEL")
-            , new Category("Pizza Big Belly", "bigbelly-cluj")
-            , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR")
-            , new Category("Lunch Box", "LUNCH BOX SRL")
+            , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", "bigbelly-cluj")
+            , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL")
+            , new Category("Meron", "MERON POLUS")
     );
 
     List<Category> medicamente = List.of(
-            new Category("Remedium", "REMEDIUM"),
-            new Category("Aldedra", "ALDEDRA"),
+            new Category("Remedium", "REMEDIUM"), new Category("Aldedra", "ALDEDRA"),
             new Category("ELMAFARM", "ELMAFARM SRL"),
             new Category("Farmactiv", "Farmactiv SRL")
     );
