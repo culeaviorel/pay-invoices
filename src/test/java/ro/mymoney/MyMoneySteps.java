@@ -55,7 +55,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Martie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Aprilie.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -134,9 +134,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA"), new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Flavianda", "FLAVIANDA CRISAN"), new Category("Agropan", "AGROPAN PRODCOM"), new Category("TIENDA FRUTAS", "TIENDA FRUTAS")
             , new Category("PREMIO DISTRIBUTION", "PREMIO DISTRIBUTION"), new Category("Premier Restaurants", "PREMIER RESTAURANTS"), new Category("Panemar", "PANEMAR")
-            , new Category("ARTIMA SA", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI"), new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
+            , new Category("Carrefour express", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI"), new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
             , new Category("ANAMIR BIOMARKET", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL"), new Category("MCFLYING SRL", "MCFLYING SRL")
-            , new Category("Carrefour", "CARREFOUR"), new Category("RES QUALITY FOOD", "RES QUALITY FOOD"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
+            , new Category("Carrefour", "CARREFOUR"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
             , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI"), new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
             , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL"), new Category("ADARIA SERV SRL", "ADARIA SERV SRL")
             , new Category("Ergon", "ERGON")
@@ -187,10 +187,10 @@ public class MyMoneySteps extends TestBase {
             , new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV"), new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
             , new Category("Twelve", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
             , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
-            , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", "bigbelly-cluj")
+            , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "ERS QUALITY FOOD"))
             , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
-            , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL")
-            , new Category("Meron", "MERON POLUS")
+            , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
+            , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE")
     );
 
     List<Category> medicamente = List.of(
@@ -261,7 +261,7 @@ public class MyMoneySteps extends TestBase {
             transaction = new Transaction(finder.getName(), "Investitii");
         } else if ((finder = find(List.of(new Category("NAPOCA  7", "NAPOCA  7")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Incaltaminte");
-        } else if ((finder = find(List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG")), name)).getPresent()) {
+        } else if ((finder = find(List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Tratament");
         } else if ((finder = find(restaurant, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Restaurant");
