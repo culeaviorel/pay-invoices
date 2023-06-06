@@ -143,8 +143,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI")
             , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL")
             , new Category("ADARIA SERV SRL", "ADARIA SERV SRL"), new Category("Ergon", "ERGON")
-            , new Category("Rebeca Fruct", "REBECA FRUCT SRL")
-            , new Category("Ferma Steluta", "FERMA STELUTA SRL")
+            , new Category("Rebeca Fruct", "REBECA FRUCT SRL"), new Category("Ferma Steluta", "FERMA STELUTA SRL")
+            , new Category("EURO MARKET", "EURO MARKET")
+            , new Category("INMEDIO", "INMEDIO")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -323,7 +324,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(2);
-            if (val.contains("2023") && val.contains("/02/")) {
+            if (val.contains("2023") && val.contains("/05/")) {
                 List<String> values = record.toList();
                 if (values.get(4).contains("DEBIT")) {
                     list.add(new Item(clean(values.get(2)), clean(values.get(1)), clean(values.get(6).replace(",", ".").replace("-", ""))));
@@ -397,7 +398,12 @@ public class MyMoneySteps extends TestBase {
                 String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
                 String sum = getCorrectValue(item.getSum());
                 Transaction transaction = getSubCategory(item.getName());
-                String name = transaction.getName();
+                String name = null;
+                try {
+                    name = transaction.getName();
+                } catch (NullPointerException e) {
+                    Utils.sleep(1);
+                }
                 String subCategory = transaction.getSubCategory();
                 Row row = view.getGrid().getRow(new Cell(1, name), new Cell(3, subCategory), new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
                 if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
