@@ -55,7 +55,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Aprilie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Mai.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -130,15 +130,22 @@ public class MyMoneySteps extends TestBase {
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
-            , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS"), new Category("La Vestar", "LA VESTAR")
-            , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA"), new Category("BUCURCRISS", "BUCURCRISS")
+            , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS")
+            , new Category("La Vestar", "LA VESTAR")
+            , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA")
+            , new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Flavianda", "FLAVIANDA CRISAN"), new Category("Agropan", "AGROPAN PRODCOM"), new Category("TIENDA FRUTAS", "TIENDA FRUTAS")
-            , new Category("PREMIO DISTRIBUTION", "PREMIO DISTRIBUTION"), new Category("Premier Restaurants", "PREMIER RESTAURANTS"), new Category("Panemar", "PANEMAR")
-            , new Category("Carrefour express", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI"), new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
-            , new Category("ANAMIR BIOMARKET", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL"), new Category("MCFLYING SRL", "MCFLYING SRL")
+            , new Category("PREMIO DISTRIBUTION", "PREMIO DISTRIBUTION"), new Category("Premier Restaurants", "PREMIER RESTAURANTS")
+            , new Category("Panemar", "PANEMAR")
+            , new Category("Carrefour express", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI")
+            , new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
+            , new Category("ANAMIR BIOMARKET", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL")
+            , new Category("MCFLYING SRL", "MCFLYING SRL")
             , new Category("Carrefour", "CARREFOUR"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
-            , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI"), new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
-            , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL"), new Category("ADARIA SERV SRL", "ADARIA SERV SRL")
+            , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI")
+            , new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
+            , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL")
+            , new Category("ADARIA SERV SRL", "ADARIA SERV SRL")
             , new Category("Ergon", "ERGON")
             , new Category("Rebeca Fruct", "REBECA FRUCT SRL")
             , new Category("Ferma Steluta", "FERMA STELUTA SRL")
@@ -148,49 +155,56 @@ public class MyMoneySteps extends TestBase {
             , new Category("LANELKA", "LANELKA"), new Category("MELI MELO", "MELI MELO"), new Category("Sinsay", "SINSAY")
             , new Category("REGALALIMENTNONSTO", "REGALALIMENTNONSTO"), new Category("JYSK", "JYSK"), new Category("THE BODY SHOP", "THE BODY SHOP")
             , new Category("BricoStore", "BRICOSTORE"), new Category("C&A", "C & A")
-            , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL"), new Category("KIK", "KIK 9119 CLUJ")
+            , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
+            , new Category("KIK", "KIK 9119 CLUJ")
             , new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED")
     );
-    private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
+    private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete")
+            , new Category("Taxa De Pod", "Taxa De Pod")
             , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
             , new Category("MALL DOROBANTILOR SERVICE", "MALL DOROBANTILOR SERVICE"), new Category("MC BUSINESS", "MC BUSINESS")
-            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB"));
+            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB")
+    );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE"), new Category("EUROTRANS SRL", "EUROTRANS SRL")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
-            , new Category("MOTILOR", "MOTILOR"), new Category("WANG FU BUSINESS", "WANG FU BUSINESS"), new Category("ALGO ENTERTAINMENT", "ALGO ENTERTAINMENT")
-            , new Category("FUNDATIA PRISON", "FUNDATIA PRISON"), new Category("VELLA MED DISTRICT", "VELLA MED DISTRICT"), new Category("DRM CLUJ", "DRM CLUJ")
-            , new Category("HUSE COLORATE", "HUSE COLORATE"), new Category("KIDDYPARK", "KIDDYPARK SRL"), new Category("SC PIATA MARASTI SRL", "SC PIATA MARASTI SRL")
+            , new Category("MOTILOR", "MOTILOR"), new Category("WANG FU BUSINESS", "WANG FU BUSINESS")
+            , new Category("FUNDATIA PRISON", "FUNDATIA PRISON"), new Category("VELLA MED DISTRICT", "VELLA MED DISTRICT")
+            , new Category("HUSE COLORATE", "HUSE COLORATE"), new Category("KIDDYPARK", "KIDDYPARK SRL")
+            , new Category("SC PIATA MARASTI SRL", "SC PIATA MARASTI SRL"), new Category("DRM CLUJ", "DRM CLUJ")
             , new Category("MOBILPAYKASEWEB DISTR", "MOBILPAYKASEWEB DISTR"), new Category("VO CHEF", "VO CHEF SRL")
             , new Category("OTEN V B", "OTEN V B SRL ARIESULUI"), new Category("CINEMA CITY", "CINEMA CITY ROMANIA")
             , new Category("FLOWERS", "MACRIDELI FLOWERS SRL"), new Category("LIBRARIA KERIGMA", "LIBRARIA KERIGMA CLU")
             , new Category("NEW IDEA PRINT", "NEW IDEA PRINT SRL"), new Category("FLORI", "FLORI BESTIALE SRL")
-            , new Category("EROGLU", "EROGLU ROMANIA SRL"), new Category("RATI INNOVATIONS", "RATI INNOVATIONS SRL"), new Category("PayU*eMAG.ro", "PayU*eMAG.ro")
-            , new Category("JULC 60MIN", "JULC 60MIN RLX S R L")
-            , new Category("Meron", "MERON PLATINIA")
-            , new Category("KINDERCITY", "KINDERCITY S R L")
-            , new Category("FACULTAS PLUS", "FACULTAS PLUS SRL")
-            , new Category("ALDISANA INVEST", "ALDISANA INVEST SRL")
-            , new Category("XUYIDA MARKET", "XUYIDA MARKET STORE SR")
-            , new Category("MOMO", "MOMO INTERNATIONAL S R L")
-            , new Category("RENELA", "RENELA")
+            , new Category("EROGLU", "EROGLU ROMANIA SRL"), new Category("RATI INNOVATIONS", "RATI INNOVATIONS SRL")
+            , new Category("PayU*eMAG.ro", "PayU*eMAG.ro"), new Category("ALGO ENTERTAINMENT", "ALGO ENTERTAINMENT")
+            , new Category("JULC 60MIN", "JULC 60MIN RLX S R L"), new Category("Meron", "MERON PLATINIA")
+            , new Category("KINDERCITY", "KINDERCITY S R L"), new Category("FACULTAS PLUS", "FACULTAS PLUS SRL")
+            , new Category("ALDISANA INVEST", "ALDISANA INVEST SRL"), new Category("XUYIDA MARKET", "XUYIDA MARKET STORE SR")
+            , new Category("MOMO", "MOMO INTERNATIONAL S R L"), new Category("RENELA", "RENELA")
+            , new Category("MUZEUL ETNO", "MUZEUL ETNO AL TRANSILVANIEI"), new Category("ADYSYM IMPEX", "ADYSYM IMPEX SRL")
+            , new Category("GOLDEN AGE PRODUCTION", "GOLDEN AGE PRODUCTION SR")
+            , new Category("MOPS", "MOPS ROMANIA")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
-            , new Category("Tartine", "TARTINE FACTORY SRL"), new Category("Stradale", "OCEANUL PACIFIC"), new Category("CARESA CATERING", "CARESA CATERING")
+            , new Category("Tartine", "TARTINE FACTORY SRL"), new Category("Stradale", "OCEANUL PACIFIC")
+            , new Category("CARESA CATERING", "CARESA CATERING")
             , new Category("Bianco Milano", "BIANCO MILANO"), new Category("ADIADO", "ADIADO"), new Category("MADO", "MADO CORPORATION")
             , new Category("PARFOIS", "PARFOIS"), new Category("Onesti - Marasesti", "Onesti - Marasesti"), new Category("KFC", "KFC")
             , new Category("Hanul cu Peste", "HANUL CU PESTE"), new Category("Marty", "MARTY"), new Category("PEP & PEPPER", "PEP & PEPPER")
             , new Category("Starbucks", "STARBUCKS"), new Category("Dashi", "DASHI")
-            , new Category("LC WAIKIKI", "LC WAIKIKI"), new Category("ART OF CAKES", "ART OF CAKES SRL"), new Category("CARIANA ALIMENTAR", "CARIANA ALIMENTAR SRL")
-            , new Category("KOPP KAFFE", "KOPP KAFFE"), new Category("MEAT UP", "MEAT UP")
-            , new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV"), new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
+            , new Category("LC WAIKIKI", "LC WAIKIKI"), new Category("ART OF CAKES", "ART OF CAKES SRL")
+            , new Category("CARIANA ALIMENTAR", "CARIANA ALIMENTAR SRL"), new Category("KOPP KAFFE", "KOPP KAFFE")
+            , new Category("MEAT UP", "MEAT UP"), new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV")
+            , new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
             , new Category("Twelve", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
             , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
             , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "ERS QUALITY FOOD"))
             , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
-            , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE")
+            , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE"), new Category("Agape", "HOTEL AGAPE - AUTOSERV")
+            , new Category("ELIXIPLANTA", "ELIXIPLANTA SRL")
     );
 
     List<Category> medicamente = List.of(
@@ -199,12 +213,28 @@ public class MyMoneySteps extends TestBase {
             new Category("Farmactiv", "Farmactiv SRL")
     );
 
-    List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO"), new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL")
-            , new Category("German Market", "GERMAN MARKET SRL"));
+    List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
+            , new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL")
+            , new Category("German Market", "GERMAN MARKET SRL")
+    );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT")
             , new Category("Flori", "FREYA FLOWERS DESIGN SRL")
     );
+
+    List<Category> concediu = List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL")
+            , new Category("Avion", "WIZZ"), new Category("Cafea", "AMBROCAFE SRL")
+            , new Category("Pizza", "PIZZERIA CAPUTO"), new Category("Duomo", "DUOMO CORDUSIO")
+            , new Category("Coop", "Coop"), new Category("Tren", "FFS Stazione Lugano")
+            , new Category("Manor", "Manor AG"), new Category("CON.FID", "CON.FID. STATION SRL")
+            , new Category("Lugano", "DIF SPA AGENZIA DIFFUS")
+    );
+
+    List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
+            , new Category("PARKING EXPERTS", "PARKING EXPERTS"), new Category("Parcare", "ATTRIUS DEVELOPMENTS PALAS IASI")
+    );
+
+    List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL"));
 
     private Finder find(List<Category> categories, String name) {
         Optional<Category> category = categories.stream().filter(i -> doFind(name, i.getValues())).findFirst();
@@ -247,11 +277,11 @@ public class MyMoneySteps extends TestBase {
             transaction = new Transaction(finder.getName(), "Apa");
         } else if ((finder = find(List.of(new Category("Hidroelectrica", "Hidroelectrica")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Energie Electrica");
-        } else if ((finder = find(List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL"), new Category("Avion", "WIZZ")), name)).getPresent()) {
+        } else if ((finder = find(concediu, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Concedii");
         } else if ((finder = find(List.of(new Category("TEENCHALLENGECLUJ.ORG", "TEENCHALLENGECLUJ.ORG")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Darnicie");
-        } else if ((finder = find(List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro"), new Category("PARKING EXPERTS", "PARKING EXPERTS"), new Category("Parcare", "ATTRIUS DEVELOPMENTS PALAS IASI")), name)).getPresent()) {
+        } else if ((finder = find(transport, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Transport");
         } else if ((finder = find(List.of(new Category("WWW.GHISEUL.RO", "WWW.GHISEUL.RO/MFINANT"), new Category("Impozit pe casa", "COMUNA APAHIDA")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Taxe");
@@ -261,7 +291,7 @@ public class MyMoneySteps extends TestBase {
             transaction = new Transaction(finder.getName(), "Investitii");
         } else if ((finder = find(List.of(new Category("NAPOCA  7", "NAPOCA  7")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Incaltaminte");
-        } else if ((finder = find(List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL")), name)).getPresent()) {
+        } else if ((finder = find(tratament, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Tratament");
         } else if ((finder = find(restaurant, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Restaurant");
