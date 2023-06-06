@@ -131,22 +131,18 @@ public class MyMoneySteps extends TestBase {
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
             , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS")
-            , new Category("La Vestar", "LA VESTAR")
+            , new Category("La Vestar", "LA VESTAR"), new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA")
-            , new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Flavianda", "FLAVIANDA CRISAN"), new Category("Agropan", "AGROPAN PRODCOM"), new Category("TIENDA FRUTAS", "TIENDA FRUTAS")
             , new Category("PREMIO DISTRIBUTION", "PREMIO DISTRIBUTION"), new Category("Premier Restaurants", "PREMIER RESTAURANTS")
-            , new Category("Panemar", "PANEMAR")
+            , new Category("Panemar", "PANEMAR"), new Category("MCFLYING SRL", "MCFLYING SRL")
             , new Category("Carrefour express", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI")
-            , new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1")
+            , new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1"), new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
             , new Category("ANAMIR BIOMARKET", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL")
-            , new Category("MCFLYING SRL", "MCFLYING SRL")
             , new Category("Carrefour", "CARREFOUR"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
             , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI")
-            , new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
             , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL")
-            , new Category("ADARIA SERV SRL", "ADARIA SERV SRL")
-            , new Category("Ergon", "ERGON")
+            , new Category("ADARIA SERV SRL", "ADARIA SERV SRL"), new Category("Ergon", "ERGON")
             , new Category("Rebeca Fruct", "REBECA FRUCT SRL")
             , new Category("Ferma Steluta", "FERMA STELUTA SRL")
     );
@@ -156,15 +152,14 @@ public class MyMoneySteps extends TestBase {
             , new Category("REGALALIMENTNONSTO", "REGALALIMENTNONSTO"), new Category("JYSK", "JYSK"), new Category("THE BODY SHOP", "THE BODY SHOP")
             , new Category("BricoStore", "BRICOSTORE"), new Category("C&A", "C & A")
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
-            , new Category("KIK", "KIK 9119 CLUJ")
-            , new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
+            , new Category("KIK", "KIK 9119 CLUJ"), new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete")
-            , new Category("Taxa De Pod", "Taxa De Pod")
+            , new Category("Taxa De Pod", "Taxa De Pod"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB")
             , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
             , new Category("MALL DOROBANTILOR SERVICE", "MALL DOROBANTILOR SERVICE"), new Category("MC BUSINESS", "MC BUSINESS")
-            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB")
+            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE"), new Category("EUROTRANS SRL", "EUROTRANS SRL")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
@@ -234,7 +229,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("PARKING EXPERTS", "PARKING EXPERTS"), new Category("Parcare", "ATTRIUS DEVELOPMENTS PALAS IASI")
     );
 
-    List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL"));
+    List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL")
+    );
 
     private Finder find(List<Category> categories, String name) {
         Optional<Category> category = categories.stream().filter(i -> doFind(name, i.getValues())).findFirst();
