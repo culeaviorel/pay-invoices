@@ -24,8 +24,6 @@ import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -112,11 +110,7 @@ public class MyMoneySteps extends TestBase {
 
     private String getCorrectValue(String sum) {
         double s = Double.parseDouble(sum);
-        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-        dfs.setGroupingSeparator(',');
-        dfs.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("#,###.#", dfs);
-        String format = df.format(s);
+        String format = String.format("%.1f", s);
         String value = format.contains(".") ? format : format + ".0";
         return value;
     }
