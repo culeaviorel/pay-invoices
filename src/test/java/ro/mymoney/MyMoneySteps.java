@@ -55,7 +55,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Mai.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Iunie.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -125,8 +125,11 @@ public class MyMoneySteps extends TestBase {
             , new Category("Dedeman", "DEDEMAN"), new Category("Altex", "ALTEX ROMANIA")
             , new Category("MAXIMUM ELECTRONIC", "MAXIMUM ELECTRONIC"), new Category("Pragmatic", "SC PRAGMATIC TCV SRL")
             , new Category("wifistore", "EPwifistore.ro"), new Category("INTERNATIONAL PAPER BUSI", "INTERNATIONAL PAPER BUSI")
-            , new Category("KSA", "KSA")
-            , new Category("Moemax", "MOEMAX Cluj")
+            , new Category("KSA", "KSA"), new Category("Moemax", "MOEMAX Cluj")
+            , new Category("Jumbo", "JUMBO ORADEA C8"), new Category("semintegazon", "mpy*semintegazon")
+            , new Category("Smart Home", "SMART HOME 360"), new Category("GradinaMax", "GradinaMax")
+            , new Category("bioculturi", "mpy*bioculturi"), new Category("vexio.ro", "PayU*vexio.ro")
+            , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
@@ -155,6 +158,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
             , new Category("KIK", "KIK 9119 CLUJ"), new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED")
+            , new Category("METASAN", "METASAN RUBY ROSE")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL")), new Category("Rovinieta", "Roviniete")
             , new Category("Taxa De Pod", "Taxa De Pod"), new Category("EURO PARTS DISTRIB", "EURO PARTS DISTRIB")
@@ -179,8 +183,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("ALDISANA INVEST", "ALDISANA INVEST SRL"), new Category("XUYIDA MARKET", "XUYIDA MARKET STORE SR")
             , new Category("MOMO", "MOMO INTERNATIONAL S R L"), new Category("RENELA", "RENELA")
             , new Category("MUZEUL ETNO", "MUZEUL ETNO AL TRANSILVANIEI"), new Category("ADYSYM IMPEX", "ADYSYM IMPEX SRL")
-            , new Category("GOLDEN AGE PRODUCTION", "GOLDEN AGE PRODUCTION SR")
-            , new Category("MOPS", "MOPS ROMANIA")
+            , new Category("GOLDEN AGE PRODUCTION", "GOLDEN AGE PRODUCTION SR"), new Category("MOPS", "MOPS ROMANIA")
+            , new Category("LITERA.RO", "*PlatiOnLITERA.RO")
+            , new Category("thefastshop.eu", "*EPthefastshop.eu")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -201,12 +206,15 @@ public class MyMoneySteps extends TestBase {
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
             , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE"), new Category("Agape", "HOTEL AGAPE - AUTOSERV")
             , new Category("ELIXIPLANTA", "ELIXIPLANTA SRL")
+            , new Category("Piata9", "HONEST FOOD SRL")
+            , new Category("JUHANIO", "JUHANIO S.R.L.")
     );
 
     List<Category> medicamente = List.of(
-            new Category("Remedium", "REMEDIUM"), new Category("Aldedra", "ALDEDRA"),
-            new Category("ELMAFARM", "ELMAFARM SRL"),
-            new Category("Farmactiv", "Farmactiv SRL")
+            new Category("Remedium", "REMEDIUM"), new Category("Aldedra", "ALDEDRA")
+            , new Category("ELMAFARM", "ELMAFARM SRL")
+            , new Category("Farmactiv", "Farmactiv SRL")
+            , new Category("Ducfarm", "DUCFARM SRL")
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
@@ -215,7 +223,8 @@ public class MyMoneySteps extends TestBase {
     );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT")
-            , new Category("Flori", "FREYA FLOWERS DESIGN SRL")
+            , new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
+            , new Category("Noriel", "NORIEL TOYS IULIUS MAL")
     );
 
     List<Category> concediu = List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL")
@@ -224,6 +233,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("Coop", "Coop"), new Category("Tren", "FFS Stazione Lugano")
             , new Category("Manor", "Manor AG"), new Category("CON.FID", "CON.FID. STATION SRL")
             , new Category("Lugano", "DIF SPA AGENZIA DIFFUS")
+            , new Category("Hotel Maxim", "HOTEL MAXIM 2")
     );
 
     List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
