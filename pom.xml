@@ -26,20 +26,20 @@
         <dependency>
             <groupId>com.sdl.lt</groupId>
             <artifactId>Testy</artifactId>
-            <version>20.08.210.0_50d3750</version>
+            <version>20.08.228.0_6234658</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>7.12.0</version>
+            <version>7.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.12.0</version>
+            <version>7.13.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

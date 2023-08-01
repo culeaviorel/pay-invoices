@@ -69,9 +69,4 @@ public class View {
             return false;
         }
     }
-
-    public static void main(String[] args) {
-        View login = new View();
-        LOGGER.debug(login.category.getXPath());
-    }
 }
