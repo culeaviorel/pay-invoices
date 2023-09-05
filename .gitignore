@@ -13,6 +13,7 @@ target/
 
 src/test/resources/feature/invoice/all-invoices.feature
 src/test/resources/bank-card.properties
+src/test/resources/credentials.json
 
 ## ===============================================
 
