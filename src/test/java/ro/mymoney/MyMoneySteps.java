@@ -53,7 +53,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Iulie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\August.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -123,8 +123,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("Jumbo", "JUMBO ORADEA C8"), new Category("semintegazon", "mpy*semintegazon")
             , new Category("Smart Home", "SMART HOME 360"), new Category("GradinaMax", "GradinaMax")
             , new Category("bioculturi", "mpy*bioculturi"), new Category("vexio.ro", "PayU*vexio.ro")
-            , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL")
-            , new Category("Shelly", "ALLTERCOROB")
+            , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL"), new Category("Shelly", "ALLTERCOROB")
+            , new Category("Asigurare Casa", "INTER BROKER DE ASIG")
+            , new Category("CLEANEXPERT", "CLEANEXPERT SHOP SRL")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
@@ -144,6 +145,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("Rebeca Fruct", "REBECA FRUCT SRL"), new Category("Ferma Steluta", "FERMA STELUTA SRL")
             , new Category("EURO MARKET", "EURO MARKET"), new Category("INMEDIO", "INMEDIO")
             , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA")
+            , new Category("PULSAR", "PULSAR TEO SRL")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -160,6 +162,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
             , new Category("MALL DOROBANTILOR SERVICE", "MALL DOROBANTILOR SERVICE"), new Category("MC BUSINESS", "MC BUSINESS")
             , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
+            , new Category("Vigneta", "Pago*Vignette")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE"), new Category("EUROTRANS SRL", "EUROTRANS SRL")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
@@ -182,6 +185,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("LITERA.RO", "*PlatiOnLITERA.RO"), new Category("thefastshop.eu", "*EPthefastshop.eu")
             , new Category("MAGAZIN WEST", "MAGAZIN WEST"), new Category("S F COMPANY", "S F COMPANY SRL")
             , new Category("DIRECT CLIENT SERVICES", "DIRECT CLIENT SERVICES")
+            , new Category("MOLDOVAN EVENTS", "MOLDOVAN EVENTS")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -202,8 +206,10 @@ public class MyMoneySteps extends TestBase {
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
             , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE"), new Category("Agape", "HOTEL AGAPE - AUTOSERV")
             , new Category("ELIXIPLANTA", "ELIXIPLANTA SRL"), new Category("Piata9", "HONEST FOOD SRL")
-            , new Category("JUHANIO", "JUHANIO S.R.L.")
-            , new Category("SPARTAN", "SPARTAN ALEXANDRU VAID")
+            , new Category("JUHANIO", "JUHANIO S.R.L."), new Category("SPARTAN", "SPARTAN ALEXANDRU VAID")
+            , new Category("NOODLE PACK", "NOODLE PACK"), new Category("RECEPTIE PENSIUNE", "RECEPTIE PENSIUNE")
+            , new Category("LAPROLEMN SRL", "LAPROLEMN SRL")
+            , new Category("Moara de Vant", List.of("BUCATARIA LUMII SRL", "GERROM THERMOHAUS SRL"))
     );
 
     List<Category> medicamente = List.of(
@@ -216,6 +222,7 @@ public class MyMoneySteps extends TestBase {
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
             , new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL")
             , new Category("German Market", "GERMAN MARKET SRL")
+            , new Category("MOBILPAYLADYBUG INVES", "MOBILPAYLADYBUG INVES")
     );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT")
@@ -229,7 +236,10 @@ public class MyMoneySteps extends TestBase {
             , new Category("Coop", "Coop"), new Category("Tren", "FFS Stazione Lugano")
             , new Category("Manor", "Manor AG"), new Category("CON.FID", "CON.FID. STATION SRL")
             , new Category("Lugano", "DIF SPA AGENZIA DIFFUS"), new Category("Hotel Maxim", "HOTEL MAXIM 2")
-            , new Category("Austria", "Eni 4044")
+            , new Category("Austria", "Eni 4044"), new Category("MINI TRANSYLVANIA", "MINI TRANSYLVANIA")
+            , new Category("ASOC CULTURALA", "ASOC CULTURALA VISUS"), new Category("CRINABEL", "CRINABEL")
+            , new Category("VinietaMD", "www.mpay.gov.md")
+            , new Category("Bucuria", "MAIB BUCURIA")
     );
 
     List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
