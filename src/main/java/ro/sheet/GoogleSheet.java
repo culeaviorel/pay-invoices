@@ -5,9 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.Sheet;
-import com.google.api.services.sheets.v4.model.Spreadsheet;
-import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.api.services.sheets.v4.model.*;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.base.Strings;
@@ -17,7 +15,6 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -31,7 +28,7 @@ public class GoogleSheet {
     private static Sheets sheetsService;
     private static final String sheetId = "16zaLSn9PqIZ3zeR51ZJS97p9HmG8agnc2EwIAG3GaKY";
 
-    public static Sheets getSheetsService() throws GeneralSecurityException, IOException {
+    public static Sheets getSheetsService() throws IOException {
         GoogleCredentials credentials = GoogleCredentials.fromStream(Files.newInputStream(Paths.get("src/test/resources/credentials.json"))).createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
@@ -75,6 +72,37 @@ public class GoogleSheet {
             }
         }
         return null;
+    }
+
+    public static void addItemForUpdate(String value, int rowIndex, int columnIndex, List<Request> requests) {
+        Color color;
+        if ("Unavailable".equals(value)) {
+            color = new Color().setRed(0.8f).setGreen(0.0f).setBlue(0.0f).setAlpha(1.0f);
+        } else if ("Available".equals(value)) {
+            color = new Color().setRed(0.0f).setGreen(0.6f).setBlue(0.0f).setAlpha(1.0f);
+        } else {
+            color = new Color().setRed(0.0f).setGreen(0.0f).setBlue(0.0f).setAlpha(1.0f);
+        }
+        TextFormat textFormat = new TextFormat()
+                .setFontSize(10)
+                .setForegroundColor(color);
+        CellFormat cellFormat = new CellFormat().setTextFormat(textFormat);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(new ExtendedValue().setStringValue(value))
+                .setUserEnteredFormat(cellFormat);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+//                                        .setFields("userEnteredValue,userEnteredFormat.textFormat.fontSize"));
+                        .setFields("userEnteredValue,userEnteredFormat.textFormat"));
+        requests.add(request);
     }
 
     public static void main(String[] args) throws IOException {
