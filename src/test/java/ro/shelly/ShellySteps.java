@@ -41,9 +41,19 @@ public class ShellySteps extends TestBase {
             WebLocator priceEl = new WebLocator(main).setClasses("product-detail__price", "product-detail__price--gross");
             WebLocator spanPriceEl = new WebLocator(priceEl).setTag("span").setResultIdx(1);
             String price = spanPriceEl.getText().replaceAll("€", "");
-            String pretNou = (String) value.get(5);
+            String pretNou;
+            try {
+                pretNou = (String) value.get(5);
+            } catch (IndexOutOfBoundsException e) {
+                pretNou = "";
+            }
             if (Strings.isNullOrEmpty(pretNou) || !price.equals(pretNou)) {
-                String pretVechi = (String) value.get(4);
+                String pretVechi;
+                try {
+                    pretVechi = (String) value.get(4);
+                } catch (IndexOutOfBoundsException e) {
+                    pretVechi = "";
+                }
                 if (!price.equals(pretVechi)) {
                     int columnIndex = Strings.isNullOrEmpty(pretVechi) ? 4 : 5;
                     GoogleSheet.addItemForUpdate(price, i, columnIndex, requests);
