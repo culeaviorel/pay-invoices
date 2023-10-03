@@ -53,9 +53,9 @@ public class View {
 
     public boolean addInsert(String denum, String cat, String sub, String data, String format, String sum) {
         add.ready(Duration.ofSeconds(10));
-        add.click();
+        RetryUtils.retry(2, add::click);
         name.setValue(denum);
-        RetryUtils.retry(2, () -> category.select(cat, Duration.ofSeconds(1)));
+        RetryUtils.retry(6, () -> category.select(cat, Duration.ofSeconds(2)));
         Utils.sleep(800);
         RetryUtils.retry(6, () -> {
             subCategory.select(sub, Duration.ofSeconds(2));
