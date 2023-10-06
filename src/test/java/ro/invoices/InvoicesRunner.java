@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
                 "ro.eon",
                 "ro.nova",
                 "ro.shelly",
+                "ro.olx",
                 "ro.leiibvb"
         },
         features = {

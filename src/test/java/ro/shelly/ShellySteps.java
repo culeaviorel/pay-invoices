@@ -56,12 +56,12 @@ public class ShellySteps extends TestBase {
                 }
                 if (!price.equals(pretVechi)) {
                     int columnIndex = Strings.isNullOrEmpty(pretVechi) ? 4 : 5;
-                    GoogleSheet.addItemForUpdate(price, i, columnIndex, requests);
+                    GoogleSheet.addItemForUpdate(price, i, columnIndex, 0, requests);
                 }
             }
             WebLocator availabilityEl = new WebLocator(main).setClasses("product-detail__availability");
             String availability = availabilityEl.getText();
-            GoogleSheet.addItemForUpdate(availability, i, 2, requests);
+            GoogleSheet.addItemForUpdate(availability, i, 2,0, requests);
         }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(shellySpreadsheetId, batchUpdateRequest).execute();

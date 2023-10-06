@@ -38,9 +38,29 @@ public class GoogleSheet {
 
     @SneakyThrows
     public static List<Sheet> getSheets() {
+        return getSheets(sheetId);
+    }
+
+    @SneakyThrows
+    public static List<Sheet> getSheets(String spreadsheetId) {
         sheetsService = getSheetsService();
-        Spreadsheet execute = sheetsService.spreadsheets().get(sheetId).execute();
+        Spreadsheet execute = sheetsService.spreadsheets().get(spreadsheetId).execute();
         return execute.getSheets();
+    }
+
+    @SneakyThrows
+    public static SheetProperties getSheet(String spreadsheetId, String name) {
+        List<Sheet> sheets = getSheets(spreadsheetId);
+        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).collect(Collectors.toList());
+        SheetProperties properties = null;
+        for (Sheet sheet : activeSheets) {
+            properties = sheet.getProperties();
+            String title = properties.getTitle();
+            if (name.equals(title)) {
+                break;
+            }
+        }
+        return properties;
     }
 
     @SneakyThrows
@@ -74,7 +94,7 @@ public class GoogleSheet {
         return null;
     }
 
-    public static void addItemForUpdate(String value, int rowIndex, int columnIndex, List<Request> requests) {
+    public static void addItemForUpdate(String value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
         Color color;
         if ("Unavailable".equals(value)) {
             color = new Color().setRed(0.8f).setGreen(0.0f).setBlue(0.0f).setAlpha(1.0f);
@@ -95,7 +115,7 @@ public class GoogleSheet {
         Request request = new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
-                                .setSheetId(0)
+                                .setSheetId(sheetId)
                                 .setRowIndex(rowIndex)
                                 .setColumnIndex(columnIndex)
                         )
@@ -116,7 +136,7 @@ public class GoogleSheet {
             int index = values.get(0).indexOf(name);
             for (int i = 24; i < values.size(); i++) {
                 List<Object> list = values.get(i);
-                if(list.isEmpty()){
+                if (list.isEmpty()) {
                     Utils.sleep(1);
                 } else {
                     Utils.sleep(1);
