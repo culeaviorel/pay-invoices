@@ -2,6 +2,7 @@ package ro.olx;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
+import com.google.common.base.Strings;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.WebLocator;
@@ -117,7 +118,7 @@ public class OLXSteps extends TestBase {
         int j = 0;
         for (int i = 0; i < values.size(); i++) {
             List<Object> list = values.get(i);
-            if (list.size() < 2) {
+            if (Strings.isNullOrEmpty((String) list.get(1))) {
                 String link = (String) list.get(0);
                 WebDriverConfig.getDriver().get(link);
                 if (j == 0) {
@@ -128,12 +129,15 @@ public class OLXSteps extends TestBase {
                 GoogleSheet.addItemForUpdate(price, i + 1, 2, sheetId, requests);
                 WebLocator titleEl = new WebLocator().setAttribute("data-cy", "ad_title");
                 String title = RetryUtils.retry(3, titleEl::getText);
-                GoogleSheet.addItemForUpdate(title, i + 1, 1, sheetId, requests);
+                GoogleSheet.addItemForUpdate(title, link, i + 1, 1, sheetId, requests);
                 WebLocator localizareContainer = new WebLocator().setTag("p").setText("Localizare");
                 WebLocator localizareEl = new WebLocator(localizareContainer).setRoot("/following-sibling::");
                 String localizare = RetryUtils.retry(8, localizareEl::getText).replaceAll("\n", "");
                 GoogleSheet.addItemForUpdate(localizare, i + 1, 3, sheetId, requests);
-                GoogleSheet.addItemForUpdate("Nu am verificat", i + 1, 4, sheetId, requests);
+                String status = (String) list.get(4);
+                if (Strings.isNullOrEmpty(status)) {
+                    GoogleSheet.addItemForUpdate("Nu am verificat", i + 1, 4, sheetId, requests);
+                }
                 Utils.sleep(1);
                 if (j == 30) {
                     BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);

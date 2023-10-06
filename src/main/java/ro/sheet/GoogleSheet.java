@@ -9,7 +9,6 @@ import com.google.api.services.sheets.v4.model.*;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.base.Strings;
-import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -95,6 +94,10 @@ public class GoogleSheet {
     }
 
     public static void addItemForUpdate(String value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        addItemForUpdate(value, null, rowIndex, columnIndex, sheetId, requests);
+    }
+
+    public static void addItemForUpdate(String value, String link, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
         Color color;
         if ("Unavailable".equals(value)) {
             color = new Color().setRed(0.8f).setGreen(0.0f).setBlue(0.0f).setAlpha(1.0f);
@@ -107,8 +110,14 @@ public class GoogleSheet {
                 .setFontSize(10)
                 .setForegroundColor(color);
         CellFormat cellFormat = new CellFormat().setTextFormat(textFormat);
+        ExtendedValue userEnteredValue;
+        if (!Strings.isNullOrEmpty(link)) {
+            userEnteredValue = new ExtendedValue().setFormulaValue("=HYPERLINK(\"" + link + "\", \"" + value + "\")");
+        } else {
+            userEnteredValue = new ExtendedValue().setStringValue(value);
+        }
         CellData cellData = new CellData()
-                .setUserEnteredValue(new ExtendedValue().setStringValue(value))
+                .setUserEnteredValue(userEnteredValue)
                 .setUserEnteredFormat(cellFormat);
         List<CellData> cellValues = List.of(cellData);
         RowData rowData = new RowData().setValues(cellValues);
@@ -123,27 +132,5 @@ public class GoogleSheet {
 //                                        .setFields("userEnteredValue,userEnteredFormat.textFormat.fontSize"));
                         .setFields("userEnteredValue,userEnteredFormat.textFormat"));
         requests.add(request);
-    }
-
-    public static void main(String[] args) throws IOException {
-        String nameFromActualSheet = getNameFromActualSheet();
-        if (!Strings.isNullOrEmpty(nameFromActualSheet)) {
-            String range = nameFromActualSheet + "!B1:S";
-            Sheets.Spreadsheets.Values sheets = sheetsService.spreadsheets().values();
-            ValueRange response = sheets.get(sheetId, range).execute();
-            List<List<Object>> values = response.getValues();
-            String name = "Vio";
-            int index = values.get(0).indexOf(name);
-            for (int i = 24; i < values.size(); i++) {
-                List<Object> list = values.get(i);
-                if (list.isEmpty()) {
-                    Utils.sleep(1);
-                } else {
-                    Utils.sleep(1);
-                }
-
-            }
-            Utils.sleep(1);
-        }
     }
 }
