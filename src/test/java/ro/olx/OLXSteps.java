@@ -17,6 +17,7 @@ import ro.sheet.GoogleSheet;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class OLXSteps extends TestBase {
@@ -35,7 +36,7 @@ public class OLXSteps extends TestBase {
         WebLocatorUtils.scrollToWebLocator(paginationContainer);
         while (nextPage.ready(Duration.ofSeconds(1))) {
             nextPage.mouseOver();
-            RetryUtils.retry(2, () -> nextPage.click());
+            RetryUtils.retry(2, nextPage::click);
             Utils.sleep(1000);
             collectAllLinks(grid, links);
             WebLocatorUtils.scrollToWebLocator(paginationContainer);
@@ -46,15 +47,19 @@ public class OLXSteps extends TestBase {
         SheetProperties properties = GoogleSheet.getSheet(spreadsheetId, "BoilerOLX");
         Integer sheetId = properties.getSheetId();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(spreadsheetId, "BoilerOLX" + "!A2:H").execute();
-        List<List<Object>> values = valueRange.getValues();
+        List<List<Object>> values = valueRange.getValues() == null ? new ArrayList<>() : valueRange.getValues();
         List<Request> requests = new ArrayList<>();
         int startAt = values.size();
         if (links.size() > startAt) {
             for (int i = 0; i < links.size(); i++) {
                 String link = links.get(i);
-                for (List<Object> list : values) {
-                    if (!list.contains(link)) {
-                        GoogleSheet.addItemForUpdate(link, i + startAt + 1, 0, sheetId, requests);
+                if (values.isEmpty()) {
+                    GoogleSheet.addItemForUpdate(link, i + startAt + 1, 0, sheetId, requests);
+                } else {
+                    for (List<Object> list : values) {
+                        if (!list.contains(link)) {
+                            GoogleSheet.addItemForUpdate(link, i + startAt + 1, 0, sheetId, requests);
+                        }
                     }
                 }
             }
@@ -126,10 +131,11 @@ public class OLXSteps extends TestBase {
                 GoogleSheet.addItemForUpdate(title, i + 1, 1, sheetId, requests);
                 WebLocator localizareContainer = new WebLocator().setTag("p").setText("Localizare");
                 WebLocator localizareEl = new WebLocator(localizareContainer).setRoot("/following-sibling::");
-                String localizare = RetryUtils.retry(4, localizareEl::getText).replaceAll("\n", "");
+                String localizare = RetryUtils.retry(8, localizareEl::getText).replaceAll("\n", "");
                 GoogleSheet.addItemForUpdate(localizare, i + 1, 3, sheetId, requests);
+                GoogleSheet.addItemForUpdate("Nu am verificat", i + 1, 4, sheetId, requests);
                 Utils.sleep(1);
-                if (j == 40) {
+                if (j == 30) {
                     BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
                     BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
                     requests = new ArrayList<>();
@@ -151,11 +157,13 @@ public class OLXSteps extends TestBase {
         Integer sheetId = properties.getSheetId();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(spreadsheetId, "BoilerOLX" + "!A2:H").execute();
         List<List<Object>> values = valueRange.getValues();
+        List<List<String>> valuesList = values.stream().map(l -> l.stream().map(Object::toString).collect(Collectors.toList())).collect(Collectors.toList());
         List<Request> requests = new ArrayList<>();
+        List<String> deletedLinks = new ArrayList<>();
         int j = 0;
-        for (int i = 0; i < values.size(); i++) {
-            List<Object> list = values.get(i);
-            String title = (String) list.get(1);
+        for (int i = 0; i < valuesList.size(); i++) {
+            List<String> list = valuesList.get(i);
+            String title = list.get(1);
             if (delete(title)) {
                 log.info("Delete: {}", title);
                 DeleteDimensionRequest deleteRequest = new DeleteDimensionRequest()
@@ -173,6 +181,18 @@ public class OLXSteps extends TestBase {
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
+    }
+
+    private static boolean deleteDuplicate(List<String> list, List<List<String>> links, final List<String> deletedLinks) {
+        String link = list.get(0);
+        boolean match = links.stream().anyMatch(i -> i.stream().anyMatch(j -> j.equals(link)));
+        if (match && !deletedLinks.contains(link)) {
+            Utils.sleep(1);
+            deletedLinks.add(link);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static boolean delete(String title) {
