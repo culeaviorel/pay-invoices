@@ -161,7 +161,7 @@ public class MyMoneySteps extends TestBase {
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL"))
             , new Category("Rovinieta", "Roviniete")
             , new Category("Taxa De Pod", "Taxa De Pod")
-            , new Category("EPiesa", List.of("EURO PARTS DISTRIB", "TIENDA_RO"))
+            , new Category("EPiesa", List.of("EURO PARTS DISTRIB"))
             , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
             , new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL")), new Category("MC BUSINESS", "MC BUSINESS")
             , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
