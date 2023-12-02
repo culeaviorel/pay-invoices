@@ -61,7 +61,7 @@ public class View {
             subCategory.select(sub, Duration.ofSeconds(2));
             return subCategory.getValue().equals(sub);
         });
-        boolean select = dateField.select(data, format);
+        boolean select = RetryUtils.retry(2, () -> dateField.select(data, format));
         sumaField.setValue(sum);
         if (select) {
             return saveButton.click();

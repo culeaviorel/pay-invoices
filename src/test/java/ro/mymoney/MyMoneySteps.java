@@ -53,7 +53,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Octombrie.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Noiembrie1.csv");
         String date1 = items.get(0).getDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
@@ -155,8 +155,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("BricoStore", "BRICOSTORE"), new Category("C&A", "C & A")
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
             , new Category("KIK", "KIK 9119 CLUJ"), new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
-            , new Category("Reserved", "RESERVED")
-            , new Category("METASAN", "METASAN RUBY ROSE")
+            , new Category("Reserved", "RESERVED"), new Category("METASAN", "METASAN RUBY ROSE")
+            , new Category("BRUUJ", "BRUUJ SRL")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL"))
             , new Category("Rovinieta", "Roviniete")
@@ -188,7 +188,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("LITERA.RO", "*PlatiOnLITERA.RO"), new Category("thefastshop.eu", "*EPthefastshop.eu")
             , new Category("MAGAZIN WEST", "MAGAZIN WEST"), new Category("S F COMPANY", "S F COMPANY SRL")
             , new Category("DIRECT CLIENT SERVICES", "DIRECT CLIENT SERVICES"), new Category("MOLDOVAN EVENTS", "MOLDOVAN EVENTS")
-            , new Category("CASUTACUCUTII", "CASUTACUCUTII S R L")
+            , new Category("CASUTACUCUTII", "CASUTACUCUTII S R L"), new Category("Cinema City", "*cinemacity.ro")
+            , new Category("GIFTBOXART", "GIFTBOXART SRL")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -211,11 +212,12 @@ public class MyMoneySteps extends TestBase {
             , new Category("ELIXIPLANTA", "ELIXIPLANTA SRL"), new Category("Piata9", "HONEST FOOD SRL")
             , new Category("JUHANIO", "JUHANIO S.R.L."), new Category("SPARTAN", "SPARTAN ALEXANDRU VAID")
             , new Category("NOODLE PACK", "NOODLE PACK"), new Category("RECEPTIE PENSIUNE", "RECEPTIE PENSIUNE")
-            , new Category("LAPROLEMN SRL", "LAPROLEMN SRL")
+            , new Category("LAPROLEMN SRL", "LAPROLEMN SRL"), new Category("GIGI", "GIGI CLUJ")
             , new Category("Moara de Vant", List.of("BUCATARIA LUMII SRL", "GERROM THERMOHAUS SRL"))
             , new Category("VARZARIE", "VARZARIE ALIMENTATIE PUBLICA SR")
             , new Category("Inghetata", "CREMERIA EMILIA SRL"), new Category("A la Tarte", "DELITART SRL-D")
             , new Category("Gustino", "GUSTINO SERV SRL")
+            , new Category("AMZA", "AMZA PROD SRL")
     );
 
     List<Category> medicamente = List.of(
