@@ -8,15 +8,20 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.WebLocator;
+import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
+import org.fasttrackit.util.UserCredentials;
+import ro.homeAssistant.HomeAssistant;
 import ro.sheet.GoogleSheet;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class ShellySteps extends TestBase {
     private static final String shellySpreadsheetId = "1KLXoDL6RQtKiVM2_c9OPSmss7Lnp-InUHgc4hLsXC2A";
 
@@ -61,9 +66,46 @@ public class ShellySteps extends TestBase {
             }
             WebLocator availabilityEl = new WebLocator(main).setClasses("product-detail__availability");
             String availability = availabilityEl.getText();
-            GoogleSheet.addItemForUpdate(availability, i, 2,0, requests);
+            GoogleSheet.addItemForUpdate(availability, i, 2, 0, requests);
         }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(shellySpreadsheetId, batchUpdateRequest).execute();
+    }
+
+    private void logAsList(List<Item> items) {
+        StringBuilder stringBuilder = new StringBuilder("\nList.of(\n");
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            if (i == 0) {
+                stringBuilder.append("new Item(\"").append(item.getId()).append("\",\"").append(item.getName()).append("\")\n");
+            } else {
+                stringBuilder.append(", new Item(\"").append(item.getId()).append("\",\"").append(item.getName()).append("\")\n");
+            }
+        }
+        stringBuilder.append(");");
+        log.info(stringBuilder.toString());
+//        List.of(
+//                new Item("", "")
+//                , new Item("", "")
+//        );
+    }
+
+    @And("I open {string} shelly cloud and collect and change in {string} HA")
+    public void iOpenShellyCloudAndCollectAndChangeInHA(String shellyUrl, String haUrl) {
+//                WebDriverConfig.getDriver().get(shellyUrl);
+//        Shelly shelly = new Shelly();
+        UserCredentials credentials = new UserCredentials();
+//        shelly.login(credentials.getShellyEmail(), credentials.getShellyPassword());
+//        shelly.openTab("My home");
+//        shelly.openTab("all devices");
+//        List<Item> items = shelly.collectAllCardsName();
+
+//        logAsList(items);
+        WebDriverConfig.getDriver().get("http://" + haUrl + ":8123/lovelace/default_view");
+        HomeAssistant homeAssistant = new HomeAssistant();
+        homeAssistant.login(credentials.getHomeAssistantName(), credentials.getHomeAssistantPassword());
+//        List<Item> items = homeAssistant.collectAllNames();
+//        homeAssistant.editDevices(items);
+        Utils.sleep(1);
     }
 }
