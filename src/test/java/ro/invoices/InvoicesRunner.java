@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
                 "ro.nova",
                 "ro.shelly",
                 "ro.olx",
+                "ro.home.assistant",
                 "ro.leiibvb"
         },
         features = {

@@ -8,13 +8,11 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.WebLocator;
-import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
-import ro.homeAssistant.HomeAssistant;
 import ro.sheet.GoogleSheet;
 
 import java.time.Duration;
@@ -24,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class ShellySteps extends TestBase {
     private static final String shellySpreadsheetId = "1KLXoDL6RQtKiVM2_c9OPSmss7Lnp-InUHgc4hLsXC2A";
+    private final Shelly shelly = new Shelly();
 
     @SneakyThrows
     @And("I update shelly command")
@@ -84,28 +83,19 @@ public class ShellySteps extends TestBase {
         }
         stringBuilder.append(");");
         log.info(stringBuilder.toString());
-//        List.of(
-//                new Item("", "")
-//                , new Item("", "")
-//        );
     }
 
-    @And("I open {string} shelly cloud and collect and change in {string} HA")
-    public void iOpenShellyCloudAndCollectAndChangeInHA(String shellyUrl, String haUrl) {
-//                WebDriverConfig.getDriver().get(shellyUrl);
-//        Shelly shelly = new Shelly();
+    @And("I login in Shelly")
+    public void iLoginInShelly() {
         UserCredentials credentials = new UserCredentials();
-//        shelly.login(credentials.getShellyEmail(), credentials.getShellyPassword());
-//        shelly.openTab("My home");
-//        shelly.openTab("all devices");
-//        List<Item> items = shelly.collectAllCardsName();
+        shelly.login(credentials.getShellyEmail(), credentials.getShellyPassword());
+    }
 
-//        logAsList(items);
-        WebDriverConfig.getDriver().get("http://" + haUrl + ":8123/lovelace/default_view");
-        HomeAssistant homeAssistant = new HomeAssistant();
-        homeAssistant.login(credentials.getHomeAssistantName(), credentials.getHomeAssistantPassword());
-//        List<Item> items = homeAssistant.collectAllNames();
-//        homeAssistant.editDevices(items);
-        Utils.sleep(1);
+    @And("I collect all devices")
+    public void iCollectAllDevices() {
+        shelly.openTab("My home");
+        shelly.openTab("all devices");
+        List<Item> items = shelly.collectAllCardsName();
+        logAsList(items);
     }
 }
