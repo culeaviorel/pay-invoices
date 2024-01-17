@@ -39,7 +39,6 @@ public class HomeAssistantSteps extends TestBase {
     @And("I create automation in HA with options:")
     public void iCreateAutomationInHAWithOptions(List<Option> options) {
         homeAssistant.addOptions(options);
-
     }
 
     @And("I save automation with {string} name")
