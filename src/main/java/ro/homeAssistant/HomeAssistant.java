@@ -67,17 +67,7 @@ public class HomeAssistant {
     public void editDevices(List<Item> items) {
         openSettings();
         openSettingsItem();
-        String selector2 = getSelector("home-assistant", "home-assistant-main", "ha-config-integrations-dashboard", "hass-tabs-subpage");
-        WebElement main2 = (WebElement) RetryUtils.retry(Duration.ofSeconds(10), () -> WebLocatorUtils.doExecuteScript(selector2));
-        List<WebElement> elements2 = main2.getShadowRoot().findElements(By.cssSelector("ha-tab"));
-        for (WebElement item : elements2) {
-            String name = RetryUtils.retry(12, item::getText);
-            if (name.equals("Devices")) {
-                item.click();
-                Utils.sleep(500);
-                break;
-            }
-        }
+        openTab("Devices");
         String selector3 = getSelector("home-assistant", "home-assistant-main", "ha-config-devices-dashboard", "hass-tabs-subpage-data-table", "ha-data-table");
         WebElement main3 = (WebElement) RetryUtils.retry(Duration.ofSeconds(10), () -> WebLocatorUtils.doExecuteScript(selector3));
         WebElement el1 = main3.getShadowRoot().findElement(By.cssSelector("*"));
@@ -113,12 +103,16 @@ public class HomeAssistant {
         Utils.sleep(1);
     }
 
+    private void openTab(String tab) {
+        selectItem(tab, new Qs(mainQs).selector("ha-config-integrations-dashboard").shadow().selector("hass-tabs-subpage").shadow().selectors("ha-tab"));
+    }
+
     public void openSettingsItem() {
         doOpenSettingsItem("Devices & Services");
     }
 
     public void doOpenSettingsItem(String itemName) {
-        Qs qs = new Qs().parent(mainQs.get()).selector("ha-config-dashboard").shadow().selector("ha-config-navigation").shadow().selector("ha-navigation-list");
+        Qs qs = new Qs(mainQs).selector("ha-config-dashboard").shadow().selector("ha-config-navigation").shadow().selector("ha-navigation-list");
         WebElement main1 = (WebElement) RetryUtils.retry(Duration.ofSeconds(40), () -> WebLocatorUtils.doExecuteScript(qs.toSting()));
         if (main1 == null) {
             Utils.sleep(1);
@@ -135,7 +129,7 @@ public class HomeAssistant {
     }
 
     public void openSettings() {
-        Qs qs = new Qs().parent(mainQs.get()).selector("ha-sidebar").shadow().selector("paper-listbox");
+        Qs qs = new Qs(mainQs).selector("ha-sidebar").shadow().selector("paper-listbox");
         WebElement main = (WebElement) RetryUtils.retry(Duration.ofSeconds(10), () -> WebLocatorUtils.doExecuteScript(qs.toSting()));
         WebElement element = main.findElement(By.className("configuration-container"));
         if (RetryUtils.retry(12, element::getText).equals("Settings")) {
@@ -186,25 +180,29 @@ public class HomeAssistant {
     }
 
     public void addTriggers(List<Trigger> triggers) {
-        clickOn(new Qs().parent(mainQs.get()).selector("ha-automation-picker").shadow().selector("ha-fab"));
+        clickOn(new Qs(mainQs).selector("ha-automation-picker").shadow().selector("ha-fab"));
         selectItem("Create new automation", new Qs().selector("home-assistant").shadow().selector("ha-dialog-new-automation").shadow().selectors("ha-list-item"));
         for (int i = 0; i < triggers.size(); i++) {
             Trigger trigger = triggers.get(i);
-            clickOn(new Qs().parent(mainQs.get()).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-trigger").shadow().selector("ha-button"));
+            clickOn(new Qs(mainQs).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-trigger").shadow().selector("ha-button"));
             selectItem("Device", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("ha-list-item"));
-            Qs rowQs = new Qs().parent(mainQs.get()).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-trigger").shadow().selectors("ha-automation-trigger-row").nth(i);
-            Qs deviceQs = new Qs().parent(rowQs.get()).shadow().selector("ha-automation-trigger-device");
-            WebElement inputComboBox = clickOn(new Qs().parent(deviceQs.get()).shadow().selector("ha-device-picker").shadow().selector("ha-combo-box").shadow().selector("ha-textfield"));
-            inputComboBox.sendKeys(trigger.getDevice());
-            selectComboBoxItem(trigger.getDevice());
-            selectTriggerItem("Edit ID", new Qs().parent(rowQs.get()).shadow().selector("ha-button-menu"));
-            setValue("Trigger ID", trigger.getTriggerId(), new Qs().parent(rowQs.get()).shadow().selectors("ha-textfield"));
-            selectTriggerItem(trigger.getTrigger(), new Qs().parent(deviceQs.get()).shadow().selector("ha-device-trigger-picker").shadow().selector("ha-select"));
+            Qs rowQs = new Qs(mainQs).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-trigger").shadow().selectors("ha-automation-trigger-row").nth(i);
+            Qs deviceQs = new Qs(rowQs).shadow().selector("ha-automation-trigger-device");
+            selectInComboBox(trigger.getDevice(), new Qs(deviceQs).shadow().selector("ha-device-picker"));
+            selectTriggerItem("Edit ID", new Qs(rowQs).shadow().selector("ha-button-menu"));
+            setValue("Trigger ID", trigger.getTriggerId(), new Qs(rowQs).shadow().selectors("ha-textfield"));
+            selectTriggerItem(trigger.getTrigger(), new Qs(deviceQs).shadow().selector("ha-device-trigger-picker").shadow().selector("ha-select"));
 //            setValue("Above", "-100", deviceParent, "ha-form", "ha-form-float", "ha-textfield");
             Time duration = getDuration(trigger);
-            setValue(duration.label(), duration.value(), new Qs().parent(deviceQs.get()).shadow().selector("ha-form").shadow().selector("ha-form-positive_time_period_dict").shadow().selector("ha-duration-input").shadow().selector("ha-base-time-input").shadow().selectors("ha-textfield"));
+            setValue(duration.label(), duration.value(), new Qs(deviceQs).shadow().selector("ha-form").shadow().selector("ha-form-positive_time_period_dict").shadow().selector("ha-duration-input").shadow().selector("ha-base-time-input").shadow().selectors("ha-textfield"));
             Utils.sleep(100);
         }
+    }
+
+    private void selectInComboBox(String name, Qs qs) {
+        WebElement inputComboBox = clickOn(new Qs(qs).shadow().selector("ha-combo-box").shadow().selector("ha-textfield"));
+        inputComboBox.sendKeys(name);
+        selectComboBoxItem(name);
     }
 
     private Time getDuration(Trigger value) {
@@ -221,58 +219,84 @@ public class HomeAssistant {
     }
 
     public void addOptions(List<Option> options) {
-        Qs action = new Qs().parent(mainQs.get()).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-action");
-        clickOn(new Qs().parent(action.get()).shadow().selector("ha-button"));
+        Qs action = new Qs(mainQs).selector("ha-automation-editor").shadow().selector("manual-automation-editor").shadow().selector("ha-automation-action");
+        clickOn(new Qs(action).shadow().selector("ha-button"));
         setValue("Search action", "Choose", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("search-input").nth(0).shadow().selectors("ha-textfield"));
         selectItem("Choose", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("ha-list-item"));
         for (int i = 0; i < options.size(); i++) {
             Option option = options.get(i);
-            Qs rowQs = new Qs().parent(action.get()).shadow().selector("ha-automation-action-row");
+            Qs rowQs = new Qs(action).shadow().selector("ha-automation-action-row");
             if (i == 0) {
                 clickOn(rowQs);
             } else {
-                clickOn(new Qs().parent(rowQs.get()).shadow().selector("ha-automation-action-choose").shadow().selector("ha-button"));
+                clickOn(new Qs(rowQs).shadow().selector("ha-automation-action-choose").shadow().selector("ha-button"));
             }
-            Qs condition = new Qs().parent(rowQs.get()).shadow().selector("ha-automation-action-choose").shadow().selectors("ha-automation-condition").nth(i);
-            clickOn(new Qs().parent(condition.get()).shadow().selector("ha-button"));
+            Qs condition = new Qs(rowQs).shadow().selector("ha-automation-action-choose").shadow().selectors("ha-automation-condition").nth(i);
+            clickOn(new Qs(condition).shadow().selector("ha-button"));
             setValue("Search condition", "Triggered by", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("search-input").nth(0).shadow().selectors("ha-textfield"));
             selectItem("Triggered by", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("ha-list-item"));
-            Qs actionQs = new Qs().parent(rowQs.get()).shadow().selector("ha-automation-action-choose").shadow().selectors("ha-card").nth(i);
-            checkItem(option.getTriggerId(), new Qs().parent(actionQs.get()).selectors("ha-automation-condition").nth(0).shadow().selector("ha-automation-condition-row").shadow().selector("ha-automation-condition-editor").shadow().selector("ha-automation-condition-trigger").shadow().selector("ha-form").shadow().selector("ha-selector").shadow().selector("ha-selector-select").shadow().selectors("ha-formfield"));
+            Qs actionQs = new Qs(rowQs).shadow().selector("ha-automation-action-choose").shadow().selectors("ha-card").nth(i);
+            checkItem(option.getTriggerId(), new Qs(actionQs).selectors("ha-automation-condition").nth(0).shadow().selector("ha-automation-condition-row").shadow().selector("ha-automation-condition-editor").shadow().selector("ha-automation-condition-trigger").shadow().selector("ha-form").shadow().selector("ha-selector").shadow().selector("ha-selector-select").shadow().selectors("ha-formfield"));
 
-            clickOn(new Qs().parent(actionQs.get()).selectors("ha-automation-action").nth(0).shadow().selector("ha-button"));
+            clickOn(new Qs(actionQs).selectors("ha-automation-action").nth(0).shadow().selector("ha-button"));
             setValue("Search action", "Call service", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("search-input").nth(0).shadow().selectors("ha-textfield"));
             selectItem("Call service", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("ha-list-item"));
-            Qs serviceQs = new Qs().parent(actionQs.get()).selectors("ha-automation-action").nth(0).shadow().selector("ha-automation-action-row").shadow().selector("ha-automation-action-service").shadow().selector("ha-service-control");
-            WebElement inputComboBox = clickOn(new Qs().parent(serviceQs.get()).shadow().selector("ha-service-picker").shadow().selector("ha-combo-box").shadow().selector("ha-textfield"));
-            inputComboBox.sendKeys(option.getService());
-            selectComboBoxItem(option.getService());
-            Qs targetQs = new Qs().parent(serviceQs.get()).shadow().selector("ha-selector").shadow().selector("ha-selector-target").shadow().selector("ha-target-picker");
+            Qs serviceQs = new Qs(actionQs).selectors("ha-automation-action").nth(0).shadow().selector("ha-automation-action-row").shadow().selector("ha-automation-action-service").shadow().selector("ha-service-control");
+            selectInComboBox(option.getService(), new Qs(serviceQs).shadow().selector("ha-service-picker"));
+            Qs targetQs = new Qs(serviceQs).shadow().selector("ha-selector").shadow().selector("ha-selector-target").shadow().selector("ha-target-picker");
             WebElement targetParent = (WebElement) RetryUtils.retry(Duration.ofSeconds(5), () -> WebLocatorUtils.doExecuteScript(targetQs.toSting()));
             targetParent.click();
             selectComboBoxItem(option.getDevice());
             if (!Strings.isNullOrEmpty(option.getTemperature())) {
-                checkItem("Temperature", new Qs().parent(serviceQs.get()).shadow().selectors("ha-settings-row"));
-                setValue("", option.getTemperature(), new Qs().parent(serviceQs.get()).shadow().selectors("ha-settings-row").nth(1).selector("ha-selector").shadow().selector("ha-selector-number").shadow().selector("ha-textfield"));
+                checkItem("Temperature", new Qs(serviceQs).shadow().selectors("ha-settings-row"));
+                setValue("", option.getTemperature(), new Qs(serviceQs).shadow().selectors("ha-settings-row").nth(1).selector("ha-selector").shadow().selector("ha-selector-number").shadow().selector("ha-textfield"));
             }
             if (!Strings.isNullOrEmpty(option.getMode())) {
-                checkItem("HVAC mode", new Qs().parent(serviceQs.get()).shadow().selectors("ha-settings-row"));
-                selectTriggerItem(option.getMode(), new Qs().parent(serviceQs.get()).shadow().selectors("ha-settings-row").nth(2).selector("ha-selector").shadow().selector("ha-selector-select").shadow().selector("ha-select"));
+                checkItem("HVAC mode", new Qs(serviceQs).shadow().selectors("ha-settings-row"));
+                selectTriggerItem(option.getMode(), new Qs(serviceQs).shadow().selectors("ha-settings-row").nth(2).selector("ha-selector").shadow().selector("ha-selector-select").shadow().selector("ha-select"));
             }
 
-            clickOn(new Qs().parent(actionQs.get()).selectors("ha-automation-action").nth(0).shadow().selector("ha-button"));
+            clickOn(new Qs(actionQs).selectors("ha-automation-action").nth(0).shadow().selector("ha-button"));
             setValue("Search action", "Notifications: Send a notification via mobile_app_a063", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("search-input").nth(0).shadow().selectors("ha-textfield"));
             selectItem("Notifications: Send a notification via mobile_app_a063", new Qs().selector("home-assistant").shadow().selector("add-automation-element-dialog").shadow().selectors("ha-list-item"));
-            serviceQs = new Qs().parent(actionQs.get()).selectors("ha-automation-action").nth(0).shadow().selectors("ha-automation-action-row").nth(1).shadow().selector("ha-automation-action-service").shadow().selector("ha-service-control");
-            setValue("", option.getMessage(), new Qs().parent(serviceQs.get()).shadow().selector("ha-selector").shadow().selector("ha-selector-text").shadow().selectors("ha-textfield"));
+            serviceQs = new Qs(actionQs).selectors("ha-automation-action").nth(0).shadow().selectors("ha-automation-action-row").nth(1).shadow().selector("ha-automation-action-service").shadow().selector("ha-service-control");
+            setValue("", option.getMessage(), new Qs(serviceQs).shadow().selector("ha-selector").shadow().selector("ha-selector-text").shadow().selectors("ha-textfield"));
         }
     }
 
     public void saveAutomation(String name) {
-        clickOn(new Qs().parent(mainQs.get()).selector("ha-automation-editor").shadow().selector("ha-fab"));
+        clickOn(new Qs(mainQs).selector("ha-automation-editor").shadow().selector("ha-fab"));
         setValue("Name", name, new Qs().selector("home-assistant").shadow().selector("ha-dialog-automation-rename").shadow().selector("ha-textfield"));
         clickOn(new Qs().selector("home-assistant").shadow().selector("ha-dialog-automation-rename").shadow().selectors("mwc-button").nth(1));
         Utils.sleep(1);
+    }
+
+    public void createHelpers(List<Helper> helpers) {
+        openSettings();
+        openSettingsItem();
+        openTab("Helpers");
+        Qs dialogQs = new Qs().selector("home-assistant").shadow().selector("dialog-data-entry-flow");
+        Qs qs = new Qs(dialogQs).shadow().selector("step-flow-form");
+        Qs formQs = new Qs(qs).shadow().selector("ha-form").shadow().selectors("ha-selector");
+        TextFieldHA name = new TextFieldHA(formQs, "Name");
+        ComboBoxHA inputSensor = new ComboBoxHA(formQs, "Input sensor");
+        TextFieldHA hysteresis = new TextFieldHA(formQs, "Hysteresis");
+        TextFieldHA lowerLimit = new TextFieldHA(formQs, "Lower limit");
+        TextFieldHA upperLimit = new TextFieldHA(formQs, "Upper limit");
+        ButtonHA submit = new ButtonHA(qs, "SUBMIT");
+        ButtonHA finish = new ButtonHA(new Qs(dialogQs).shadow().selector("step-flow-create-entry"), "FINISH");
+        for (Helper helper : helpers) {
+            clickOn(new Qs(mainQs).selector("ha-config-helpers").shadow().selector("ha-fab"));
+            selectItem(helper.getType(), new Qs().selector("home-assistant").shadow().selector("dialog-helper-detail").shadow().selectors("ha-list-item"));
+            name.setValue(helper.getName());
+            inputSensor.typeAndSelect(helper.getSensor());
+            hysteresis.setValue(helper.getHysteresis());
+            lowerLimit.setValue(helper.getLower());
+            upperLimit.setValue(helper.getUpper());
+            submit.click();
+            finish.click();
+            Utils.sleep(100);
+        }
     }
 
     record Time(String label, String value) {
@@ -332,6 +356,7 @@ public class HomeAssistant {
         for (WebElement item : items) {
             String nameItem = item.getText();
             if (nameItem.contains(name)) {
+                WebLocatorUtils.doExecuteScript("arguments[0].scrollIntoView(true);", item);
                 item.click();
                 break;
             }

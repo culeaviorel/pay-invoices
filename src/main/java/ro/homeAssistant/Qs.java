@@ -3,8 +3,15 @@ package ro.homeAssistant;
 public class Qs {
     private StringBuilder qs = new StringBuilder("return document");
 
-    public Qs parent(StringBuilder parent) {
-        this.qs = new StringBuilder(parent);
+    public Qs() {
+    }
+
+    public Qs(Qs qs) {
+        this.qs = new StringBuilder(qs.get());
+    }
+
+    public Qs child(Qs child) {
+        this.qs = get().append(child.get().toString().replaceFirst("return document", ""));
         return this;
     }
 

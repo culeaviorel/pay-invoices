@@ -4,10 +4,7 @@ import io.cucumber.java.en.And;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
-import ro.homeAssistant.HomeAssistant;
-import ro.homeAssistant.Option;
-import ro.homeAssistant.Qs;
-import ro.homeAssistant.Trigger;
+import ro.homeAssistant.*;
 
 import java.util.List;
 
@@ -29,7 +26,8 @@ public class HomeAssistantSteps extends TestBase {
     }
 
     public static void main(String[] args) {
-        Qs qs = new Qs().selector("a").selector("b").shadow().selectors("c").nth(2).selectors("d");
+        Qs child = new Qs().selector("child");
+        Qs qs = new Qs().selector("a").selector("b").shadow().selectors("c").nth(2).selectors("d").child(child);
         qs.selector("e");
         String s = qs.toSting();
         log.info("s:{}", s);
@@ -44,5 +42,10 @@ public class HomeAssistantSteps extends TestBase {
     @And("I save automation with {string} name")
     public void iSaveAutomationWithName(String name) {
         homeAssistant.saveAutomation(name);
+    }
+
+    @And("I create helpers in HA:")
+    public void iCreateHelpersInHA(List<Helper> helpers) {
+        homeAssistant.createHelpers(helpers);
     }
 }
