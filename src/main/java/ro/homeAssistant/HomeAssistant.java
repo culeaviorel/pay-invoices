@@ -44,7 +44,7 @@ public class HomeAssistant {
             List<WebElement> rows = states.findElements(By.tagName("div"));
             for (WebElement row : rows) {
                 String text = RetryUtils.retry(2, row::getText).split("\n")[0];
-                names.add(new Item(text, cardName));
+                names.add(new Item(text, cardName, ""));
             }
         }
         return names;
@@ -78,7 +78,7 @@ public class HomeAssistant {
             item.setResultIdx(i);
             WebLocator cell = new WebLocator(item).setClasses("mdc-data-table__cell", "grows").setRoot("//");
             String name = RetryUtils.retry(12, cell::getText);
-            Optional<Item> first = items.stream().filter(it -> name.contains(it.getId())).findFirst();
+            Optional<Item> first = items.stream().filter(it -> name.contains(it.id())).findFirst();
             if (first.isPresent()) {
                 item.click();
                 editDevice(first.get());
@@ -93,7 +93,7 @@ public class HomeAssistant {
             item.setResultIdx(i);
             WebLocator cell = new WebLocator(item).setClasses("mdc-data-table__cell", "grows").setRoot("//");
             String name = RetryUtils.retry(12, cell::getText);
-            Optional<Item> first = items.stream().filter(it -> name.contains(it.getId())).findFirst();
+            Optional<Item> first = items.stream().filter(it -> name.contains(it.id())).findFirst();
             if (first.isPresent()) {
                 item.click();
                 editDevice(first.get());
@@ -152,7 +152,7 @@ public class HomeAssistant {
         WebElement textFieldParent = (WebElement) RetryUtils.retry(Duration.ofSeconds(10), () -> WebLocatorUtils.doExecuteScript(selector1));
         SearchContext shadowRoot = textFieldParent.getShadowRoot();
         WebElement textField = shadowRoot.findElement(By.cssSelector("input"));
-        textField.sendKeys(item.getName());
+        textField.sendKeys(item.name());
         String selector2 = getSelector("home-assistant", "dialog-device-registry-detail");
         WebElement buttonParent = (WebElement) WebLocatorUtils.doExecuteScript(selector2);
         List<WebElement> elements = buttonParent.getShadowRoot().findElements(By.cssSelector("mwc-button"));

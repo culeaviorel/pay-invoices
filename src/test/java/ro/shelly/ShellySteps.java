@@ -76,9 +76,9 @@ public class ShellySteps extends TestBase {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             if (i == 0) {
-                stringBuilder.append("new Item(\"").append(item.getId()).append("\",\"").append(item.getName()).append("\")\n");
+                stringBuilder.append("new Item(\"").append(item.id()).append("\",\"").append(item.name()).append("\",\"").append(item.ip()).append("\")\n");
             } else {
-                stringBuilder.append(", new Item(\"").append(item.getId()).append("\",\"").append(item.getName()).append("\")\n");
+                stringBuilder.append(", new Item(\"").append(item.id()).append("\",\"").append(item.name()).append("\",\"").append(item.ip()).append("\")\n");
             }
         }
         stringBuilder.append(");");

@@ -1,13 +1,10 @@
 package ro.shelly;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+public record Item(String id, String name, String ip) {
 
-@Getter
-@AllArgsConstructor
-@ToString
-public class Item {
-    private final String id;
-    private final String name;
+    public Item(String id, String name, String ip) {
+        this.id = id;
+        this.name = name;
+        this.ip = ip;
+    }
 }
