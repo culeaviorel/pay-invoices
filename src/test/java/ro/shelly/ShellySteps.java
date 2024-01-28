@@ -22,7 +22,9 @@ import java.util.List;
 @Slf4j
 public class ShellySteps extends TestBase {
     private static final String shellySpreadsheetId = "1KLXoDL6RQtKiVM2_c9OPSmss7Lnp-InUHgc4hLsXC2A";
+    private static final String shellyDevicesSpreadsheetId = "1APk6GyGLQH-FqaCIBfqIWc6KjXnM7zw-2ShRAL5c15I";
     private final Shelly shelly = new Shelly();
+    private static List<Item> devices;
 
     @SneakyThrows
     @And("I update shelly command")
@@ -97,5 +99,25 @@ public class ShellySteps extends TestBase {
         shelly.openTab("all devices");
         List<Item> items = shelly.collectAllCardsName();
         logAsList(items);
+    }
+
+    @SneakyThrows
+    @And("I get Shelly devices from google sheet")
+    public void iGetShellyDevicesFromGoogleSheet() {
+        Sheets sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(shellyDevicesSpreadsheetId, "Devices" + "!A2:C").execute();
+        List<List<Object>> values = valueRange.getValues();
+        devices = values.stream().map(i -> new Item(i.get(1).toString(), i.get(0).toString(), i.get(2).toString())).toList();
+    }
+
+    @And("I save new ip for {string} and {string}")
+    public void iSaveNewIpForAnd(String wifi, String password) {
+        shelly.openTab("My home");
+        shelly.openTab("all devices");
+        for (Item device : devices) {
+            if (!device.name().contains("EM")) {
+                shelly.saveIP(device, wifi, password);
+            }
+        }
     }
 }
