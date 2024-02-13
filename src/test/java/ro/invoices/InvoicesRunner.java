@@ -19,7 +19,8 @@ import org.junit.runner.RunWith;
                 "ro.shelly",
                 "ro.olx",
                 "ro.home.assistant",
-                "ro.leiibvb"
+                "ro.leiibvb",
+                "ro.autovit"
         },
         features = {
                 "src/test/resources/feature/invoice/all-invoices.feature"
