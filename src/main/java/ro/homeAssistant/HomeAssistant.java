@@ -68,34 +68,30 @@ public class HomeAssistant {
         openSettings();
         openSettingsItem();
         openTab("Devices");
-        String selector3 = getSelector("home-assistant", "home-assistant-main", "ha-config-devices-dashboard", "hass-tabs-subpage-data-table", "ha-data-table");
-        WebElement main3 = (WebElement) RetryUtils.retry(Duration.ofSeconds(10), () -> WebLocatorUtils.doExecuteScript(selector3));
-        WebElement el1 = main3.getShadowRoot().findElement(By.cssSelector("*"));
-        WebLocator el2 = new WebLocator(el1).setClasses("mdc-data-table__table");
-        WebLocator item = new WebLocator(el2).setClasses("mdc-data-table__row").setRoot("//");
-        int size = RetryUtils.retry(2, item::size);
+        Qs qs = new Qs(mainQs).selector("ha-config-devices-dashboard").shadow().selector("hass-tabs-subpage-data-table");
+        TableHA table = new TableHA(qs);
+        List<WebElement> rows = table.getRows();
+        int size = rows.size() - 1;
         for (int i = 1; i <= size; i++) {
-            item.setResultIdx(i);
-            WebLocator cell = new WebLocator(item).setClasses("mdc-data-table__cell", "grows").setRoot("//");
-            String name = RetryUtils.retry(12, cell::getText);
+            WebElement cell = table.getCell(i, ".grows");
+            String name = RetryUtils.retry(12, cell::getText).toLowerCase();
             Optional<Item> first = items.stream().filter(it -> name.contains(it.id())).findFirst();
             if (first.isPresent()) {
-                item.click();
+                cell.click();
                 editDevice(first.get());
                 goBack();
             }
         }
-        item.setResultIdx(size - 1);
-        WebLocatorUtils.scrollToWebLocator(item, -100);
-        item.setResultIdx(0);
-        size = RetryUtils.retry(2, item::size);
+        WebElement cellEl = table.getCell(size - 1, ".grows");
+        WebLocatorUtils.doExecuteScript("arguments[0].scrollIntoView(true);", cellEl);
+        rows = table.getRows();
+        size = rows.size();
         for (int i = 1; i <= size; i++) {
-            item.setResultIdx(i);
-            WebLocator cell = new WebLocator(item).setClasses("mdc-data-table__cell", "grows").setRoot("//");
-            String name = RetryUtils.retry(12, cell::getText);
+            WebElement cell = table.getCell(i, ".grows");
+            String name = RetryUtils.retry(12, cell::getText).toLowerCase();
             Optional<Item> first = items.stream().filter(it -> name.contains(it.id())).findFirst();
             if (first.isPresent()) {
-                item.click();
+                cell.click();
                 editDevice(first.get());
                 goBack();
             }
