@@ -48,7 +48,7 @@ public class View {
     }
 
     public boolean addInsert(String denum, String cat, String sub, String data, String sum) {
-        return addInsert(denum, cat, sub, data, "dd-MM-yyyy", sum);
+        return addInsert(denum, cat, sub, data, "dd-MM-yy", sum);
     }
 
     public boolean addInsert(String denum, String cat, String sub, String data, String format, String sum) {

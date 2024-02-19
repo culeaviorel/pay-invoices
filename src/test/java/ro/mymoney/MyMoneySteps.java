@@ -3,6 +3,7 @@ package ro.mymoney;
 import com.google.common.base.Strings;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.extjs6.button.Button;
+import com.sdl.selenium.extjs6.form.FieldContainer;
 import com.sdl.selenium.extjs6.grid.Cell;
 import com.sdl.selenium.extjs6.grid.Grid;
 import com.sdl.selenium.extjs6.grid.Row;
@@ -53,9 +54,9 @@ public class MyMoneySteps extends TestBase {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\Noiembrie1.csv");
+        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\2024\\Ianuarie.csv");
         String date1 = items.get(0).getDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         boolean inCorrectView = isInCorrectView(monthAndYear);
@@ -98,7 +99,8 @@ public class MyMoneySteps extends TestBase {
     }
 
     private boolean isInCorrectView(String monthAndYear) {
-        Button button = new Button(null, monthAndYear);
+        FieldContainer container = new FieldContainer();
+        Button button = new Button(container, monthAndYear);
         return RetryUtils.retry(6, () -> {
             boolean ready = button.ready();
             if (!ready) {
@@ -147,6 +149,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("EURO MARKET", "EURO MARKET"), new Category("INMEDIO", "INMEDIO")
             , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA")
             , new Category("PULSAR", "PULSAR TEO SRL")
+            , new Category("CBA", "CBA NORD VEST SRL")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -190,6 +193,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("DIRECT CLIENT SERVICES", "DIRECT CLIENT SERVICES"), new Category("MOLDOVAN EVENTS", "MOLDOVAN EVENTS")
             , new Category("CASUTACUCUTII", "CASUTACUCUTII S R L"), new Category("Cinema City", "*cinemacity.ro")
             , new Category("GIFTBOXART", "GIFTBOXART SRL")
+            , new Category("CROMA MOB", "CROMA MOB SRL")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -216,15 +220,16 @@ public class MyMoneySteps extends TestBase {
             , new Category("Moara de Vant", List.of("BUCATARIA LUMII SRL", "GERROM THERMOHAUS SRL"))
             , new Category("VARZARIE", "VARZARIE ALIMENTATIE PUBLICA SR")
             , new Category("Inghetata", "CREMERIA EMILIA SRL"), new Category("A la Tarte", "DELITART SRL-D")
-            , new Category("Gustino", "GUSTINO SERV SRL")
-            , new Category("AMZA", "AMZA PROD SRL")
+            , new Category("Gustino", "GUSTINO SERV SRL"), new Category("AMZA", "AMZA PROD SRL")
+            , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL")
+            , new Category("IRIS DELICE", "IRIS DELICE")
     );
 
     List<Category> medicamente = List.of(
             new Category("Remedium", "REMEDIUM"), new Category("Aldedra", "ALDEDRA")
             , new Category("ELMAFARM", "ELMAFARM SRL"), new Category("Farmactiv", "Farmactiv SRL")
-            , new Category("Ducfarm", "DUCFARM SRL")
-            , new Category("FARMACIA TOMA", "SC FARMACIA TOMA")
+            , new Category("Ducfarm", "DUCFARM SRL"), new Category("FARMACIA TOMA", "SC FARMACIA TOMA")
+            , new Category("VITAFARM", "VITAFARM PLUS SRL")
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
@@ -249,6 +254,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("ASOC CULTURALA", "ASOC CULTURALA VISUS"), new Category("CRINABEL", "CRINABEL")
             , new Category("VinietaMD", "www.mpay.gov.md")
             , new Category("Bucuria", "MAIB BUCURIA")
+            , new Category("Marisel", "HOSUS TURISM SRL")
     );
 
     List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
@@ -330,7 +336,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(0);
-            if (val.contains("2023")) {
+            if (val.contains("-24")) {
                 List<String> values = record.toList();
                 if ("Decontat".equals(values.get(2))) {
                     list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(4).replace(",", ".")));
