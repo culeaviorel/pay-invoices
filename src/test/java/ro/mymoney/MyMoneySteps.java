@@ -162,12 +162,10 @@ public class MyMoneySteps extends TestBase {
             , new Category("BRUUJ", "BRUUJ SRL")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL"))
-            , new Category("Rovinieta", "Roviniete")
-            , new Category("Taxa De Pod", "Taxa De Pod")
-            , new Category("EPiesa", List.of("EURO PARTS DISTRIB"))
-            , new Category("SAFETY BROKER", "SAFETY BROKER"), new Category("SOS ITP SERVICE", "SOS ITP SERVICE")
-            , new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL")), new Category("MC BUSINESS", "MC BUSINESS")
-            , new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
+            , new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
+            , new Category("EPiesa", List.of("EURO PARTS DISTRIB")), new Category("SAFETY BROKER", "SAFETY BROKER")
+            , new Category("SOS ITP SERVICE", "SOS ITP SERVICE"), new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL"))
+            , new Category("MC BUSINESS", "MC BUSINESS"), new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
             , new Category("Vigneta", "Pago*Vignette")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE")
@@ -198,7 +196,7 @@ public class MyMoneySteps extends TestBase {
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
             , new Category("Tartine", "TARTINE FACTORY SRL"), new Category("Stradale", "OCEANUL PACIFIC")
-            , new Category("CARESA CATERING", "CARESA CATERING")
+            , new Category("CARESA CATERING", "CARESA CATERING"), new Category("VARZARIE", "VARZARIE ALIMENTATIE PUBLICA SR")
             , new Category("Bianco Milano", "BIANCO MILANO"), new Category("ADIADO", "ADIADO"), new Category("MADO", "MADO CORPORATION")
             , new Category("PARFOIS", "PARFOIS"), new Category("Onesti - Marasesti", "Onesti - Marasesti"), new Category("KFC", "KFC")
             , new Category("Hanul cu Peste", "HANUL CU PESTE"), new Category("Marty", "MARTY"), new Category("PEP & PEPPER", "PEP & PEPPER")
@@ -218,7 +216,6 @@ public class MyMoneySteps extends TestBase {
             , new Category("NOODLE PACK", "NOODLE PACK"), new Category("RECEPTIE PENSIUNE", "RECEPTIE PENSIUNE")
             , new Category("LAPROLEMN SRL", "LAPROLEMN SRL"), new Category("GIGI", "GIGI CLUJ")
             , new Category("Moara de Vant", List.of("BUCATARIA LUMII SRL", "GERROM THERMOHAUS SRL"))
-            , new Category("VARZARIE", "VARZARIE ALIMENTATIE PUBLICA SR")
             , new Category("Inghetata", "CREMERIA EMILIA SRL"), new Category("A la Tarte", "DELITART SRL-D")
             , new Category("Gustino", "GUSTINO SERV SRL"), new Category("AMZA", "AMZA PROD SRL")
             , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL")
@@ -233,14 +230,12 @@ public class MyMoneySteps extends TestBase {
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
-            , new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL")
-            , new Category("German Market", "GERMAN MARKET SRL")
+            , new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL"), new Category("German Market", "GERMAN MARKET SRL")
             , new Category("MOBILPAYLADYBUG INVES", "MOBILPAYLADYBUG INVES")
             , new Category("Escapade World", "*EPshop.escapade.world")
     );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
-            , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT")
-            , new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
+            , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"), new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
             , new Category("Noriel", "NORIEL TOYS IULIUS MAL")
     );
 
@@ -252,8 +247,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("Lugano", "DIF SPA AGENZIA DIFFUS"), new Category("Hotel Maxim", "HOTEL MAXIM 2")
             , new Category("Austria", "Eni 4044"), new Category("MINI TRANSYLVANIA", "MINI TRANSYLVANIA")
             , new Category("ASOC CULTURALA", "ASOC CULTURALA VISUS"), new Category("CRINABEL", "CRINABEL")
-            , new Category("VinietaMD", "www.mpay.gov.md")
-            , new Category("Bucuria", "MAIB BUCURIA")
+            , new Category("VinietaMD", "www.mpay.gov.md"), new Category("Bucuria", "MAIB BUCURIA")
             , new Category("Marisel", "HOSUS TURISM SRL")
     );
 
