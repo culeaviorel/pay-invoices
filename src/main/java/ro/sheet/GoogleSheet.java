@@ -21,7 +21,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class GoogleSheet {
     private static Sheets sheetsService;
@@ -50,7 +49,7 @@ public class GoogleSheet {
     @SneakyThrows
     public static SheetProperties getSheet(String spreadsheetId, String name) {
         List<Sheet> sheets = getSheets(spreadsheetId);
-        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).collect(Collectors.toList());
+        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).toList();
         SheetProperties properties = null;
         for (Sheet sheet : activeSheets) {
             properties = sheet.getProperties();
@@ -65,7 +64,7 @@ public class GoogleSheet {
     @SneakyThrows
     public static String getNameFromActualSheet() {
         List<Sheet> sheets = getSheets();
-        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).collect(Collectors.toList());
+        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).toList();
         for (Sheet sheet : activeSheets) {
             String title = sheet.getProperties().getTitle();
             ValueRange response = sheetsService.spreadsheets().values().get(sheetId, title + "!B2:B6").execute();

@@ -1,0 +1,125 @@
+package ro.neo;
+
+import com.sdl.selenium.utils.config.WebDriverConfig;
+import com.sdl.selenium.web.SearchType;
+import com.sdl.selenium.web.WebLocator;
+import com.sdl.selenium.web.button.Button;
+import com.sdl.selenium.web.button.InputButton;
+import com.sdl.selenium.web.form.TextArea;
+import com.sdl.selenium.web.form.TextField;
+import com.sdl.selenium.web.link.WebLink;
+import com.sdl.selenium.web.utils.FileUtils;
+import com.sdl.selenium.web.utils.RetryUtils;
+import com.sdl.selenium.web.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Keys;
+
+import java.io.File;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
+public class Neo {
+    private final WebLink nextWebLink = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnNextFlowItem");
+
+    public void login(String id, String password) {
+        TextField idEl = new TextField().setId("MainContentFull_ebLoginControl_txtUserName_txField");
+        TextField passwordEl = new TextField().setId("MainContentFull_ebLoginControl_txtCredential_txField");
+        InputButton logIn = new InputButton().setText("MERG MAI DEPARTE");
+        idEl.ready(Duration.ofSeconds(40));
+        RetryUtils.retry(40, () -> idEl.setValue(id));
+        passwordEl.setValue(password);
+        logIn.click();
+        acceptAll();
+        Utils.sleep(1);
+        logIn.click();
+    }
+
+    private void acceptAll() {
+        Button acceptAllButton = new Button().setClasses("gdprIntro_acceptAll");
+        acceptAllButton.click();
+    }
+
+    public void selectProfile(String profile) {
+        WebLink profileEl = new WebLink(new WebLocator(), profile, SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM);
+        profileEl.ready(Duration.ofSeconds(10));
+        profileEl.click();
+        Utils.sleep(1000);
+    }
+
+    public void transferFromDepozitIntoContCurent(int sum) {
+        WebLocator balance = new WebLocator().setId("MainContent_TransactionMainContent_BTLandingProductsControl_rptProductCurrentAccount_balance_0");
+        String balanceValue = RetryUtils.retry(20, balance::getText);
+        balanceValue = balanceValue.replaceAll("RON", "").replaceAll(",", "").trim();
+        float tmpValue = Float.parseFloat(balanceValue);
+        int intValue = (int) tmpValue;
+        int finalSum = sum - intValue;
+        if (finalSum > 0) {
+            WebLink transferIntreConturi = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_2");
+            transferIntreConturi.click();
+            WebLocator contDeEconomiiEl = new WebLocator().setId("MainContent_TransactionMainContent_accControl_rptCurrentAccounts_divAccountType_1");
+            RetryUtils.retry(2, contDeEconomiiEl::click);
+            Button selectBtn = new Button().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwDataOwnAccounts_btnSuppliers");
+            RetryUtils.retry(2, selectBtn::click);
+            WebLocator contCurrentItemEl = new WebLocator().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwDataOwnAccounts_repeaterAccounts_liItens_0");
+            RetryUtils.retry(2, contCurrentItemEl::click);
+            Utils.sleep(1000);
+            TextField sumaEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainerAmount_txtSourceAmount_txField");
+            RetryUtils.retry(2, () -> {
+                sumaEl.setValue(finalSum + "");
+                sumaEl.sendKeys(Keys.TAB);
+                String value = sumaEl.getValue().replaceAll(",", "");
+                float v = Float.parseFloat(value);
+                int actualSum = (int) v;
+                return sum == actualSum;
+            });
+            TextField descriptionEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainerAmount_txtPaymentReference_txField");
+            descriptionEl.setValue("rAuto");
+            nextWebLink.click();
+            Utils.sleep(1000);
+            nextWebLink.click();
+        }
+    }
+
+    public boolean makePayment(Item item) {
+        WebLink plataNouaEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_0");
+        plataNouaEl.ready(Duration.ofSeconds(40));
+        RetryUtils.retry(2, plataNouaEl::click);
+        Button beneficiaries = new Button().setAttribute("data-target", "#modalBeneficiaries");
+        RetryUtils.retry(2, beneficiaries::click);
+        TextField searchBeneficiary = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_BTListBeneficiaries_txtSearch");
+        searchBeneficiary.setValue(item.getName());
+        Utils.sleep(1000);
+        WebLocator titleEl = new WebLocator().setClasses("title").setText(item.getName(), SearchType.TRIM);
+        WebLocator liEl = new WebLocator().setChildNodes(titleEl);
+        RetryUtils.retry(10, liEl::click);
+        Utils.sleep(1000);
+        TextField sumEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwTransferDetails_txtAmount_txField");
+        sumEl.ready(Duration.ofSeconds(40));
+        RetryUtils.retry(2, () -> sumEl.setValue(item.getSum()));
+        TextArea textAreaEl = new TextArea().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwTransferDetails_txtDescription_txField");
+        textAreaEl.setValue(item.getDescription());
+        nextWebLink.click();
+        WebLink addInPachetButton = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnCartFlowItem");
+        addInPachetButton.ready(Duration.ofSeconds(10));
+        nextWebLink.click();
+        Utils.sleep(1);
+        nextWebLink.click();
+        WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
+        String text = RetryUtils.retry(20, message::getText);
+        boolean success = text.equals("Plată inițiată cu succes. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiunea Tranzacții, disponibilă la nivelul contului.");
+        WebLink salvezPDF = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a1");
+        String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Plată.pdf";
+        File pdfFile = new File(filePath);
+        RetryUtils.retry(4, () -> {
+            salvezPDF.click();
+            return FileUtils.waitFileIfIsEmpty(pdfFile, 7000);
+        });
+        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("ro")));
+        pdfFile.renameTo(new File("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\Biserica\\2024\\Facturi\\Dovada\\DovadaPlata" + item.getName().replaceAll(" ", "") + month + ".pdf"));
+        WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
+        RetryUtils.retry(2, dashboard::click);
+        return success;
+    }
+}

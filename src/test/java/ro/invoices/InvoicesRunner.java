@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
                 "ro.payu.secure",
                 "ro.secure11gw",
                 "ro.mymoney",
+                "ro.neo",
                 "ro.rcsrds.digicare",
                 "ro.jira",
                 "ro.eon",

@@ -21,4 +21,11 @@ public class UserCredentials extends PropertiesReader {
     public String getHomeAssistantPassword() {
         return getProperty("home.assistant.password");
     }
+
+    public String getNeoID() {
+        return getProperty("neo.id");
+    }
+    public String getNeoPassword() {
+        return getProperty("neo.password");
+    }
 }
