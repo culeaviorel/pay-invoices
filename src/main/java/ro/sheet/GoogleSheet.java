@@ -3,6 +3,7 @@ package ro.sheet;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
@@ -31,6 +32,14 @@ public class GoogleSheet {
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
         return new Sheets.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), requestInitializer)
+                .setApplicationName("Google Sheets").build();
+    }
+
+    public static Drive getDriveService() throws IOException {
+        GoogleCredentials credentials = GoogleCredentials.fromStream(Files.newInputStream(Paths.get("src/test/resources/credentials.json"))).createScoped(SheetsScopes.all());
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+        return new Drive.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), requestInitializer)
                 .setApplicationName("Google Sheets").build();
     }
 
@@ -97,8 +106,14 @@ public class GoogleSheet {
     }
 
     public static void addItemForUpdate(String value, String link, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        addItemForUpdate(value, link, ",", rowIndex, columnIndex, sheetId, requests);
+    }
+
+    public static void addItemForUpdate(String value, String link, String separator, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
         Color color;
-        if ("Unavailable".equals(value)) {
+        if (!Strings.isNullOrEmpty(link)) {
+            color = new Color().setRed(0.0f).setGreen(0.0f).setBlue(1.0f).setAlpha(0.8f);
+        } else if ("Unavailable".equals(value)) {
             color = new Color().setRed(0.8f).setGreen(0.0f).setBlue(0.0f).setAlpha(1.0f);
         } else if ("Available".equals(value)) {
             color = new Color().setRed(0.0f).setGreen(0.6f).setBlue(0.0f).setAlpha(1.0f);
@@ -111,7 +126,7 @@ public class GoogleSheet {
         CellFormat cellFormat = new CellFormat().setTextFormat(textFormat);
         ExtendedValue userEnteredValue;
         if (!Strings.isNullOrEmpty(link)) {
-            userEnteredValue = new ExtendedValue().setFormulaValue("=HYPERLINK(\"" + link + "\", \"" + value + "\")");
+            userEnteredValue = new ExtendedValue().setFormulaValue("=HYPERLINK(\"" + link + "\"" + separator + " \"" + value + "\")");
         } else {
             userEnteredValue = new ExtendedValue().setStringValue(value);
         }
@@ -130,6 +145,51 @@ public class GoogleSheet {
                         .setRows(List.of(rowData))
 //                                        .setFields("userEnteredValue,userEnteredFormat.textFormat.fontSize"));
                         .setFields("userEnteredValue,userEnteredFormat.textFormat"));
+        requests.add(request);
+    }
+
+    public static void addItemForUpdate(double value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        NumberFormat numberFormat = new NumberFormat();
+        numberFormat.setType("CURRENCY");
+        CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
+        ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue(value);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(userEnteredValue)
+                .setUserEnteredFormat(cellFormat);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(sheetId)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+                        .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
+        requests.add(request);
+    }
+
+    public static void addItemForUpdateDate(String value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        NumberFormat numberFormat = new NumberFormat();
+        numberFormat.setPattern("dd/MM/yyyy");
+        numberFormat.setType("DATE");
+        CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
+        ExtendedValue userEnteredValue = new ExtendedValue().setStringValue(value);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(userEnteredValue)
+                .setUserEnteredFormat(cellFormat);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(sheetId)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+                        .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
         requests.add(request);
     }
 }

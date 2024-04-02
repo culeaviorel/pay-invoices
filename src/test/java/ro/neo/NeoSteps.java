@@ -1,5 +1,8 @@
 package ro.neo;
 
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import com.google.common.base.Strings;
@@ -12,7 +15,9 @@ import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
 import ro.sheet.GoogleSheet;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
@@ -20,6 +25,7 @@ import java.util.*;
 public class NeoSteps extends TestBase {
 
     private static final String spreadsheetId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
+    private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
     private final Neo neo = new Neo();
     private static List<Pay> pays;
     private static Sheets sheetsService;
@@ -45,7 +51,6 @@ public class NeoSteps extends TestBase {
                 i.get(5).toString(),
                 i.get(6).toString()
         )).toList();
-        Utils.sleep(1);
     }
 
     @And("in NeoBT I select profile {string}")
@@ -53,6 +58,7 @@ public class NeoSteps extends TestBase {
         neo.selectProfile(profile);
     }
 
+    @SneakyThrows
     @And("in NeoBT I make pays from google sheet")
     public void inNeoBTIMakePaysFromGoogleSheet() {
         Optional<Pay> totalOnMonth = pays.stream().filter(i -> i.name().equals("Total pe luna")).findFirst();
@@ -64,21 +70,25 @@ public class NeoSteps extends TestBase {
             neo.transferFromDepozitIntoContCurent(total);
             Payment payment = preparePayment(payCount);
             List<Item> items = payment.getItems();
+            items.forEach(i -> log.info("item: {}", i));
             for (Item item : items) {
-                boolean successPayment = neo.makePayment(item);
+                boolean successPayment = neo.makePayment(item, getFolder());
                 if (successPayment) {
                     changeMonthInSheet(item.getName());
+                    String fileName = Storage.get("fileName");
+                    double value = Double.parseDouble(item.getSum());
+                    String category = item.getName().replaceAll(" ", "") + "Out";
+                    uploadFileAndAddRowForItem(fileName, category, value);
                 }
             }
         }
     }
 
     @SneakyThrows
-    private static void changeMonthInSheet(String name) {
+    private void changeMonthInSheet(String name) {
         List<String> list = pays.get(0).toList();
-        int columnIndex = list.indexOf(name) + 4;
-        SheetProperties sheet = GoogleSheet.getSheet(spreadsheetId, "Donatii cu destinatie speciala");
-        Integer sheetId = sheet.getSheetId();
+        int columnIndex = list.indexOf(name) + 3;
+        Integer sheetId = getSheetId(spreadsheetId, "Donatii cu destinatie speciala");
         List<Request> requests = new ArrayList<>();
         String month = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         GoogleSheet.addItemForUpdate(month, 10, columnIndex, sheetId, requests);
@@ -196,5 +206,55 @@ public class NeoSteps extends TestBase {
             }
         }
         return new PayCount(somethingNewCount, teenChellangeCount, casaFilipCount, tanzaniaCount, caminulFelixCount);
+    }
+
+    @SneakyThrows
+    @And("in NeoBT I upload file in google sheet")
+    public void inNeoBTIUploadFileInGoogleSheet() {
+        uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", 200.00);
+    }
+
+    private void uploadFileAndAddRowForItem(String fileName, String category, double value) throws IOException {
+        java.io.File filePath = new java.io.File(getFolder() + fileName);
+        String name = filePath.getName();
+        String realFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";
+        Drive driveService = GoogleSheet.getDriveService();
+        File fileMetadata = new File();
+        fileMetadata.setName(name);
+        fileMetadata.setParents(Collections.singletonList(realFolderId));
+        FileContent mediaContent = new FileContent("application/pdf", filePath);
+        File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+        String link = driveService.files().get(file.getId()).setFields("webViewLink").execute().getWebViewLink();
+
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2024" + "!A1:G").execute();
+        List<List<Object>> values = valueRange.getValues();
+        int id = values.size();
+        List<Request> requests = new ArrayList<>();
+        Integer sheetId = getSheetId(facturiSheetId, "2024");
+        GoogleSheet.addItemForUpdate(category, id, 0, sheetId, requests);
+        GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
+        GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
+        GoogleSheet.addItemForUpdate("plata", id, 4, sheetId, requests);
+        GoogleSheet.addItemForUpdate("Dovada", link, ";", id, 5, sheetId, requests);
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
+        Utils.sleep(1);
+    }
+
+    private static String getFolder() {
+        return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\Facturi\\Dovada\\";
+    }
+
+    private Integer getSheetId(String spreadsheetId, String number) {
+        Integer sheetId = Storage.get(spreadsheetId + "sheetId");
+        if (sheetId == null) {
+            SheetProperties sheet = GoogleSheet.getSheet(spreadsheetId, number);
+            sheetId = sheet.getSheetId();
+            Storage.set(spreadsheetId + "sheetId", sheetId);
+        }
+        return sheetId;
     }
 }

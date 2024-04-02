@@ -32,7 +32,7 @@ public class Neo {
         passwordEl.setValue(password);
         logIn.click();
         acceptAll();
-        Utils.sleep(1);
+        Utils.sleep(1); //wait for SMS code
         logIn.click();
     }
 
@@ -82,7 +82,7 @@ public class Neo {
         }
     }
 
-    public boolean makePayment(Item item) {
+    public boolean makePayment(Item item, String folder) {
         WebLink plataNouaEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_0");
         plataNouaEl.ready(Duration.ofSeconds(40));
         RetryUtils.retry(2, plataNouaEl::click);
@@ -101,10 +101,10 @@ public class Neo {
         TextArea textAreaEl = new TextArea().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwTransferDetails_txtDescription_txField");
         textAreaEl.setValue(item.getDescription());
         nextWebLink.click();
-        WebLink addInPachetButton = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnCartFlowItem");
-        addInPachetButton.ready(Duration.ofSeconds(10));
+        WebLink addInPacketButton = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnCartFlowItem");
+        addInPacketButton.ready(Duration.ofSeconds(10));
         nextWebLink.click();
-        Utils.sleep(1);
+        Utils.sleep(1); //wait for SMS code
         nextWebLink.click();
         WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
         String text = RetryUtils.retry(20, message::getText);
@@ -117,7 +117,9 @@ public class Neo {
             return FileUtils.waitFileIfIsEmpty(pdfFile, 7000);
         });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("ro")));
-        pdfFile.renameTo(new File("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\Biserica\\2024\\Facturi\\Dovada\\DovadaPlata" + item.getName().replaceAll(" ", "") + month + ".pdf"));
+        String fileName = "DovadaPlata" + item.getName().replaceAll(" ", "") + month + ".pdf";
+        Storage.set("fileName", fileName);
+        pdfFile.renameTo(new File(folder + fileName));
         WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
         RetryUtils.retry(2, dashboard::click);
         return success;
