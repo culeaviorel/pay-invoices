@@ -22,6 +22,7 @@ import java.util.Locale;
 
 public class Neo {
     private final WebLink nextWebLink = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnNextFlowItem");
+    private final WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("MainContentFull_ebLoginControl_txtUserName_txField");
@@ -70,8 +71,7 @@ public class Neo {
                 sumaEl.setValue(finalSum + "");
                 sumaEl.sendKeys(Keys.TAB);
                 String value = sumaEl.getValue().replaceAll(",", "");
-                float v = Float.parseFloat(value);
-                int actualSum = (int) v;
+                int actualSum = (int) Float.parseFloat(value);
                 return sum == actualSum;
             });
             TextField descriptionEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainerAmount_txtPaymentReference_txField");
@@ -79,6 +79,7 @@ public class Neo {
             nextWebLink.click();
             Utils.sleep(1000);
             nextWebLink.click();
+            RetryUtils.retry(2, dashboard::click);
         }
     }
 
@@ -120,7 +121,6 @@ public class Neo {
         String fileName = "DovadaPlata" + item.getName().replaceAll(" ", "") + month + ".pdf";
         Storage.set("fileName", fileName);
         pdfFile.renameTo(new File(folder + fileName));
-        WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
         RetryUtils.retry(2, dashboard::click);
         return success;
     }

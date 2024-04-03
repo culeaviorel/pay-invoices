@@ -8,26 +8,27 @@ import com.google.api.services.sheets.v4.model.*;
 import com.google.common.base.Strings;
 import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
 import ro.sheet.GoogleSheet;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class NeoSteps extends TestBase {
 
-    private static final String spreadsheetId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
+    private static final String contracteDeSponsorizareId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
+    private static final String membriCuCopiiiLaGradinitaId = "1uxtyl_NBBHTWnmN7FVF_N5uE43iiqHHG1tDKC4-7ANg";
     private final Neo neo = new Neo();
     private static List<Pay> pays;
+    private static List<MemberPay> memberPays;
     private static Sheets sheetsService;
 
     @And("I login in Neo")
@@ -37,10 +38,10 @@ public class NeoSteps extends TestBase {
     }
 
     @SneakyThrows
-    @Given("I prepare data from google sheet")
-    public void iPrepareDataFromGoogleSheet() {
+    @And("I prepare data for Donatii cu destinatie speciala from google sheet")
+    public void iPrepareDataForDonatiiCuDestinatieSpecialaFromGoogleSheet() {
         sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(spreadsheetId, "Donatii cu destinatie speciala" + "!B1:H").execute();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(contracteDeSponsorizareId, "Donatii cu destinatie speciala" + "!B1:H").execute();
         List<List<Object>> values = valueRange.getValues();
         pays = values.stream().map(i -> new Pay(
                 i.get(0).toString(),
@@ -53,14 +54,29 @@ public class NeoSteps extends TestBase {
         )).toList();
     }
 
+    @SneakyThrows
+    @And("I prepare data for Sustinere educatie from google sheet")
+    public void iPrepareDataForSustinereEducatieFromGoogleSheet() {
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(membriCuCopiiiLaGradinitaId, "2024" + "!A2:D").execute();
+        List<List<Object>> values = valueRange.getValues();
+        memberPays = values.stream().map(i -> new MemberPay(
+                i.get(0).toString(),
+                i.get(1).toString(),
+                i.get(2).toString(),
+                i.size() == 4 ? i.get(3).toString() : ""
+        )).toList();
+        Utils.sleep(1);
+    }
+
     @And("in NeoBT I select profile {string}")
     public void inNeoBTISelectProfile(String profile) {
         neo.selectProfile(profile);
     }
 
     @SneakyThrows
-    @And("in NeoBT I make pays from google sheet")
-    public void inNeoBTIMakePaysFromGoogleSheet() {
+    @And("in NeoBT I send Donatii cu destinatie speciala from google sheet")
+    public void inNeoBTISendDonatiiCuDestinatieSpecialaFromGoogleSheet() {
         Optional<Pay> totalOnMonth = pays.stream().filter(i -> i.name().equals("Total pe luna")).findFirst();
         Pay totalOnMonthPay = totalOnMonth.orElse(null);
         PayCount countMonths = countMonths();
@@ -72,13 +88,14 @@ public class NeoSteps extends TestBase {
             List<Item> items = payment.getItems();
             items.forEach(i -> log.info("item: {}", i));
             for (Item item : items) {
+                item.setDescription("donatie de la ");
                 boolean successPayment = neo.makePayment(item, getFolder());
                 if (successPayment) {
                     changeMonthInSheet(item.getName());
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(item.getSum());
                     String category = item.getName().replaceAll(" ", "") + "Out";
-                    uploadFileAndAddRowForItem(fileName, category, value);
+                    uploadFileAndAddRowForItem(fileName, category, "plata", value);
                 }
             }
         }
@@ -88,12 +105,22 @@ public class NeoSteps extends TestBase {
     private void changeMonthInSheet(String name) {
         List<String> list = pays.get(0).toList();
         int columnIndex = list.indexOf(name) + 3;
-        Integer sheetId = getSheetId(spreadsheetId, "Donatii cu destinatie speciala");
+        Integer sheetId = getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala");
         List<Request> requests = new ArrayList<>();
         String month = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         GoogleSheet.addItemForUpdate(month, 10, columnIndex, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
+    }
+
+    @SneakyThrows
+    private void changeStatusInSheet(MemberPay memberPay) {
+        int row = memberPays.indexOf(memberPay) + 1;
+        Integer sheetId = getSheetId(membriCuCopiiiLaGradinitaId, "Membri cu copiii la gradinita");
+        List<Request> requests = new ArrayList<>();
+        GoogleSheet.addItemForUpdate("Trimis", row, 3, sheetId, requests);
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(membriCuCopiiiLaGradinitaId, batchUpdateRequest).execute();
     }
 
     private Payment preparePayment(PayCount payCount) {
@@ -211,10 +238,11 @@ public class NeoSteps extends TestBase {
     @SneakyThrows
     @And("in NeoBT I upload file in google sheet")
     public void inNeoBTIUploadFileInGoogleSheet() {
-        uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", 200.00);
+        uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
     }
 
-    private void uploadFileAndAddRowForItem(String fileName, String category, double value) throws IOException {
+    @SneakyThrows
+    private void uploadFileAndAddRowForItem(String fileName, String category, String description, double value) {
         java.io.File filePath = new java.io.File(getFolder() + fileName);
         String name = filePath.getName();
         String realFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";
@@ -237,7 +265,7 @@ public class NeoSteps extends TestBase {
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
         GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
-        GoogleSheet.addItemForUpdate("plata", id, 4, sheetId, requests);
+        GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
         GoogleSheet.addItemForUpdate("Dovada", link, ";", id, 5, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
@@ -256,5 +284,21 @@ public class NeoSteps extends TestBase {
             Storage.set(spreadsheetId + "sheetId", sheetId);
         }
         return sheetId;
+    }
+
+    @And("in NeoBT I send Sustinere educatie from google sheet")
+    public void inNeoBTISendSustinereEducatieFromGoogleSheet() {
+        List<MemberPay> memberPayList = memberPays.stream().filter(i -> Strings.isNullOrEmpty(i.status())).toList();
+        int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
+        neo.transferFromDepozitIntoContCurent(total);
+        for (MemberPay memberPay : memberPayList) {
+            boolean success = neo.makePayment(new Item(memberPay.name(), memberPay.sum(), memberPay.description()), getFolder());
+            if (success) {
+                changeStatusInSheet(memberPay);
+                String fileName = Storage.get("fileName");
+                double value = Double.parseDouble(memberPay.sum());
+                uploadFileAndAddRowForItem(fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
+            }
+        }
     }
 }

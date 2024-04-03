@@ -12,7 +12,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.base.Strings;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -27,7 +26,8 @@ public class GoogleSheet {
     private static Sheets sheetsService;
     private static final String sheetId = "16zaLSn9PqIZ3zeR51ZJS97p9HmG8agnc2EwIAG3GaKY";
 
-    public static Sheets getSheetsService() throws IOException {
+    @SneakyThrows
+    public static Sheets getSheetsService() {
         GoogleCredentials credentials = GoogleCredentials.fromStream(Files.newInputStream(Paths.get("src/test/resources/credentials.json"))).createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 
@@ -35,7 +35,8 @@ public class GoogleSheet {
                 .setApplicationName("Google Sheets").build();
     }
 
-    public static Drive getDriveService() throws IOException {
+    @SneakyThrows
+    public static Drive getDriveService() {
         GoogleCredentials credentials = GoogleCredentials.fromStream(Files.newInputStream(Paths.get("src/test/resources/credentials.json"))).createScoped(SheetsScopes.all());
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 

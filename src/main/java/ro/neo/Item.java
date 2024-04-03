@@ -10,5 +10,5 @@ import lombok.*;
 public class Item {
     private String name;
     private String sum;
-    private String description = "donatie de la ";
+    private String description;
 }
