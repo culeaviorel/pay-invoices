@@ -49,14 +49,14 @@ public class MyMoneySteps extends TestBase {
         view.addInsert(denum, categ, sub, System.getProperty("sum").replaceAll(",", "."));
     }
 
-    @And("I read csv file and insert date")
-    public void iReadCsvFileAndInsertDate() {
+    @And("I read {string} csv file and insert date")
+    public void iReadCsvFileAndInsertDate(String filePath) {
         List<Item> notFoundSubCategory = new ArrayList<>();
         List<Item> isAlreadyExist = new ArrayList<>();
         List<Item> addItems = new ArrayList<>();
-        List<Item> items = readCSV("C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\BT\\2024\\Ianuarie.csv");
+        List<Item> items = readCSV(filePath);
         String date1 = items.get(0).getDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
         String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
         boolean inCorrectView = isInCorrectView(monthAndYear);
@@ -129,6 +129,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("Asigurare Casa", "INTER BROKER DE ASIG"), new Category("CLEANEXPERT", "CLEANEXPERT SHOP SRL")
             , new Category("SALICE", "SALICE COMPROD"), new Category("Remarcabil", "EUROTRANS SRL")
             , new Category("gardencentrum", "*EPgardencentrum.net")
+            , new Category("Magazinul Gospodarului", "Magazinul Gospodarului")
+            , new Category("Aliexpress", "aliexpress")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
@@ -159,7 +161,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
             , new Category("KIK", "KIK 9119 CLUJ"), new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED"), new Category("METASAN", "METASAN RUBY ROSE")
-            , new Category("BRUUJ", "BRUUJ SRL")
+            , new Category("BRUUJ", "BRUUJ SRL"), new Category("Deichmann", "Deichmann Cluj 037")
+            , new Category("JURBAKA", "JURBAKA FASHION SRL")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL"))
             , new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
@@ -167,6 +170,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("SOS ITP SERVICE", "SOS ITP SERVICE"), new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL"))
             , new Category("MC BUSINESS", "MC BUSINESS"), new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
             , new Category("Vigneta", "Pago*Vignette")
+            , new Category("Parcare Iulius", "MOBILPAYYEPARKING")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
@@ -190,8 +194,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("MAGAZIN WEST", "MAGAZIN WEST"), new Category("S F COMPANY", "S F COMPANY SRL")
             , new Category("DIRECT CLIENT SERVICES", "DIRECT CLIENT SERVICES"), new Category("MOLDOVAN EVENTS", "MOLDOVAN EVENTS")
             , new Category("CASUTACUCUTII", "CASUTACUCUTII S R L"), new Category("Cinema City", "*cinemacity.ro")
-            , new Category("GIFTBOXART", "GIFTBOXART SRL")
-            , new Category("CROMA MOB", "CROMA MOB SRL")
+            , new Category("GIFTBOXART", "GIFTBOXART SRL"), new Category("CROMA MOB", "CROMA MOB SRL")
+            , new Category("PRINK", "PRINK ROMANIA SRL"), new Category("RABANC", "RABANC SRL")
+            , new Category("TEAM MOBILE", "TEAM MOBILE ONLINE SRL")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -218,8 +223,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("Moara de Vant", List.of("BUCATARIA LUMII SRL", "GERROM THERMOHAUS SRL"))
             , new Category("Inghetata", "CREMERIA EMILIA SRL"), new Category("A la Tarte", "DELITART SRL-D")
             , new Category("Gustino", "GUSTINO SERV SRL"), new Category("AMZA", "AMZA PROD SRL")
-            , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL")
-            , new Category("IRIS DELICE", "IRIS DELICE")
+            , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL"), new Category("IRIS DELICE", "IRIS DELICE")
+            , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL")
     );
 
     List<Category> medicamente = List.of(
@@ -255,7 +260,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("PARKING EXPERTS", "PARKING EXPERTS"), new Category("Parcare", "ATTRIUS DEVELOPMENTS PALAS IASI")
     );
 
-    List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG"), new Category("Stomatologie", "STOMPRAX MEDICA SRL")
+    List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG")
+            , new Category("Stomatologie", "STOMPRAX MEDICA SRL")
+            , new Category("Stomatologie", "REJOICE DENT S R L")
     );
 
     private Finder find(List<Category> categories, String name) {
@@ -301,7 +308,9 @@ public class MyMoneySteps extends TestBase {
             transaction = new Transaction(finder.getName(), "Energie Electrica");
         } else if ((finder = find(concediu, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Concedii");
-        } else if ((finder = find(List.of(new Category("TEENCHALLENGECLUJ.ORG", "TEENCHALLENGECLUJ.ORG")), name)).getPresent()) {
+        } else if ((finder = find(List.of(new Category("TEENCHALLENGECLUJ.ORG", "TEENCHALLENGECLUJ.ORG")
+                , new Category("SomethingNew", "ASOCIATIA ORGANIZATIA CR")
+        ), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Darnicie");
         } else if ((finder = find(transport, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Transport");
@@ -330,7 +339,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(0);
-            if (val.contains("-24")) {
+            if (val.contains("-2024")) {
                 List<String> values = record.toList();
                 if ("Decontat".equals(values.get(2))) {
                     list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(4).replace(",", ".")));
