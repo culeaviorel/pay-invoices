@@ -17,7 +17,9 @@ public class Driver {
         if (driver == null) {
             driver = WebDriverConfig.getWebDriver(Browser.CHROME);
             try {
-                FileUtils.forceMkdir(new File(WebDriverConfig.getDownloadPath()));
+                File directory = new File(WebDriverConfig.getDownloadPath());
+                FileUtils.forceMkdir(directory);
+                FileUtils.cleanDirectory(directory);
             } catch (IOException e) {
                 log.error("{}", e);
             }

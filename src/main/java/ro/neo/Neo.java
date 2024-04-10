@@ -11,18 +11,29 @@ import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.utils.FileUtils;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Keys;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
+@Slf4j
 public class Neo {
     private final WebLink nextWebLink = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnNextFlowItem");
     private final WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
+    private final Locale roLocale = new Locale("ro", "RO");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("MainContentFull_ebLoginControl_txtUserName_txField");
@@ -117,11 +128,78 @@ public class Neo {
             salvezPDF.click();
             return FileUtils.waitFileIfIsEmpty(pdfFile, 7000);
         });
-        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("ro")));
+        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
         String fileName = "DovadaPlata" + item.getName().replaceAll(" ", "") + month + ".pdf";
         Storage.set("fileName", fileName);
         pdfFile.renameTo(new File(folder + fileName));
         RetryUtils.retry(2, dashboard::click);
         return success;
+    }
+
+    @SneakyThrows
+    public void saveReportFrom(String identify, String month, String location) {
+        org.apache.commons.io.FileUtils.cleanDirectory(new File(WebDriverConfig.getDownloadPath()));
+        String actualMonth = "";
+        LocalDate now = null;
+        for (int i = 0; i < 12; i++) {
+            now = LocalDate.now().minusMonths(i);
+            actualMonth = now.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, roLocale);
+            if (actualMonth.equalsIgnoreCase(month)) {
+                break;
+            }
+        }
+        String firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        WebLocator panelConturi = new WebLocator().setClasses("productListLP");
+        WebLocator child = new WebLocator().setText(identify, SearchType.CONTAINS_ALL);
+        WebLocator row = new WebLocator(panelConturi).setClasses("row").setChildNodes(child);
+        WebLink istoricLink = new WebLink(row, "Istoric", SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM);
+        istoricLink.click();
+        WebLocator filterEl = new WebLocator().setId("lblClose");
+        filterEl.click();
+        WebLocator fromEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateFromPicker_txField");
+        fromEl.clear();
+        fromEl.sendKeys(firstDayOfMonth);
+        fromEl.sendKeys(Keys.ENTER);
+        WebLocator toEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateToPicker_txField");
+        toEl.clear();
+        toEl.sendKeys(lastDayOfMonth);
+        toEl.sendKeys(Keys.ENTER);
+        WebLocator aplayFilter = new WebLocator().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_btnSearch");
+        aplayFilter.click();
+        Utils.sleep(1000);
+        boolean contCurent = identify.contains("Cont curent");
+        if (contCurent) {
+            WebLink exportCSV = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a8");
+            exportCSV.click();
+        } else {
+            WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a6");
+            exportExcel.click();
+        }
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+            List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
+            if (!paths.isEmpty()) {
+                return paths;
+            } else {
+                return null;
+            }
+        });
+        Optional<Path> first = list.stream().filter(i -> !Files.isDirectory(i)).findFirst();
+        if (first.isPresent()) {
+            Path path = first.get();
+            File file = path.toFile();
+            String fileName = file.getName();
+            if (!contCurent) {
+                String extension = fileName.substring(fileName.lastIndexOf("."));
+                fileName = StringUtils.capitalize(actualMonth) + extension;
+            }
+            Storage.set("fileName", fileName);
+            file.renameTo(new File(location + fileName));
+        }
+    }
+
+    public void goToDashboard() {
+        WebLocator dashboard = new WebLocator().setTag("img").setClasses("logo", "img-responsive");
+        dashboard.click();
     }
 }

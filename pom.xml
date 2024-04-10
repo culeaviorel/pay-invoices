@@ -14,32 +14,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus-snapshots</id>-->
-<!--            <name>sonatype-nexus-snapshots</name>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
-
     <dependencies>
         <dependency>
             <groupId>com.sdl.lt</groupId>
             <artifactId>Testy</artifactId>
-            <version>20.08.325.0_35cb76b</version>
-            <scope>compile</scope>
-            <optional>true</optional>
+            <version>20.08.369.0_053bc35</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>7.15.0</version>
+            <version>7.16.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.15.0</version>
+            <version>7.16.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -51,7 +41,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.16.1</version>
+            <version>2.17.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

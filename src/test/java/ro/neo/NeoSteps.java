@@ -89,7 +89,7 @@ public class NeoSteps extends TestBase {
             items.forEach(i -> log.info("item: {}", i));
             for (Item item : items) {
                 item.setDescription("donatie de la ");
-                boolean successPayment = neo.makePayment(item, getFolder());
+                boolean successPayment = neo.makePayment(item, dovada());
                 if (successPayment) {
                     changeMonthInSheet(item.getName());
                     String fileName = Storage.get("fileName");
@@ -243,17 +243,7 @@ public class NeoSteps extends TestBase {
 
     @SneakyThrows
     private void uploadFileAndAddRowForItem(String fileName, String category, String description, double value) {
-        java.io.File filePath = new java.io.File(getFolder() + fileName);
-        String name = filePath.getName();
-        String realFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";
-        Drive driveService = GoogleSheet.getDriveService();
-        File fileMetadata = new File();
-        fileMetadata.setName(name);
-        fileMetadata.setParents(Collections.singletonList(realFolderId));
-        FileContent mediaContent = new FileContent("application/pdf", filePath);
-        File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
-        String link = driveService.files().get(file.getId()).setFields("webViewLink").execute().getWebViewLink();
-
+        String link = uploadFileInDrive(dovada(), fileName, "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2024" + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
@@ -272,8 +262,31 @@ public class NeoSteps extends TestBase {
         Utils.sleep(1);
     }
 
-    private static String getFolder() {
-        return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\Facturi\\Dovada\\";
+    @SneakyThrows
+    private String uploadFileInDrive(String location, String fileName, String driveFolderId) {
+        java.io.File filePath = new java.io.File(location + fileName);
+        String name = filePath.getName();
+        String extension = name.substring(name.lastIndexOf(".") + 1);
+        String type = switch (extension) {
+            case "pdf" -> "application/pdf";
+            case "csv" -> "text/csv";
+            default -> null;
+        };
+        Drive driveService = GoogleSheet.getDriveService();
+        File fileMetadata = new File();
+        fileMetadata.setName(name);
+        fileMetadata.setParents(Collections.singletonList(driveFolderId));
+        FileContent mediaContent = new FileContent(type, filePath);
+        File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+        return driveService.files().get(file.getId()).setFields("webViewLink").execute().getWebViewLink();
+    }
+
+    private static String dovada() {
+        return location() + "Facturi\\Dovada\\";
+    }
+
+    private static String location() {
+        return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
     }
 
     private Integer getSheetId(String spreadsheetId, String number) {
@@ -292,7 +305,7 @@ public class NeoSteps extends TestBase {
         int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
         neo.transferFromDepozitIntoContCurent(total);
         for (MemberPay memberPay : memberPayList) {
-            boolean success = neo.makePayment(new Item(memberPay.name(), memberPay.sum(), memberPay.description()), getFolder());
+            boolean success = neo.makePayment(new Item(memberPay.name(), memberPay.sum(), memberPay.description()), dovada());
             if (success) {
                 changeStatusInSheet(memberPay);
                 String fileName = Storage.get("fileName");
@@ -300,5 +313,18 @@ public class NeoSteps extends TestBase {
                 uploadFileAndAddRowForItem(fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
             }
         }
+    }
+
+    @And("in NeoBT I save report from {string} month")
+    public void inNeoBTISaveReportFromMonth(String month) {
+        String location = location() + "CSV\\";
+        neo.saveReportFrom("|Cont curent|RON", month, location);
+        String fileName = Storage.get("fileName");
+        uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
+        neo.goToDashboard();
+        neo.saveReportFrom("|Cont de economii|RON", month, location);
+        fileName = Storage.get("fileName").toString().replaceAll("xls", "csv");
+        Utils.sleep(1); // Convert manually xls file to csv
+        uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
     }
 }
