@@ -111,6 +111,7 @@ public class GoogleSheet {
     }
 
     public static void addItemForUpdate(String value, String link, String separator, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+
         Color color;
         if (!Strings.isNullOrEmpty(link)) {
             color = new Color().setRed(0.0f).setGreen(0.0f).setBlue(1.0f).setAlpha(0.8f);

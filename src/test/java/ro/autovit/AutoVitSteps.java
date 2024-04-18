@@ -116,31 +116,41 @@ public class AutoVitSteps extends TestBase {
                 if (j == 0) {
                     acceptAll();
                 }
+                WebLocator titleEl = new WebLocator().setClasses("offer-title");
+                String title = RetryUtils.retry(3, titleEl::getText);
+                if (Strings.isNullOrEmpty(title)) {
+                    log.info("link-ul nu exista? {}", link);
+                    continue;
+                }
+                int rowIndex = i + 1;
+                GoogleSheet.addItemForUpdate(title, link, rowIndex, 1, sheetId, requests);
+                WebLocator priceEl = new WebLocator().setClasses("offer-price__number");
+                String price = "";
                 try {
-                    WebLocator titleEl = new WebLocator().setClasses("offer-title");
-                    String title = RetryUtils.retry(3, titleEl::getText);
-                    GoogleSheet.addItemForUpdate(title, link, i + 1, 1, sheetId, requests);
-                    WebLocator priceEl = new WebLocator().setClasses("offer-price__number");
-                    String price = RetryUtils.retry(2, priceEl::getText).split("\n")[0];
-                    GoogleSheet.addItemForUpdate(price, i + 1, 2, sheetId, requests);
-
-                    String an = getValueFormItem("Anul fabricației");
-                    GoogleSheet.addItemForUpdate(an, i + 1, 3, sheetId, requests);
-
+                    price = RetryUtils.retry(2, priceEl::getText).split("\n")[0];
+                } catch (NullPointerException e) {
+                    log.info("price not found? {}", link);
+                }
+                GoogleSheet.addItemForUpdate(price, rowIndex, 2, sheetId, requests);
+                String an = getValueFormItem("Anul producției");
+                GoogleSheet.addItemForUpdate(an, rowIndex, 3, sheetId, requests);
+                try {
                     String km = getValueFormItem("Km");
-                    GoogleSheet.addItemForUpdate(km, i + 1, 4, sheetId, requests);
-
+                    GoogleSheet.addItemForUpdate(km, rowIndex, 4, sheetId, requests);
+                } catch (NullPointerException e) {
+                    log.info("km not found? {}", link);
+                }
+                try {
                     WebLocator localizareEl = new WebLocator().setAttribute("href", "#map");
                     String localizare = RetryUtils.retry(8, localizareEl::getText).replaceAll("\n", "");
-                    GoogleSheet.addItemForUpdate(localizare, i + 1, 5, sheetId, requests);
+                    GoogleSheet.addItemForUpdate(localizare, rowIndex, 5, sheetId, requests);
                     String status = list.size() < 4 ? null : (String) list.get(4);
                     if (Strings.isNullOrEmpty(status)) {
-                        GoogleSheet.addItemForUpdate("Nu am verificat", i + 1, 6, sheetId, requests);
+                        GoogleSheet.addItemForUpdate("Nu am verificat", rowIndex, 6, sheetId, requests);
                     }
                 } catch (NullPointerException e) {
-                    log.info("link-ul nu exista? {}", link);
+                    log.info("localization nu exista? {}", link);
                 }
-                Utils.sleep(1);
                 if (j == 30) {
                     BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
                     BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
@@ -150,7 +160,6 @@ public class AutoVitSteps extends TestBase {
                 j++;
             }
         }
-        Utils.sleep(1);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
     }
