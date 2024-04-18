@@ -21,7 +21,7 @@ public class Driver {
                 FileUtils.forceMkdir(directory);
                 FileUtils.cleanDirectory(directory);
             } catch (IOException e) {
-                log.error("{}", e);
+                log.error("{}", e.toString());
             }
         }
     }

@@ -158,7 +158,6 @@ public class AutoVitSteps extends TestBase {
     private static String getValueFormItem(String label) {
         WebLocator pEl = new WebLocator().setTag("p").setText(label);
         WebLocator detailsItemEl = new WebLocator().setAttribute("data-testid", "advert-details-item").setChildNodes(pEl);
-        String an = detailsItemEl.getText().split("\n")[1];
-        return an;
+        return detailsItemEl.getText().split("\n")[1];
     }
 }
