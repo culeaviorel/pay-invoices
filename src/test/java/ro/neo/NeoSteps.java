@@ -111,6 +111,7 @@ public class NeoSteps extends TestBase {
         GoogleSheet.addItemForUpdate(month, 10, columnIndex, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
+        log.info("add month: {} for category: {}", month, name);
     }
 
     @SneakyThrows
@@ -324,7 +325,7 @@ public class NeoSteps extends TestBase {
         neo.goToDashboard();
         neo.saveReportFrom("|Cont de economii|RON", month, location);
         fileName = Storage.get("fileName").toString().replaceAll("xls", "csv");
-        Utils.sleep(1); // Convert manually xls file to csv
+        Utils.sleep(1); // Convert manually xls file to csv in CSV folder
         uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
     }
 }
