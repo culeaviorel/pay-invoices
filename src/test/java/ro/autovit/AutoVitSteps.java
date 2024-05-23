@@ -36,11 +36,17 @@ public class AutoVitSteps extends TestBase {
         WebLocatorUtils.scrollToWebLocator(paginationContainer, -300);
         while (nextPage.ready(Duration.ofSeconds(1))) {
             nextPage.mouseOver();
-            RetryUtils.retry(2, nextPage::click);
+            RetryUtils.retry(8, nextPage::click);
             Utils.sleep(2000);
             collectAllLinks(grid, links);
             WebLocatorUtils.scrollToWebLocator(paginationContainer, -300);
         }
+        links = links.stream().filter(link -> !(Strings.isNullOrEmpty(link)
+                || link.contains("smart")
+                || link.contains("mini")
+                || link.contains("e-up")
+                || link.contains("yoyo")
+        )).toList();
         Sheets sheetsService = GoogleSheet.getSheetsService();
         SheetProperties properties = GoogleSheet.getSheet(spreadsheetId, "MasinaAutoVit");
         Integer sheetId = properties.getSheetId();
