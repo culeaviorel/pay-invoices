@@ -46,6 +46,8 @@ public class AutoVitSteps extends TestBase {
                 || link.contains("mini")
                 || link.contains("e-up")
                 || link.contains("yoyo")
+                || link.contains("fiat-500")
+                || link.contains("aixam")
         )).toList();
         Sheets sheetsService = GoogleSheet.getSheetsService();
         SheetProperties properties = GoogleSheet.getSheet(spreadsheetId, "MasinaAutoVit");
