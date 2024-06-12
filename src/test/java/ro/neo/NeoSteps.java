@@ -104,7 +104,7 @@ public class NeoSteps extends TestBase {
     @SneakyThrows
     private void changeMonthInSheet(String name) {
         List<String> list = pays.get(0).toList();
-        int columnIndex = list.indexOf(name) + 3;
+        int columnIndex = list.indexOf(name) + 4;
         Integer sheetId = getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala");
         List<Request> requests = new ArrayList<>();
         String month = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);

@@ -97,11 +97,11 @@ public class Neo {
     public boolean makePayment(Item item, String folder) {
         WebLink plataNouaEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_0");
         plataNouaEl.ready(Duration.ofSeconds(40));
-        RetryUtils.retry(2, plataNouaEl::click);
+        RetryUtils.retry(3, plataNouaEl::click);
         Button beneficiaries = new Button().setAttribute("data-target", "#modalBeneficiaries");
         RetryUtils.retry(2, beneficiaries::click);
         TextField searchBeneficiary = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_BTListBeneficiaries_txtSearch");
-        searchBeneficiary.setValue(item.getName());
+        RetryUtils.retry(2, ()-> searchBeneficiary.setValue(item.getName()));
         Utils.sleep(1000);
         WebLocator titleEl = new WebLocator().setClasses("title").setText(item.getName(), SearchType.TRIM);
         WebLocator liEl = new WebLocator().setChildNodes(titleEl);
