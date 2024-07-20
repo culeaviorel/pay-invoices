@@ -41,7 +41,7 @@ public class NeoSteps extends TestBase {
     @And("I prepare data for Donatii cu destinatie speciala from google sheet")
     public void iPrepareDataForDonatiiCuDestinatieSpecialaFromGoogleSheet() {
         sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(contracteDeSponsorizareId, "Donatii cu destinatie speciala" + "!B1:H").execute();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(contracteDeSponsorizareId, "Donatii cu destinatie speciala" + "!B1:J").execute();
         List<List<Object>> values = valueRange.getValues();
         pays = values.stream().map(i -> new Pay(
                 i.get(0).toString(),
@@ -50,8 +50,11 @@ public class NeoSteps extends TestBase {
                 i.get(3).toString(),
                 i.get(4).toString(),
                 i.get(5).toString(),
-                i.get(6).toString()
+                i.get(6).toString(),
+                i.get(7).toString(),
+                i.get(8).toString()
         )).toList();
+        Utils.sleep(1);
     }
 
     @SneakyThrows
@@ -88,7 +91,7 @@ public class NeoSteps extends TestBase {
             List<Item> items = payment.getItems();
             items.forEach(i -> log.info("item: {}", i));
             for (Item item : items) {
-                item.setDescription("donatie de la ");
+                item.setDescription("donatie de la " + item.getDescription());
                 boolean successPayment = neo.makePayment(item, dovada());
                 if (successPayment) {
                     changeMonthInSheet(item.getName());
@@ -104,11 +107,11 @@ public class NeoSteps extends TestBase {
     @SneakyThrows
     private void changeMonthInSheet(String name) {
         List<String> list = pays.get(0).toList();
-        int columnIndex = list.indexOf(name) + 4;
+        int columnIndex = list.indexOf(name) + 3;
         Integer sheetId = getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala");
         List<Request> requests = new ArrayList<>();
         String month = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-        GoogleSheet.addItemForUpdate(month, 10, columnIndex, sheetId, requests);
+        GoogleSheet.addItemForUpdate(month, 11, columnIndex, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
         log.info("add month: {} for category: {}", month, name);
@@ -125,12 +128,14 @@ public class NeoSteps extends TestBase {
     }
 
     private Payment preparePayment(PayCount payCount) {
-        List<String> people = pays.stream().map(Pay::name).filter(Objects::nonNull).skip(1).limit(6).toList();
+        List<String> people = pays.stream().map(Pay::name).filter(Objects::nonNull).skip(1).limit(7).toList();
         Item somethingNewItem = new Item();
         Item teenChellangeItem = new Item();
         Item casaFilipItem = new Item();
         Item tanzaniaItem = new Item();
         Item caminulFelixItem = new Item();
+        Item alegeViataItem = new Item();
+        Item apmeItem = new Item();
         for (String person : people) {
             Optional<Pay> pay = pays.stream().filter(i -> i.name().equals(person)).findFirst();
             if (pay.isPresent()) {
@@ -138,32 +143,44 @@ public class NeoSteps extends TestBase {
                 if (!payPerson.somethingNew().equals("0") && payCount.somethingNew() > 0) {
                     String separator = Strings.isNullOrEmpty(somethingNewItem.getName()) ? "" : ", ";
                     somethingNewItem.setName("Something New");
-                    String description = somethingNewItem.getDescription() + separator + payPerson.description();
+                    String description = (Strings.isNullOrEmpty(somethingNewItem.getDescription()) ? "" : somethingNewItem.getDescription()) + separator + payPerson.description();
                     somethingNewItem.setDescription(description);
                 }
-                if (!payPerson.teenChallenge().equals("0") && payCount.teenChellange() > 0) {
+                if (!payPerson.teenChallenge().equals("0") && payCount.teenChallenge() > 0) {
                     String separator = Strings.isNullOrEmpty(teenChellangeItem.getName()) ? "" : ", ";
                     teenChellangeItem.setName("Teen Challenge");
-                    String description = teenChellangeItem.getDescription() + separator + payPerson.description();
+                    String description = (Strings.isNullOrEmpty(teenChellangeItem.getDescription()) ? "" : teenChellangeItem.getDescription()) + separator + payPerson.description();
                     teenChellangeItem.setDescription(description);
                 }
                 if (!payPerson.casaFilip().equals("0") && payCount.casaFilip() > 0) {
                     String separator = Strings.isNullOrEmpty(casaFilipItem.getName()) ? "" : ", ";
                     casaFilipItem.setName("Casa Filip");
-                    String description = casaFilipItem.getDescription() + separator + payPerson.description();
+                    String description = (Strings.isNullOrEmpty(casaFilipItem.getDescription()) ? "" : casaFilipItem.getDescription()) + separator + payPerson.description();
                     casaFilipItem.setDescription(description);
                 }
                 if (!payPerson.tanzania().equals("0") && payCount.tanzania() > 0) {
                     String separator = Strings.isNullOrEmpty(tanzaniaItem.getName()) ? "" : ", ";
                     tanzaniaItem.setName("Tanzania");
-                    String description = tanzaniaItem.getDescription() + separator + payPerson.description();
+                    String description = (Strings.isNullOrEmpty(tanzaniaItem.getDescription()) ? "" : tanzaniaItem.getDescription()) + separator + payPerson.description();
                     tanzaniaItem.setDescription(description);
                 }
                 if (!payPerson.caminulFelix().equals("0") && payCount.caminulFelix() > 0) {
                     String separator = Strings.isNullOrEmpty(caminulFelixItem.getName()) ? "" : ", ";
                     caminulFelixItem.setName("Caminul Felix");
-                    String description = caminulFelixItem.getDescription() + separator + payPerson.description();
+                    String description = (Strings.isNullOrEmpty(caminulFelixItem.getDescription()) ? "" : caminulFelixItem.getDescription()) + separator + payPerson.description();
                     caminulFelixItem.setDescription(description);
+                }
+                if (!payPerson.alegeViata().equals("0") && payCount.alegeViata() > 0) {
+                    String separator = Strings.isNullOrEmpty(alegeViataItem.getName()) ? "" : ", ";
+                    alegeViataItem.setName("Alege Viata");
+                    String description = (Strings.isNullOrEmpty(alegeViataItem.getDescription()) ? "" : alegeViataItem.getDescription()) + separator + payPerson.description();
+                    alegeViataItem.setDescription(description);
+                }
+                if (!payPerson.apme().equals("0") && payCount.apme() > 0) {
+                    String separator = Strings.isNullOrEmpty(apmeItem.getName()) ? "" : ", ";
+                    apmeItem.setName("APME");
+                    String description = (Strings.isNullOrEmpty(apmeItem.getDescription()) ? "" : apmeItem.getDescription()) + separator + payPerson.description();
+                    apmeItem.setDescription(description);
                 }
             }
         }
@@ -172,8 +189,8 @@ public class NeoSteps extends TestBase {
             somethingNewItem.setSum(payCount.somethingNew() + "");
             items.add(somethingNewItem);
         }
-        if (payCount.teenChellange() > 0) {
-            teenChellangeItem.setSum(payCount.teenChellange() + "");
+        if (payCount.teenChallenge() > 0) {
+            teenChellangeItem.setSum(payCount.teenChallenge() + "");
             items.add(teenChellangeItem);
         }
         if (payCount.casaFilip() > 0) {
@@ -188,16 +205,26 @@ public class NeoSteps extends TestBase {
             caminulFelixItem.setSum(payCount.caminulFelix() + "");
             items.add(caminulFelixItem);
         }
+        if (payCount.alegeViata() > 0) {
+            alegeViataItem.setSum(payCount.alegeViata() + "");
+            items.add(alegeViataItem);
+        }
+        if (payCount.apme() > 0) {
+            apmeItem.setSum(payCount.apme() + "");
+            items.add(apmeItem);
+        }
         return new Payment(items);
     }
 
     private static PayCount getPayCount(PayCount countMonths, Pay totalOnMonthPay) {
         int somethingNew = countMonths.somethingNew() * Integer.parseInt(totalOnMonthPay.somethingNew());
-        int teenChallenge = countMonths.teenChellange() * Integer.parseInt(totalOnMonthPay.teenChallenge());
+        int teenChallenge = countMonths.teenChallenge() * Integer.parseInt(totalOnMonthPay.teenChallenge());
         int casaFilip = countMonths.casaFilip() * Integer.parseInt(totalOnMonthPay.casaFilip());
         int tanzania = countMonths.tanzania() * Integer.parseInt(totalOnMonthPay.tanzania());
         int caminulFelix = countMonths.caminulFelix() * Integer.parseInt(totalOnMonthPay.caminulFelix());
-        return new PayCount(somethingNew, teenChallenge, casaFilip, tanzania, caminulFelix);
+        int alegeViata = countMonths.alegeViata() * Integer.parseInt(totalOnMonthPay.alegeViata());
+        int ampe = countMonths.apme() * Integer.parseInt(totalOnMonthPay.apme());
+        return new PayCount(somethingNew, teenChallenge, casaFilip, tanzania, caminulFelix, alegeViata, ampe);
     }
 
     private PayCount countMonths() {
@@ -212,6 +239,8 @@ public class NeoSteps extends TestBase {
         int casaFilipCount = -1;
         int tanzaniaCount = -1;
         int caminulFelixCount = -1;
+        int alegeViataCount = -1;
+        int apmeCount = -1;
         for (int i = 0; i < 12; i++) {
             String month = now.minusMonths(i).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
             if (payedMonths.somethingNew().equals(month)) {
@@ -229,11 +258,32 @@ public class NeoSteps extends TestBase {
             if (payedMonths.caminulFelix().equals(month)) {
                 caminulFelixCount = i;
             }
-            if (somethingNewCount != -1 && teenChellangeCount != -1 && casaFilipCount != -1 && tanzaniaCount != -1 && caminulFelixCount != -1) {
+            if (payedMonths.alegeViata().equals(month)) {
+                alegeViataCount = i;
+            }
+            if (payedMonths.apme().equals(month)) {
+                apmeCount = i;
+            }
+            if (somethingNewCount != -1
+                    && teenChellangeCount != -1
+                    && casaFilipCount != -1
+                    && tanzaniaCount != -1
+                    && caminulFelixCount != -1
+                    && alegeViataCount != -1
+                    && apmeCount != -1
+            ) {
                 break;
             }
         }
-        return new PayCount(somethingNewCount, teenChellangeCount, casaFilipCount, tanzaniaCount, caminulFelixCount);
+        return new PayCount(
+                somethingNewCount,
+                teenChellangeCount,
+                casaFilipCount,
+                tanzaniaCount,
+                caminulFelixCount,
+                alegeViataCount,
+                apmeCount
+        );
     }
 
     @SneakyThrows

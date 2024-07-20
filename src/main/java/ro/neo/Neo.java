@@ -101,7 +101,7 @@ public class Neo {
         Button beneficiaries = new Button().setAttribute("data-target", "#modalBeneficiaries");
         RetryUtils.retry(2, beneficiaries::click);
         TextField searchBeneficiary = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_BTListBeneficiaries_txtSearch");
-        RetryUtils.retry(2, ()-> searchBeneficiary.setValue(item.getName()));
+        RetryUtils.retry(2, () -> searchBeneficiary.setValue(item.getName()));
         Utils.sleep(1000);
         WebLocator titleEl = new WebLocator().setClasses("title").setText(item.getName(), SearchType.TRIM);
         WebLocator liEl = new WebLocator().setChildNodes(titleEl);
@@ -168,13 +168,13 @@ public class Neo {
         WebLocator aplayFilter = new WebLocator().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_btnSearch");
         aplayFilter.click();
         Utils.sleep(1000);
-        boolean contCurent = identify.contains("Cont curent");
-        if (contCurent) {
+        boolean contCurrent = identify.contains("Cont curent");
+        if (contCurrent) {
             WebLink exportCSV = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a8");
-            exportCSV.click();
+            RetryUtils.retry(2, () -> exportCSV.click());
         } else {
             WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a6");
-            exportExcel.click();
+            RetryUtils.retry(2, () -> exportExcel.click());
         }
         List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
@@ -189,7 +189,7 @@ public class Neo {
             Path path = first.get();
             File file = path.toFile();
             String fileName = file.getName();
-            if (!contCurent) {
+            if (!contCurrent) {
                 String extension = fileName.substring(fileName.lastIndexOf("."));
                 fileName = StringUtils.capitalize(actualMonth) + extension;
             }
