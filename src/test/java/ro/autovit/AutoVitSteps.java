@@ -7,6 +7,7 @@ import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.link.WebLink;
+import com.sdl.selenium.web.utils.Result;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
@@ -33,13 +34,19 @@ public class AutoVitSteps extends TestBase {
         WebLocator nextPage = new WebLocator(paginationContainer).setAttribute("data-testid", "pagination-step-forwards").setAttribute("aria-disabled", "false");
         List<String> links = new ArrayList<>();
         collectAllLinks(grid, links);
-        WebLocatorUtils.scrollToWebLocator(paginationContainer, -300);
+        WebLocatorUtils.scrollToWebLocator(paginationContainer, -200);
         while (nextPage.ready(Duration.ofSeconds(1))) {
             nextPage.mouseOver();
-            RetryUtils.retry(8, nextPage::click);
+            RetryUtils.retry(8, () -> {
+                boolean doClick = nextPage.doClick();
+                if (!doClick) {
+                    WebLocatorUtils.scrollToWebLocator(nextPage, -200);
+                }
+                return doClick;
+            });
             Utils.sleep(2000);
             collectAllLinks(grid, links);
-            WebLocatorUtils.scrollToWebLocator(paginationContainer, -300);
+            WebLocatorUtils.scrollToWebLocator(paginationContainer, -200);
         }
         links = links.stream().filter(link -> !(Strings.isNullOrEmpty(link)
                 || link.contains("smart")
@@ -48,6 +55,15 @@ public class AutoVitSteps extends TestBase {
                 || link.contains("yoyo")
                 || link.contains("fiat-500")
                 || link.contains("aixam")
+                || link.contains("ford-transit")
+                || link.contains("hyundai-i20")
+                || link.contains("hyundai-i30")
+                || link.contains("blue")
+                || link.contains("kangoo")
+                || link.contains("renault-trafic")
+                || link.contains("renault-express")
+                || link.contains("ford-courier")
+                || link.contains("ford-fiesta")
         )).toList();
         Sheets sheetsService = GoogleSheet.getSheetsService();
         SheetProperties properties = GoogleSheet.getSheet(spreadsheetId, "MasinaAutoVit");
@@ -125,6 +141,12 @@ public class AutoVitSteps extends TestBase {
                     acceptAll();
                 }
                 WebLocator titleEl = new WebLocator().setClasses("offer-title");
+                WebLocator nuExista = new WebLocator().setTag("h1").setText("Scuze, nu găsim pagina căutată…");
+                Result<Boolean> result = RetryUtils.retryUntilOneIs(Duration.ofSeconds(4), titleEl::isPresent, nuExista::isPresent);
+                if (result.position() == 2) {
+                    log.info("link-ul nu exista? {}", link);
+                    continue;
+                }
                 String title = RetryUtils.retry(3, titleEl::getText);
                 if (Strings.isNullOrEmpty(title)) {
                     log.info("link-ul nu exista? {}", link);
