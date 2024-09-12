@@ -1,4 +1,4 @@
-package ro.neo;
+package ro.casomes;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.SearchType;
@@ -15,6 +15,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Keys;
+import ro.neo.Item;
+import ro.neo.Storage;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -30,17 +32,22 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
-public class Neo {
+public class CaSomes {
     private final WebLink nextWebLink = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnNextFlowItem");
     private final WebLink dashboard = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_linkGoDashboard");
     private final Locale roLocale = new Locale("ro", "RO");
 
-    public void login(String id, String password) {
-        TextField idEl = new TextField().setId("MainContentFull_ebLoginControl_txtUserName_txField");
-        TextField passwordEl = new TextField().setId("MainContentFull_ebLoginControl_txtCredential_txField");
+    public void login(String email, String password) {
+        WebLink googleLogin = new WebLink().setClasses("btn", "btn-google");
+        googleLogin.click();
+
+        TextField emailEl = new TextField().setId("identifierId");
+        emailEl.ready(Duration.ofSeconds(40));
+        RetryUtils.retry(40, () -> emailEl.setValue(email));
+        WebLocator nextButton = new WebLocator().setTag("button").setText("Next", SearchType.DEEP_CHILD_NODE_OR_SELF);
+        nextButton.click();
+        TextField passwordEl = new TextField().setName("password");
         InputButton logIn = new InputButton().setText("MERG MAI DEPARTE");
-        idEl.ready(Duration.ofSeconds(40));
-        RetryUtils.retry(40, () -> idEl.setValue(id));
         passwordEl.setValue(password);
         logIn.click();
         acceptAll();
@@ -50,7 +57,7 @@ public class Neo {
 
     private void acceptAll() {
         Button acceptAllButton = new Button().setClasses("gdprIntro_acceptAll");
-        acceptAllButton.doClick();
+        acceptAllButton.click();
     }
 
     public void selectProfile(String profile) {
@@ -95,7 +102,9 @@ public class Neo {
     }
 
     public boolean makePayment(Item item, String folder) {
-        plataNoua();
+        WebLink plataNouaEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_0");
+        plataNouaEl.ready(Duration.ofSeconds(40));
+        RetryUtils.retry(3, plataNouaEl::click);
         Button beneficiaries = new Button().setAttribute("data-target", "#modalBeneficiaries");
         RetryUtils.retry(2, beneficiaries::click);
         TextField searchBeneficiary = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_BTListBeneficiaries_txtSearch");
@@ -132,69 +141,6 @@ public class Neo {
         pdfFile.renameTo(new File(folder + fileName));
         RetryUtils.retry(2, dashboard::click);
         return success;
-    }
-
-    public boolean invoicePayment(Invoice invoice, String folder) {
-        boolean success;
-        boolean utilitati = invoice.getCategory().equals("Apa") || invoice.getCategory().equals("Gunoi");
-        if (utilitati) {
-            WebLink platescUtilitatileEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_1");
-            platescUtilitatileEl.ready(Duration.ofSeconds(40));
-            RetryUtils.retry(3, platescUtilitatileEl::click);
-            WebLocator apaEl = new WebLocator().setId("MainContent_TransactionMainContent_favoritsWithoutBeneficiariesControl_rptFavorits_aFavOper_1");
-            apaEl.click();
-            TextField sumEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_txtAmount_txField");
-            sumEl.ready(Duration.ofSeconds(40));
-            RetryUtils.retry(2, () -> sumEl.setValue(invoice.getValue()));
-            TextField nrFacturiEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_DynamicTooltip1_txField");
-            nrFacturiEl.setValue(invoice.getNr());
-            nextWebLink.click();
-            nextWebLink.click();
-            WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
-            String text = RetryUtils.retry(20, message::getText);
-            success = text.equals("Banii sunt în drum spre furnizorul de utilități.");
-        } else {
-            plataNoua();
-            TextField nameEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_txtBeneficiaryName_txField");
-            RetryUtils.retry(2, () -> nameEl.setValue(invoice.getFurnizor()));
-            TextField ibanEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_txtBeneficiaryIban_txField");
-            ibanEl.setValue(invoice.getIban());
-            ibanEl.sendKeys(Keys.ENTER);
-            TextField sumaEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwTransferDetails_txtAmount_txField");
-            sumaEl.ready(Duration.ofSeconds(40));
-            sumaEl.setValue(invoice.getValue());
-            TextArea descriptionEl = new TextArea().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwTransferDetails_txtDescription_txField");
-            descriptionEl.setValue("factura " + invoice.getNr());
-            nextWebLink.click();
-            WebLink addInPacketButton = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnCartFlowItem");
-            addInPacketButton.ready(Duration.ofSeconds(10));
-            nextWebLink.click();
-            Utils.sleep(1); //wait for SMS code
-            nextWebLink.click();
-            WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
-            String text = RetryUtils.retry(20, message::getText);
-            success = text.equals("Plată inițiată cu succes. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiunea Tranzacții, disponibilă la nivelul contului.");
-        }
-        WebLink salvezPDF = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a1");
-        String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Plată.pdf";
-        File pdfFile = new File(filePath);
-        RetryUtils.retry(4, () -> {
-            salvezPDF.click();
-            return FileUtils.waitFileIfIsEmpty(pdfFile, 7000);
-        });
-        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String extra = (utilitati ? invoice.getNr() : invoice.getCategory()).replaceAll(" ", "");
-        String fileName = "DovadaPlata" + extra + month + ".pdf";
-        Storage.set("fileName", fileName);
-        pdfFile.renameTo(new File(folder + fileName));
-        RetryUtils.retry(2, dashboard::click);
-        return success;
-    }
-
-    private static void plataNoua() {
-        WebLink plataNouaEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_0");
-        plataNouaEl.ready(Duration.ofSeconds(40));
-        RetryUtils.retry(3, plataNouaEl::click);
     }
 
     @SneakyThrows

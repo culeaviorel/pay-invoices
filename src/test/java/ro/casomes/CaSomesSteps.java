@@ -1,4 +1,4 @@
-package ro.neo;
+package ro.casomes;
 
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
@@ -10,10 +10,9 @@ import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
+import ro.neo.*;
 import ro.sheet.GoogleSheet;
 
 import java.time.LocalDate;
@@ -23,7 +22,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 @Slf4j
-public class NeoSteps extends TestBase {
+public class CaSomesSteps extends TestBase {
 
     private static final String contracteDeSponsorizareId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
@@ -32,55 +31,17 @@ public class NeoSteps extends TestBase {
     private static List<Pay> pays;
     private static List<MemberPay> memberPays;
     private static Sheets sheetsService;
+    private final CaSomes caSomes = new CaSomes();
 
-    @And("I login in Neo")
-    public void iLoginInNeo() {
+    @And("I login in CaSomes")
+    public void iLoginInCaSomes() {
         UserCredentials credentials = new UserCredentials();
-        neo.login(credentials.getNeoID(), credentials.getNeoPassword());
-    }
-
-    @SneakyThrows
-    @And("I prepare data for Donatii cu destinatie speciala from google sheet")
-    public void iPrepareDataForDonatiiCuDestinatieSpecialaFromGoogleSheet() {
-        sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(contracteDeSponsorizareId, "Donatii cu destinatie speciala" + "!B1:J").execute();
-        List<List<Object>> values = valueRange.getValues();
-        pays = values.stream().map(i -> new Pay(
-                i.get(0).toString(),
-                i.get(1).toString(),
-                i.get(2).toString(),
-                i.get(3).toString(),
-                i.get(4).toString(),
-                i.get(5).toString(),
-                i.get(6).toString(),
-                i.get(7).toString(),
-                i.get(8).toString()
-        )).toList();
+        caSomes.login(credentials.getCaSomesEmail(), credentials.getCaSomesPassword());
         Utils.sleep(1);
     }
 
     @SneakyThrows
-    @And("I prepare data for Sustinere educatie from google sheet")
-    public void iPrepareDataForSustinereEducatieFromGoogleSheet() {
-        sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(membriCuCopiiiLaGradinitaId, "2024" + "!A2:D").execute();
-        List<List<Object>> values = valueRange.getValues();
-        memberPays = values.stream().map(i -> new MemberPay(
-                i.get(0).toString(),
-                i.get(1).toString(),
-                i.get(2).toString(),
-                i.size() == 4 ? i.get(3).toString() : ""
-        )).toList();
-        Utils.sleep(1);
-    }
-
-    @And("in NeoBT I select profile {string}")
-    public void inNeoBTISelectProfile(String profile) {
-        neo.selectProfile(profile);
-    }
-
-    @SneakyThrows
-    @And("in NeoBT I send Donatii cu destinatie speciala from google sheet")
+//    @And("in NeoBT I send Donatii cu destinatie speciala from google sheet")
     public void inNeoBTISendDonatiiCuDestinatieSpecialaFromGoogleSheet() {
         Optional<Pay> totalOnMonth = pays.stream().filter(i -> i.name().equals("Total pe luna")).findFirst();
         Pay totalOnMonthPay = totalOnMonth.orElse(null);
@@ -288,11 +249,11 @@ public class NeoSteps extends TestBase {
         );
     }
 
-    @SneakyThrows
-    @And("in NeoBT I upload file in google sheet")
-    public void inNeoBTIUploadFileInGoogleSheet() {
-        uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
-    }
+//    @SneakyThrows
+//    @And("in NeoBT I upload file in google sheet")
+//    public void inNeoBTIUploadFileInGoogleSheet() {
+//        uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
+//    }
 
     @SneakyThrows
     private void uploadFileAndAddRowForItem(String fileName, String category, String description, double value) {
@@ -352,7 +313,7 @@ public class NeoSteps extends TestBase {
         return sheetId;
     }
 
-    @And("in NeoBT I send Sustinere educatie from google sheet")
+//    @And("in NeoBT I send Sustinere educatie from google sheet")
     public void inNeoBTISendSustinereEducatieFromGoogleSheet() {
         List<MemberPay> memberPayList = memberPays.stream().filter(i -> Strings.isNullOrEmpty(i.status())).toList();
         int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
@@ -368,7 +329,7 @@ public class NeoSteps extends TestBase {
         }
     }
 
-    @And("in NeoBT I save report from {string} month")
+//    @And("in NeoBT I save report from {string} month")
     public void inNeoBTISaveReportFromMonth(String month) {
         String location = location() + "CSV\\";
         neo.saveReportFrom("|Cont curent|RON", month, location);
@@ -379,78 +340,5 @@ public class NeoSteps extends TestBase {
         fileName = Storage.get("fileName").toString().replaceAll("xls", "csv");
         Utils.sleep(1); // Convert manually xls file to csv in CSV folder
         uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
-    }
-
-    @SneakyThrows
-    @And("in NeoBT I pay invoices:")
-    public void inNeoBTIPayInvoices(List<Invoice> invoices) {
-//        double total = invoices.stream().flatMapToDouble(i -> DoubleStream.of(Double.parseDouble(i.getValue()))).sum();
-        for (Invoice invoice : invoices) {
-            if (invoice.getPdfPath().contains(".pdf")) {
-                PDDocument document = PDDocument.load(new java.io.File(invoice.getPdfPath()));
-                PDFTextStripper pdfStripper = new PDFTextStripper();
-                String text = pdfStripper.getText(document);
-                document.close();
-                List<String> list = text.lines().toList();
-                if (invoice.getCategory().equals("Apa")) {
-                    collectForApa(invoice, list);
-                } else if (invoice.getCategory().equals("Gunoi")) {
-                    collectForGunoi(invoice, list);
-                }
-            }
-            double doubleValue = Double.parseDouble(invoice.getValue());
-            int intValue = (int) doubleValue + 1;
-            neo.transferFromDepozitIntoContCurent(intValue);
-            boolean success = neo.invoicePayment(invoice, dovada());
-            if (success) {
-                String fileName = Storage.get("fileName");
-                double value = Double.parseDouble(invoice.getValue());
-                uploadFileAndAddRowForItem(fileName, invoice.getCategory(), invoice.getDescription(), value);
-            }
-        }
-
-    }
-
-    private void collectForGunoi(Invoice invoice, List<String> list) {
-        String total = "";
-        String nrFacturii = "";
-        String codAbonat = "";
-        for (int i = 0; i < list.size(); i++) {
-            String row = list.get(i);
-            if (row.contains("Total factura")) {
-                total = list.get(i + 4).trim();
-            } else if (row.contains("Numar:")) {
-                nrFacturii = row.split("Numar:")[1].trim();
-            } else if (row.contains("Cod client:")) {
-                codAbonat = row.split("Cod client:")[1].trim();
-            }
-            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
-                invoice.setValue(total);
-                invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
-                invoice.setCod(codAbonat);
-                break;
-            }
-        }
-    }
-
-    private static void collectForApa(Invoice invoice, List<String> list) {
-        String total = "";
-        String nrFacturii = "";
-        String codAbonat = "";
-        for (String row : list) {
-            if (row.contains("Total factura curenta:")) {
-                total = row.split("Total factura curenta:")[1].trim();
-            } else if (row.contains("Numar:")) {
-                nrFacturii = row.split("Numar:")[1].trim();
-            } else if (row.contains("Cod abonat:")) {
-                codAbonat = row.split("Cod abonat:")[1].trim();
-            }
-            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
-                invoice.setValue(total);
-                invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
-                invoice.setCod(codAbonat);
-                break;
-            }
-        }
     }
 }

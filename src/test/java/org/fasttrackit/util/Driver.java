@@ -1,7 +1,6 @@
 package org.fasttrackit.util;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
-import com.sdl.selenium.web.Browser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +14,7 @@ public class Driver {
 
     public static void initialize() throws IOException {
         if (driver == null) {
-            driver = WebDriverConfig.getWebDriver(Browser.CHROME);
+            driver = WebDriverConfig.getWebDriver("chrome.properties");
             try {
                 File directory = new File(WebDriverConfig.getDownloadPath());
                 FileUtils.forceMkdir(directory);

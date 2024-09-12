@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
                 "ro.nova",
                 "ro.shelly",
                 "ro.olx",
+                "ro.casomes",
                 "ro.home.assistant",
                 "ro.leiibvb",
                 "ro.autovit"
