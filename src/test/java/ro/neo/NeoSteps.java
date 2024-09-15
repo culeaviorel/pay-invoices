@@ -342,6 +342,10 @@ public class NeoSteps extends TestBase {
         return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
     }
 
+    private static String bt() {
+        return "C:\\Users\\vculea\\Desktop\\BT\\2024\\";
+    }
+
     private Integer getSheetId(String spreadsheetId, String number) {
         Integer sheetId = Storage.get(spreadsheetId + "sheetId");
         if (sheetId == null) {
@@ -381,6 +385,19 @@ public class NeoSteps extends TestBase {
         uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
     }
 
+    @And("in NeoBT I save card report local from {list} month")
+    public void inNeoBTISaveReportLocalFromMonth(List<String> months) {
+        String location = bt();
+        for (String month : months) {
+            neo.saveCardReportFrom("CULEA VIOREL", month, location);
+            neo.goToDashboard();
+        }
+        for (String month : months) {
+            neo.saveCardReportFrom("CAMELIA CULEA", month, location);
+            neo.goToDashboard();
+        }
+    }
+
     @SneakyThrows
     @And("in NeoBT I pay invoices:")
     public void inNeoBTIPayInvoices(List<Invoice> invoices) {
@@ -396,6 +413,8 @@ public class NeoSteps extends TestBase {
                     collectForApa(invoice, list);
                 } else if (invoice.getCategory().equals("Gunoi")) {
                     collectForGunoi(invoice, list);
+                } else if (invoice.getCategory().equals("Curent")) {
+                    collectForCurent(invoice, list);
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
@@ -409,6 +428,27 @@ public class NeoSteps extends TestBase {
             }
         }
 
+    }
+
+    private void collectForCurent(Invoice invoice, List<String> list) {
+        String total = "";
+        String nrFacturii = "";
+        String codAbonat = "";
+        for (String row : list) {
+            if (row.contains("Total de plată")) {
+                total = row.split("Total de plată")[1].trim().split("lei")[0].trim();
+            } else if (row.contains("Cod loc consum (NLC):")) {
+                nrFacturii = row.split("Cod loc consum \\(NLC\\):")[1].trim();
+            } else if (row.contains("Cod client:")) {
+                codAbonat = row.split("Cod client:")[1].trim();
+            }
+            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
+                invoice.setValue(total);
+                invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
+                invoice.setCod(codAbonat);
+                break;
+            }
+        }
     }
 
     private void collectForGunoi(Invoice invoice, List<String> list) {

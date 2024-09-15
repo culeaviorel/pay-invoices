@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+
 @Slf4j
 public class Neo {
     private final WebLink nextWebLink = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_btnNextFlowItem");
@@ -216,26 +217,14 @@ public class Neo {
         WebLocator row = new WebLocator(panelConturi).setClasses("row").setChildNodes(child);
         WebLink istoricLink = new WebLink(row, "Istoric", SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM);
         istoricLink.click();
-        WebLocator filterEl = new WebLocator().setId("lblClose");
-        filterEl.click();
-        WebLocator fromEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateFromPicker_txField");
-        fromEl.clear();
-        fromEl.sendKeys(firstDayOfMonth);
-        fromEl.sendKeys(Keys.ENTER);
-        WebLocator toEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateToPicker_txField");
-        toEl.clear();
-        toEl.sendKeys(lastDayOfMonth);
-        toEl.sendKeys(Keys.ENTER);
-        WebLocator aplayFilter = new WebLocator().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_btnSearch");
-        aplayFilter.click();
-        Utils.sleep(1000);
+        filter(firstDayOfMonth, lastDayOfMonth);
         boolean contCurrent = identify.contains("Cont curent");
         if (contCurrent) {
             WebLink exportCSV = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a8");
-            RetryUtils.retry(2, () -> exportCSV.click());
+            RetryUtils.retry(2, exportCSV::click);
         } else {
             WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a6");
-            RetryUtils.retry(2, () -> exportExcel.click());
+            RetryUtils.retry(2, exportExcel::click);
         }
         List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
@@ -257,6 +246,78 @@ public class Neo {
             Storage.set("fileName", fileName);
             file.renameTo(new File(location + fileName));
         }
+    }
+
+    @SneakyThrows
+    public void saveCardReportFrom(String identify, String month, String location) {
+        org.apache.commons.io.FileUtils.cleanDirectory(new File(WebDriverConfig.getDownloadPath()));
+        String actualMonth = "";
+        LocalDate now = null;
+        for (int i = 0; i < 12; i++) {
+            now = LocalDate.now().minusMonths(i);
+            actualMonth = now.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, roLocale);
+            if (actualMonth.equalsIgnoreCase(month)) {
+                break;
+            }
+        }
+        String firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        WebLink cardEl = new WebLink(null, identify).setAttribute("id", "MainContent_TransactionMainContent_BTLandingProductsControl_rptProductListCards_primarydescription", SearchType.CONTAINS);
+        cardEl.click();
+        WebLink tranzactiiEl = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwContainer_goTransaction");
+        tranzactiiEl.click();
+        filter(firstDayOfMonth, lastDayOfMonth);
+        WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_proofControl_a6");
+        RetryUtils.retry(2, exportExcel::click);
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+            List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
+            if (!paths.isEmpty()) {
+                return paths;
+            } else {
+                return null;
+            }
+        });
+        Optional<Path> first = list.stream().filter(i -> !Files.isDirectory(i)).findFirst();
+        if (first.isPresent()) {
+            Path path = first.get();
+            File file = path.toFile();
+            String fileName = file.getName();
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            String extra = formatName(identify);
+            fileName = StringUtils.capitalize(actualMonth) + extra + extension;
+            Storage.set("fileName", fileName);
+            file.renameTo(new File(location + fileName));
+        }
+    }
+
+    public static String formatName(String name) {
+        String[] words = name.split(" ");
+        StringBuilder formattedName = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                formattedName.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase());
+            }
+        }
+
+        return formattedName.toString();
+    }
+
+    private static void filter(String firstDayOfMonth, String lastDayOfMonth) {
+        WebLocator filterEl = new WebLocator().setId("lblClose");
+        filterEl.click();
+        WebLocator fromEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateFromPicker_txField");
+        fromEl.clear();
+        fromEl.sendKeys(firstDayOfMonth);
+        fromEl.sendKeys(Keys.ENTER);
+        WebLocator toEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateToPicker_txField");
+        toEl.clear();
+        toEl.sendKeys(lastDayOfMonth);
+        toEl.sendKeys(Keys.ENTER);
+        WebLocator aplayFilter = new WebLocator().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_btnSearch");
+        aplayFilter.click();
+        Utils.sleep(1000);
     }
 
     public void goToDashboard() {

@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.sdl.lt</groupId>
             <artifactId>Testy</artifactId>
-            <version>20.08.369.0_053bc35</version>
+            <version>20.08.413.0_60e1fe6</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
