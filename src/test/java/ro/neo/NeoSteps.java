@@ -493,4 +493,9 @@ public class NeoSteps extends TestBase {
             }
         }
     }
+
+    @And("in NeoBT I convert to CSV, the file {string}")
+    public void inNeoBTIConvertToCSVTheFile(String path) {
+        neo.convertToCSV(path);
+    }
 }

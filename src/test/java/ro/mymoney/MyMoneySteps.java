@@ -149,9 +149,9 @@ public class MyMoneySteps extends TestBase {
             , new Category("ADARIA SERV SRL", "ADARIA SERV SRL"), new Category("Ergon", "ERGON")
             , new Category("Rebeca Fruct", "REBECA FRUCT SRL"), new Category("Ferma Steluta", "FERMA STELUTA SRL")
             , new Category("EURO MARKET", "EURO MARKET"), new Category("INMEDIO", "INMEDIO")
-            , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA")
-            , new Category("PULSAR", "PULSAR TEO SRL")
+            , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA"), new Category("PULSAR", "PULSAR TEO SRL")
             , new Category("CBA", "CBA NORD VEST SRL")
+            , new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -196,7 +196,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("CASUTACUCUTII", "CASUTACUCUTII S R L"), new Category("Cinema City", "*cinemacity.ro")
             , new Category("GIFTBOXART", "GIFTBOXART SRL"), new Category("CROMA MOB", "CROMA MOB SRL")
             , new Category("PRINK", "PRINK ROMANIA SRL"), new Category("RABANC", "RABANC SRL")
-            , new Category("TEAM MOBILE", "TEAM MOBILE ONLINE SRL")
+            , new Category("TEAM MOBILE", "TEAM MOBILE ONLINE SRL"), new Category("KRAFTCHAIN", "KRAFTCHAIN ENTERPRISES")
+            , new Category("DAEF ONLINE", "DAEF ONLINE SRL")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -212,7 +213,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
             , new Category("Twelve", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
             , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
-            , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "ERS QUALITY FOOD"))
+            , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "RES QUALITY FOOD"))
             , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
             , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE"), new Category("Agape", "HOTEL AGAPE - AUTOSERV")
@@ -224,7 +225,10 @@ public class MyMoneySteps extends TestBase {
             , new Category("Inghetata", "CREMERIA EMILIA SRL"), new Category("A la Tarte", "DELITART SRL-D")
             , new Category("Gustino", "GUSTINO SERV SRL"), new Category("AMZA", "AMZA PROD SRL")
             , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL"), new Category("IRIS DELICE", "IRIS DELICE")
-            , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL")
+            , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL"), new Category("SalatBox", "BIO BOX SRL")
+            , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
+            , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL")
+            , new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
     );
 
     List<Category> medicamente = List.of(
@@ -241,7 +245,8 @@ public class MyMoneySteps extends TestBase {
     );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"), new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
-            , new Category("Noriel", "NORIEL TOYS IULIUS MAL")
+            , new Category("Noriel", "NORIEL TOYS IULIUS MAL"), new Category("BOB CRISTINA", "BOB CRISTINA MARIA INTRE")
+            , new Category("Florarie", "ILCA LAURA II FLORARIE")
     );
 
     List<Category> concediu = List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL")

@@ -14,6 +14,7 @@ import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.fasttrackit.util.XlsxUtility;
 import org.openqa.selenium.Keys;
 
 import java.io.File;
@@ -323,5 +324,14 @@ public class Neo {
     public void goToDashboard() {
         WebLocator dashboard = new WebLocator().setTag("img").setClasses("logo", "img-responsive");
         dashboard.click();
+    }
+
+    public void convertToCSV(String path) {
+        File file = new File(path);
+        String fileName = file.getName();
+        String csvFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".csv";
+        Storage.set("fileName", csvFileName);
+        File csvFile = new File(file.getParent() + File.separator + csvFileName);
+        new XlsxUtility(file).convertToCSV(csvFile);
     }
 }
