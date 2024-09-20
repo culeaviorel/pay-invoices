@@ -201,6 +201,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("DAEF ONLINE", "DAEF ONLINE SRL"), new Category("CRAZY BANANA", "CRAZY BANANA SRL")
             , new Category("PILWAX", "PILWAX COMIMPEX SRLL"), new Category("DAMADRIS", "DAMADRIS SEKART")
             , new Category("ADYSYM", "ADYSYM IMPEX")
+            , new Category("COUNTRYSIDE", "COUNTRYSIDE HOME SRL")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -230,8 +231,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("Shaorma", "ACAPULCO FOOD LOUNGE SRL"), new Category("IRIS DELICE", "IRIS DELICE")
             , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL"), new Category("SalatBox", "BIO BOX SRL")
             , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
-            , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL")
-            , new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
+            , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
+            , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU")
     );
 
     List<Category> medicamente = List.of(
@@ -239,6 +240,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("ELMAFARM", "ELMAFARM SRL"), new Category("Farmactiv", "Farmactiv SRL")
             , new Category("Ducfarm", "DUCFARM SRL"), new Category("FARMACIA TOMA", "SC FARMACIA TOMA")
             , new Category("VITAFARM", "VITAFARM PLUS SRL")
+            , new Category("AMBROSIA", "AMBROSIA FARM 1")
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
@@ -265,8 +267,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("Marisel", "HOSUS TURISM SRL"), new Category("BOOKING", "BOOKING.COM")
             , new Category("RESTAURANT IDOL", "RESTAURANT IDOL 2"), new Category("GHESZEL", "GHESZEL SRL")
             , new Category("GRADINA ZOOLOGICA", "GRADINA ZOOLOGICA BRAS"), new Category("MAMAIA", "MAMAIA LAC")
-            , new Category("OXFIX A DOI MAMAIA", "OXFIX A DOI MAMAIA")
-            , new Category("ROXMAR", "ROXMAR SRL")
+            , new Category("OXFIX A DOI MAMAIA", "OXFIX A DOI MAMAIA"), new Category("ROXMAR", "ROXMAR SRL")
+            , new Category("DELTAROM", "DELTAROM PECO 2")
     );
 
     List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
