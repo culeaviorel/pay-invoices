@@ -122,7 +122,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("MAXIMUM ELECTRONIC", "MAXIMUM ELECTRONIC"), new Category("Pragmatic", "SC PRAGMATIC TCV SRL")
             , new Category("wifistore", "EPwifistore.ro"), new Category("INTERNATIONAL PAPER BUSI", "INTERNATIONAL PAPER BUSI")
             , new Category("KSA", "KSA"), new Category("Moemax", "MOEMAX Cluj")
-            , new Category("Jumbo", "JUMBO ORADEA C8"), new Category("semintegazon", "mpy*semintegazon")
+            , new Category("Jumbo", List.of("JUMBO ORADEA C8", "JUMBO CONSTANTA")), new Category("semintegazon", "mpy*semintegazon")
             , new Category("Smart Home", "SMART HOME 360"), new Category("GradinaMax", "GradinaMax")
             , new Category("bioculturi", "mpy*bioculturi"), new Category("vexio.ro", "PayU*vexio.ro")
             , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL"), new Category("Shelly", "ALLTERCOROB")
@@ -130,8 +130,8 @@ public class MyMoneySteps extends TestBase {
             , new Category("SALICE", "SALICE COMPROD"), new Category("Remarcabil", "EUROTRANS SRL")
             , new Category("gardencentrum", "*EPgardencentrum.net"), new Category("Magazinul Gospodarului", "Magazinul Gospodarului")
             , new Category("Aliexpress", "aliexpress"), new Category("TIRANA", "TIRANA SEDIU CENTRAL")
-            , new Category("NIGE", "SC NIGE IMPEX SRL")
-            , new Category("MAFCOM", "MAFCOM PROD IMPEX SRL")
+            , new Category("NIGE", "SC NIGE IMPEX SRL"), new Category("MAFCOM", "MAFCOM PROD IMPEX SRL")
+            , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
@@ -159,7 +159,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("LANELKA", "LANELKA"), new Category("MELI MELO", "MELI MELO"), new Category("Sinsay", "SINSAY")
             , new Category("REGALALIMENTNONSTO", "REGALALIMENTNONSTO"), new Category("JYSK", "JYSK"), new Category("THE BODY SHOP", "THE BODY SHOP")
             , new Category("BricoStore", "BRICOSTORE"), new Category("C&A", "C & A")
-            , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon")), new Category("Tabita", "TABITA IMPEX SRL")
+            , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon", "DECATHLON CLUJ")), new Category("Tabita", "TABITA IMPEX SRL")
             , new Category("KIK", "KIK 9119 CLUJ"), new Category("SECONDTEXTILIASAM", "SECONDTEXTILIASAM")
             , new Category("Reserved", "RESERVED"), new Category("METASAN", "METASAN RUBY ROSE")
             , new Category("BRUUJ", "BRUUJ SRL"), new Category("Deichmann", "Deichmann Cluj 037")
@@ -170,7 +170,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("EPiesa", List.of("EURO PARTS DISTRIB")), new Category("SAFETY BROKER", "SAFETY BROKER")
             , new Category("SOS ITP SERVICE", "SOS ITP SERVICE"), new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL"))
             , new Category("MC BUSINESS", "MC BUSINESS"), new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
-            , new Category("Vigneta", "Pago*Vignette")
+            , new Category("Vigneta", List.of("Pago*Vignette", "Pago*Timesafe"))
             , new Category("Parcare Iulius", "MOBILPAYYEPARKING")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE")
@@ -250,6 +250,7 @@ public class MyMoneySteps extends TestBase {
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"), new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
             , new Category("Noriel", "NORIEL TOYS IULIUS MAL"), new Category("BOB CRISTINA", "BOB CRISTINA MARIA INTRE")
             , new Category("Florarie", "ILCA LAURA II FLORARIE")
+            , new Category("DECATHLON", "DECATHLON BRASOV LN")
     );
 
     List<Category> concediu = List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL")
@@ -261,7 +262,11 @@ public class MyMoneySteps extends TestBase {
             , new Category("Austria", "Eni 4044"), new Category("MINI TRANSYLVANIA", "MINI TRANSYLVANIA")
             , new Category("ASOC CULTURALA", "ASOC CULTURALA VISUS"), new Category("CRINABEL", "CRINABEL")
             , new Category("VinietaMD", "www.mpay.gov.md"), new Category("Bucuria", "MAIB BUCURIA")
-            , new Category("Marisel", "HOSUS TURISM SRL")
+            , new Category("Marisel", "HOSUS TURISM SRL"), new Category("BOOKING", "BOOKING.COM")
+            , new Category("RESTAURANT IDOL", "RESTAURANT IDOL 2"), new Category("GHESZEL", "GHESZEL SRL")
+            , new Category("GRADINA ZOOLOGICA", "GRADINA ZOOLOGICA BRAS"), new Category("MAMAIA", "MAMAIA LAC")
+            , new Category("OXFIX A DOI MAMAIA", "OXFIX A DOI MAMAIA")
+            , new Category("ROXMAR", "ROXMAR SRL")
     );
 
     List<Category> transport = List.of(new Category("CTP", "CTP"), new Category("tpark.ro", "tpark.ro")
