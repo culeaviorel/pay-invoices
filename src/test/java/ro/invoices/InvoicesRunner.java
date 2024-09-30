@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
                 "ro.rcsrds.digicare",
                 "ro.jira",
                 "ro.eon",
+                "ro.up",
                 "ro.nova",
                 "ro.shelly",
                 "ro.olx",

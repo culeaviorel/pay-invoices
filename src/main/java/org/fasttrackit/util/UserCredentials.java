@@ -35,4 +35,11 @@ public class UserCredentials extends PropertiesReader {
     public String getCaSomesPassword() {
         return getProperty("ca.somes.password");
     }
+
+    public String getUpEmail() {
+        return getProperty("up.email");
+    }
+    public String getUpPassword() {
+        return getProperty("up.password");
+    }
 }
