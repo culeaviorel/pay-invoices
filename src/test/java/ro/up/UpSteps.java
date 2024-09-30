@@ -4,7 +4,6 @@ import io.cucumber.java.en.And;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
-import ro.mymoney.ItemTO;
 import ro.neo.Storage;
 
 import java.util.List;
