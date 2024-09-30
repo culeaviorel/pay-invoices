@@ -409,12 +409,10 @@ public class NeoSteps extends TestBase {
                 String text = pdfStripper.getText(document);
                 document.close();
                 List<String> list = text.lines().toList();
-                if (invoice.getCategory().equals("Apa")) {
-                    collectForApa(invoice, list);
-                } else if (invoice.getCategory().equals("Gunoi")) {
-                    collectForGunoi(invoice, list);
-                } else if (invoice.getCategory().equals("Curent")) {
-                    collectForCurent(invoice, list);
+                switch (invoice.getCategory()) {
+                    case "Apa" -> collectForApa(invoice, list);
+                    case "Gunoi" -> collectForGunoi(invoice, list);
+                    case "Curent" -> collectForCurent(invoice, list);
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
@@ -473,7 +471,7 @@ public class NeoSteps extends TestBase {
         }
     }
 
-    private static void collectForApa(Invoice invoice, List<String> list) {
+    private void collectForApa(Invoice invoice, List<String> list) {
         String total = "";
         String nrFacturii = "";
         String codAbonat = "";
