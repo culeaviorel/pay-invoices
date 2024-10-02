@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
+import ro.mymoney.ItemTO;
 import ro.neo.Storage;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class UpSteps extends TestBase {
         up.login(credentials.getUpEmail(), credentials.getUpPassword());
     }
 
-    @And("in Up I collect data and insert in MyVirtual")
+    @And("in Up I collect data and save in storage")
     public void inUpICollectDataAndInsertInMyVirtual() {
         List<ItemTO> items = up.collectData();
         Storage.set("items", items);

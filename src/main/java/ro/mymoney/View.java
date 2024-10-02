@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Getter
 @Slf4j
@@ -130,6 +132,57 @@ public class View {
         Utils.sleep(1);
     }
 
+    public void addItemsTO(List<ItemTO> items) {
+        List<ItemTO> notFoundSubCategory = new ArrayList<>();
+        List<ItemTO> isAlreadyExist = new ArrayList<>();
+        List<ItemTO> addItems = new ArrayList<>();
+        String date1 = items.get(0).getData();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate d = LocalDate.parse(date1.split(" ")[0], formatter);
+        String monthAndYear = d.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + d.getYear();
+        boolean inCorrectView = isInCorrectView(monthAndYear);
+        if (inCorrectView) {
+            getGrid().ready(true);
+            for (ItemTO item : items) {
+                getGrid().scrollTop();
+                LocalDate datetime = LocalDate.parse(item.getData().split(" ")[0], formatter);
+                String date = datetime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH));
+                String sum = getCorrectValue(item.getValue());
+                Transaction transaction = getSubCategory(item.getName());
+                if (transaction == null) {
+                    notFoundSubCategory.add(item);
+                } else {
+                    String name = transaction.getName();
+                    String subCategory = transaction.getSubCategory();
+                    Row row = getGrid().getRow(new Cell(1, name), new Cell(3, subCategory), new Cell(4, date), new Cell(5, sum, SearchType.EQUALS));
+                    if (!row.isPresent()) {
+                        if (!row.scrollInGrid() || !row.waitToRender(Duration.ofMillis(100), false)) {
+                            if (Strings.isNullOrEmpty(name)) {
+                                notFoundSubCategory.add(item);
+                            } else {
+                                addItems.add(item);
+                                log.info(name);
+                                addInsert(name, item.getCategory(), subCategory, item.getData(), "dd.MM.yyyy", item.getValue());
+                            }
+                        } else {
+                            isAlreadyExist.add(item);
+                        }
+                    } else {
+                        isAlreadyExist.add(item);
+                    }
+                }
+            }
+        }
+        log.info("Deja erau adaugate:");
+        isAlreadyExist.forEach(i -> log.info(i.toString()));
+        log.info("S-au adaugat:");
+        addItems.forEach(i -> log.info(i.toString()));
+        log.info("Nu s-a putut gasi subcategori pentru:");
+        notFoundSubCategory.forEach(i -> log.info(i.toString()));
+        log.info("Diferenta: {}", items.size() - isAlreadyExist.size() - notFoundSubCategory.size() - addItems.size());
+        Utils.sleep(1);
+    }
+
     public boolean isInCorrectView(String monthAndYear) {
         FieldContainer container = new FieldContainer();
         Button button = new Button(container, monthAndYear);
@@ -143,10 +196,16 @@ public class View {
     }
 
     public String getCorrectValue(String sum) {
-        double s = Double.parseDouble(sum);
-        String format = String.format("%.1f", s);
-        String value = format.contains(".") ? format : format + ".0";
-        return value;
+        Pattern pattern = Pattern.compile("(.\\d5)");
+        Matcher matcher = pattern.matcher(sum);
+        if (matcher.find()) {
+            int length = sum.length();
+            return sum.substring(0, length - 1);
+        } else {
+            double s = Double.parseDouble(sum);
+            String format = String.format("%.1f", s);
+            return format.contains(".") ? format : format + ".0";
+        }
     }
 
     public Transaction getSubCategory(String name) {
@@ -194,6 +253,8 @@ public class View {
             transaction = new Transaction(finder.getName(), "Tratament");
         } else if ((finder = find(restaurant, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Restaurant");
+        } else if ((finder = find(List.of(new Category("SDL LANGUAGE WEAVER", "SDL LANGUAGE WEAVER SRL")), name)).getPresent()) {
+            transaction = new Transaction(finder.getName(), "Bonuri de masa");
         }
         return transaction;
     }
@@ -232,8 +293,8 @@ public class View {
             , new Category("Rebeca Fruct", "REBECA FRUCT SRL"), new Category("Ferma Steluta", "FERMA STELUTA SRL")
             , new Category("EURO MARKET", "EURO MARKET"), new Category("INMEDIO", "INMEDIO")
             , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA"), new Category("PULSAR", "PULSAR TEO SRL")
-            , new Category("CBA", "CBA NORD VEST SRL")
-            , new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
+            , new Category("CBA", "CBA NORD VEST SRL"), new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
+            , new Category("SHOP&GO", "SHOP&GO")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -288,7 +349,7 @@ public class View {
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
             , new Category("Tartine", "TARTINE FACTORY SRL"), new Category("Stradale", "OCEANUL PACIFIC")
             , new Category("CARESA CATERING", "CARESA CATERING"), new Category("VARZARIE", "VARZARIE ALIMENTATIE PUBLICA SR")
-            , new Category("Bianco Milano", "BIANCO MILANO"), new Category("ADIADO", "ADIADO"), new Category("MADO", "MADO CORPORATION")
+            , new Category("Bianco Milano", "BIANCO MILANO"), new Category("ADIADO", "ADIADO"), new Category("MADO", List.of("MADO CORPORATION", "MADO FAST FOOD"))
             , new Category("PARFOIS", "PARFOIS"), new Category("Onesti - Marasesti", "Onesti - Marasesti"), new Category("KFC", "KFC")
             , new Category("Hanul cu Peste", "HANUL CU PESTE"), new Category("Marty", "MARTY"), new Category("PEP & PEPPER", "PEP & PEPPER")
             , new Category("Starbucks", "STARBUCKS"), new Category("Dashi", "DASHI")
@@ -314,6 +375,7 @@ public class View {
             , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
             , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
             , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU")
+            , new Category("MCDonalds", "MCDONALD S")
     );
 
     List<Category> medicamente = List.of(

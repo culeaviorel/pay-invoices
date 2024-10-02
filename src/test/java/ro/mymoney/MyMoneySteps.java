@@ -17,6 +17,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.fasttrackit.util.TestBase;
+import ro.neo.Storage;
 
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
@@ -184,5 +185,11 @@ public class MyMoneySteps extends TestBase {
         for (ItemTO value : values) {
             view.addInsert(value.getName(), value.getCategory(), value.getSubCategory(), value.getData(), "dd.MM.yyyy", value.getValue());
         }
+    }
+
+    @And("in MyVirtual I add transactions from storage")
+    public void inMyVirtualIAddTransactionsFromStorage() {
+        List<ItemTO> items = Storage.get("items");
+        view.addItemsTO(items);
     }
 }

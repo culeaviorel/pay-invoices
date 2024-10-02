@@ -52,7 +52,7 @@ public class Up {
         WebLocator picker = new WebLocator().setClasses("vue-daterange-picker");
         picker.click();
         WebLocator popUp = new WebLocator().setClasses("daterangepicker");
-        WebLocator ultimele3Luni = new WebLocator(popUp).setAttribute("data-range-key", "Ultimele 3 luni");
+        WebLocator ultimele3Luni = new WebLocator(popUp).setAttribute("data-range-key", "Luna trecuta");
         ultimele3Luni.click();
         WebLocator apply = new WebLocator(popUp).setClasses("applyBtn");
         apply.click();
@@ -65,10 +65,18 @@ public class Up {
             WebLocator name = new WebLocator(transactions).setClasses("transaction-name");
             WebLocator date = new WebLocator(transactions).setClasses("transaction-date");
             WebLocator suma = new WebLocator(transactions).setClasses("amount-bold");
-            String dateText = date.getText().split(" ")[0];
-            String nameText = name.getText();
-            String sumaText = suma.getText().split(" ")[0].replaceAll("-", "").replaceAll(",", ".");
-            items.add(new ItemTO("Cheltuieli", "Produse alimentare", nameText, dateText, sumaText));
+            WebLocator rejected = new WebLocator(transactions).setClasses("rejected");
+            if (!rejected.isPresent()) {
+                String dateText = date.getText().split(" ")[0];
+                String nameText = name.getText();
+                String sumaText = suma.getText().split(" ")[0].replaceAll("-", "").replaceAll(",", ".");
+                if (sumaText.contains("+")) {
+                    sumaText = sumaText.replace("+", "");
+                    items.add(new ItemTO("Venituri", "Bonuri de masa", nameText, dateText, sumaText));
+                } else {
+                    items.add(new ItemTO("Cheltuieli", "Produse alimentare", nameText, dateText, sumaText));
+                }
+            }
         }
         return items;
     }
