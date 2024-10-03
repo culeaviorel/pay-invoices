@@ -70,10 +70,10 @@ public class View {
         add.ready(Duration.ofSeconds(10));
         RetryUtils.retry(2, add::click);
         name.setValue(denum);
-        RetryUtils.retry(6, () -> category.select(cat, Duration.ofSeconds(2)));
+        RetryUtils.retry(6, () -> category.doSelect(cat, Duration.ofSeconds(2)));
         Utils.sleep(800);
         RetryUtils.retry(6, () -> {
-            subCategory.select(sub, Duration.ofSeconds(2));
+            subCategory.doSelect(sub, Duration.ofSeconds(2));
             return subCategory.getValue().equals(sub);
         });
         boolean select = RetryUtils.retry(2, () -> dateField.select(data, format));
@@ -196,11 +196,19 @@ public class View {
     }
 
     public String getCorrectValue(String sum) {
-        Pattern pattern = Pattern.compile("(.\\d5)");
+        Pattern pattern = Pattern.compile("(\\.\\d5)");
         Matcher matcher = pattern.matcher(sum);
         if (matcher.find()) {
             int length = sum.length();
-            return sum.substring(0, length - 1);
+            String number = sum.substring(length - 2, length - 1);
+            int num = Integer.parseInt(number);
+            if (num > 1 && num < 5) {
+                num = num + 1;
+            }
+            String val = sum.replaceAll("\\." + number + "5", "." + num);
+//            27.95=>27.9
+//            73.45=>73.5
+            return val;
         } else {
             double s = Double.parseDouble(sum);
             String format = String.format("%.1f", s);
@@ -241,7 +249,7 @@ public class View {
             transaction = new Transaction(finder.getName(), "Darnicie");
         } else if ((finder = find(transport, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Transport");
-        } else if ((finder = find(List.of(new Category("WWW.GHISEUL.RO", "WWW.GHISEUL.RO/MFINANT"), new Category("Impozit pe casa", "COMUNA APAHIDA")), name)).getPresent()) {
+        } else if ((finder = find(taxe, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Taxe");
         } else if ((finder = find(List.of(new Category("Digi(RCS RDS)", "Digi(RCS RDS)")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Internet");
@@ -258,6 +266,11 @@ public class View {
         }
         return transaction;
     }
+
+    private final List<Category> taxe = List.of(new Category("WWW.GHISEUL.RO", "WWW.GHISEUL.RO/MFINANT")
+            , new Category("Impozit pe casa", "COMUNA APAHIDA")
+            , new Category("ANAF", "DIRECTIA GEN A FINANTE")
+    );
 
     private final List<Category> casa = List.of(new Category("Hornbach", "HORNBACH"), new Category("Leroy Merlin", "LEROY MERLIN")
             , new Category("Dedeman", "DEDEMAN"), new Category("Altex", "ALTEX ROMANIA")
@@ -276,7 +289,7 @@ public class View {
             , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
-            , new Category("Auchan", "AUCHAN"), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
+            , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
             , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS")
             , new Category("La Vestar", "LA VESTAR"), new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA")
@@ -312,8 +325,8 @@ public class View {
             , new Category("EPiesa", List.of("EURO PARTS DISTRIB")), new Category("SAFETY BROKER", "SAFETY BROKER")
             , new Category("SOS ITP SERVICE", "SOS ITP SERVICE"), new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL"))
             , new Category("MC BUSINESS", "MC BUSINESS"), new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
-            , new Category("Vigneta", List.of("Pago*Vignette", "Pago*Timesafe"))
-            , new Category("Parcare Iulius", "MOBILPAYYEPARKING")
+            , new Category("Vigneta", List.of("Pago*Vignette", "Pago*Timesafe")), new Category("Parcare Iulius", "MOBILPAYYEPARKING")
+            , new Category("Parcare", "*MPYYEPARKING SOLUTIO")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
@@ -342,8 +355,8 @@ public class View {
             , new Category("TEAM MOBILE", "TEAM MOBILE ONLINE SRL"), new Category("KRAFTCHAIN", "KRAFTCHAIN ENTERPRISES")
             , new Category("DAEF ONLINE", "DAEF ONLINE SRL"), new Category("CRAZY BANANA", "CRAZY BANANA SRL")
             , new Category("PILWAX", "PILWAX COMIMPEX SRLL"), new Category("DAMADRIS", "DAMADRIS SEKART")
-            , new Category("ADYSYM", "ADYSYM IMPEX")
-            , new Category("COUNTRYSIDE", "COUNTRYSIDE HOME SRL")
+            , new Category("ADYSYM", "ADYSYM IMPEX"), new Category("COUNTRYSIDE", "COUNTRYSIDE HOME SRL")
+            , new Category("Carturesti", "CARTURESTI IULIUS MA")
     );
     private final List<Category> restaurant = List.of(new Category("Lemnul Verde", "LEMNUL VERDE"), new Category("ASI BAKLAVA", "ASI BAKLAVA")
             , new Category("Moldovan", List.of("MOLDOVAN CARMANGERIE", "MOLDOVAN FAMILY BUSINESS")), new Category("HOMS FOOD", "HOMS FOOD")
@@ -361,7 +374,7 @@ public class View {
             , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
             , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "RES QUALITY FOOD"))
             , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
-            , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", "MERON POLUS")
+            , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", List.of("MERON POLUS", "MERON 2"))
             , new Category("LA CASA RISTORANTE", "LA CASA RISTORANTE"), new Category("Agape", "HOTEL AGAPE - AUTOSERV")
             , new Category("ELIXIPLANTA", "ELIXIPLANTA SRL"), new Category("Piata9", "HONEST FOOD SRL")
             , new Category("JUHANIO", "JUHANIO S.R.L."), new Category("SPARTAN", "SPARTAN ALEXANDRU VAID")
@@ -374,16 +387,16 @@ public class View {
             , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL"), new Category("SalatBox", "BIO BOX SRL")
             , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
             , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
-            , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU")
-            , new Category("MCDonalds", "MCDONALD S")
+            , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", "MCDONALD S")
+            , new Category("Cafea", "JOAYOKANU COFFEE SRL")
     );
 
     List<Category> medicamente = List.of(
             new Category("Remedium", "REMEDIUM"), new Category("Aldedra", "ALDEDRA")
             , new Category("ELMAFARM", "ELMAFARM SRL"), new Category("Farmactiv", "Farmactiv SRL")
             , new Category("Ducfarm", "DUCFARM SRL"), new Category("FARMACIA TOMA", "SC FARMACIA TOMA")
-            , new Category("VITAFARM", "VITAFARM PLUS SRL")
-            , new Category("AMBROSIA", "AMBROSIA FARM 1")
+            , new Category("VITAFARM", "VITAFARM PLUS SRL"), new Category("AMBROSIA", "AMBROSIA FARM 1")
+            , new Category("Catena", List.of("CATENA CLUJ 7", "CATENA FARMACIE - CLUJ"))
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
