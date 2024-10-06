@@ -435,13 +435,13 @@ public class NeoSteps extends TestBase {
         for (String row : list) {
             if (row.contains("Total de plată")) {
                 total = row.split("Total de plată")[1].trim().split("lei")[0].trim();
-            } else if (row.contains("Cod loc consum (NLC):")) {
-                nrFacturii = row.split("Cod loc consum \\(NLC\\):")[1].trim();
-            } else if (row.contains("Cod client:")) {
-                codAbonat = row.split("Cod client:")[1].trim();
+            } else if (row.contains("ID factură:")) {
+                nrFacturii = row.split("ID factură:")[1].trim();
+            } else if (row.contains("Cod încasare:")) {
+                codAbonat = row.split("Cod încasare:")[1].trim();
             }
             if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
-                invoice.setValue(total);
+                invoice.setValue(total.replaceAll(",", "."));
                 invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
                 invoice.setCod(codAbonat);
                 break;

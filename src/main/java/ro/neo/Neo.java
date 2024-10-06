@@ -138,23 +138,35 @@ public class Neo {
 
     public boolean invoicePayment(Invoice invoice, String folder) {
         boolean success;
-        boolean utilitati = invoice.getCategory().equals("Apa") || invoice.getCategory().equals("Gunoi");
+        boolean utilitati = invoice.getCategory().equals("Apa")
+                || invoice.getCategory().equals("Gunoi")
+                || invoice.getCategory().equals("Curent");
         if (utilitati) {
             WebLink platescUtilitatileEl = new WebLink().setId("MainContent_TransactionMainContent_LandingQuickActionButtonsControl_rptShortcutsFiveItems_linkShortcutAction_1");
             platescUtilitatileEl.ready(Duration.ofSeconds(40));
             RetryUtils.retry(3, platescUtilitatileEl::click);
-            WebLocator apaEl = new WebLocator().setId("MainContent_TransactionMainContent_favoritsWithoutBeneficiariesControl_rptFavorits_aFavOper_1");
-            apaEl.click();
+            if (invoice.getCategory().equals("Apa")) {
+                WebLocator apaEl = new WebLocator().setId("MainContent_TransactionMainContent_favoritsWithoutBeneficiariesControl_rptFavorits_aFavOper_1");
+                apaEl.click();
+            } else if (invoice.getCategory().equals("Curent")) {
+                WebLocator curentEl = new WebLocator().setId("MainContent_TransactionMainContent_favoritsWithoutBeneficiariesControl_rptFavorits_aFavOper_3");
+                curentEl.click();
+            }
             TextField sumEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_txtAmount_txField");
             sumEl.ready(Duration.ofSeconds(40));
             RetryUtils.retry(2, () -> sumEl.setValue(invoice.getValue()));
-            TextField nrFacturiEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_DynamicTooltip1_txField");
-            nrFacturiEl.setValue(invoice.getNr());
+            if (invoice.getCategory().equals("Apa")) {
+                TextField nrFacturiEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_DynamicTooltip1_txField");
+                nrFacturiEl.setValue(invoice.getNr());
+            } else if (invoice.getCategory().equals("Curent")) {
+                TextField codIncasareEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_DynamicTooltip0_txField");
+                codIncasareEl.setValue(invoice.getCod());
+            }
             nextWebLink.click();
             nextWebLink.click();
             WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
             String text = RetryUtils.retry(20, message::getText);
-            success = text.equals("Banii sunt în drum spre furnizorul de utilități.");
+            success = text.equals("Plata de utilități a fost procesată cu succes!");
         } else {
             plataNoua();
             TextField nameEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainer3_txtBeneficiaryName_txField");
@@ -178,14 +190,14 @@ public class Neo {
             success = text.equals("Plată inițiată cu succes. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiunea Tranzacții, disponibilă la nivelul contului.");
         }
         WebLink salvezPDF = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a1");
-        String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Plată.pdf";
+        String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Ordin de plată.pdf";
         File pdfFile = new File(filePath);
         RetryUtils.retry(4, () -> {
             salvezPDF.click();
             return FileUtils.waitFileIfIsEmpty(pdfFile, 7000);
         });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String extra = (utilitati ? invoice.getNr() : invoice.getCategory()).replaceAll(" ", "");
+        String extra = (utilitati ? invoice.getCategory() : invoice.getNr()).replaceAll(" ", "");
         String fileName = "DovadaPlata" + extra + month + ".pdf";
         Storage.set("fileName", fileName);
         pdfFile.renameTo(new File(folder + fileName));
