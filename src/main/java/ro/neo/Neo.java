@@ -190,7 +190,8 @@ public class Neo {
             success = text.equals("Plată inițiată cu succes. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiunea Tranzacții, disponibilă la nivelul contului.");
         }
         WebLink salvezPDF = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a1");
-        String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Ordin de plată.pdf";
+        String name = utilitati ? "Ordin de plată.pdf" : "Plată.pdf";
+        String filePath = WebDriverConfig.getDownloadPath() + File.separator + name;
         File pdfFile = new File(filePath);
         RetryUtils.retry(4, () -> {
             salvezPDF.click();
