@@ -29,6 +29,13 @@ public class UserCredentials extends PropertiesReader {
         return getProperty("neo.password");
     }
 
+    public String getBTGoID() {
+        return getProperty("btgo.id");
+    }
+    public String getBTGoPassword() {
+        return getProperty("btgo.password");
+    }
+
     public String getCaSomesEmail() {
         return getProperty("ca.somes.email");
     }

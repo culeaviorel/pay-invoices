@@ -1,12 +1,9 @@
 package org.fasttrackit.util;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
-//import com.sdl.selenium.web.Browser;
-//import io.cucumber.spring.CucumberContextConfiguration;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 
@@ -25,5 +22,17 @@ public abstract class TestBase {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String dovada() {
+        return location() + "Facturi\\Dovada\\";
+    }
+
+    public static String location() {
+        return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
+    }
+
+    public static String bt() {
+        return "C:\\Users\\vculea\\Desktop\\BT\\2024\\";
     }
 }
