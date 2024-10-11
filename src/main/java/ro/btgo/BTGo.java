@@ -104,7 +104,7 @@ public class BTGo {
         TextField sumaEL = new TextField().setId("transferAmountInput");
         sumaEL.setValue(invoice.getValue());
         TextField descriptionInput = new TextField().setId("descriptionInput");
-        descriptionInput.setValue(invoice.getNr());
+        descriptionInput.setValue("factura " + invoice.getNr());
         WebLocatorUtils.scrollToWebLocator(nextButton);
         nextButton.click();
         Utils.sleep(500);
@@ -126,13 +126,14 @@ public class BTGo {
                 .forEach(file -> {
                     String fileName = file.toString();
                     if (fileName.contains("pdf")) {
-                        Storage.set("fileName", fileName);
+                        Storage.set("filePath", fileName);
                     }
                 });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
         String fileName = "DovadaPlata" + invoice.getCategory().replaceAll(" ", "") + month + ".pdf";
-        String pdfName = Storage.get("fileName");
-        File pdfFile = new File(pdfName);
+        Storage.set("fileName", fileName);
+        String pdfPath = Storage.get("filePath");
+        File pdfFile = new File(pdfPath);
         boolean success = pdfFile.exists();
         pdfFile.renameTo(new File(dovada + fileName));
         WebLink goHome = new WebLink().setId("homeScreenBtn");
