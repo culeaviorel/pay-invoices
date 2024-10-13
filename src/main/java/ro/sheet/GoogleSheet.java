@@ -194,4 +194,17 @@ public class GoogleSheet {
                         .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
         requests.add(request);
     }
+
+    public static void insertItem(int rowIndex, int sheetId, final List<Request> requests) {
+        Request request = new Request()
+                .setInsertDimension(new InsertDimensionRequest()
+                        .setRange(new DimensionRange()
+                                .setSheetId(sheetId)
+                                .setDimension("ROWS")
+                                .setStartIndex(rowIndex)
+                                .setEndIndex(rowIndex + 1)
+                        )
+                );
+        requests.add(request);
+    }
 }

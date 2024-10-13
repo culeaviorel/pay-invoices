@@ -25,7 +25,11 @@ public abstract class TestBase {
     }
 
     public static String dovada() {
-        return location() + "Facturi\\Dovada\\";
+        return facturi() + "Dovada\\";
+    }
+
+    public static String facturi() {
+        return location() + "Facturi\\";
     }
 
     public static String location() {

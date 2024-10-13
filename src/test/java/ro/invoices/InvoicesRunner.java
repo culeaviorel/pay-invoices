@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
                 "ro.shelly",
                 "ro.olx",
                 "ro.casomes",
+                "ro.sheet",
                 "ro.home.assistant",
                 "ro.leiibvb",
                 "ro.autovit"

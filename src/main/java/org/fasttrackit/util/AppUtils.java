@@ -13,12 +13,16 @@ import org.slf4j.LoggerFactory;
 import ro.neo.Invoice;
 import ro.neo.Storage;
 import ro.sheet.GoogleSheet;
+import ro.sheet.ItemTO;
+import ro.sheet.RowTO;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class AppUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppUtils.class);
@@ -47,6 +51,53 @@ public class AppUtils {
         GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
         GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
         GoogleSheet.addItemForUpdate("Dovada", link, ";", id, 5, sheetId, requests);
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
+        Utils.sleep(1);
+    }
+
+    @SneakyThrows
+    public void uploadFileAndAddRowForItem(ItemTO item, String location) {
+        String dataValue = item.getData();
+        LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        int year = localDate.getYear();
+        String link = uploadFileInDrive(location, item.getFileName(), "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
+        List<List<Object>> values = valueRange.getValues();
+        List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
+        Optional<RowTO> firstRow = list.stream().filter(i -> {
+            try {
+                LocalDate date = LocalDate.parse(i.getData(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                boolean before = localDate.isBefore(date);
+                if (before) {
+                    Utils.sleep(1);
+                }
+                return before;
+            } catch (DateTimeParseException e) {
+                return false;
+            }
+        }).findFirst();
+        int id = list.size();
+        if (firstRow.isPresent()) {
+            id = list.indexOf(firstRow.get());
+        }
+        List<Request> insertRequests = new ArrayList<>();
+        Integer sheetId = getSheetId(facturiSheetId, year + "");
+        GoogleSheet.insertItem(id, sheetId, insertRequests);
+        BatchUpdateSpreadsheetRequest batchInsertRequest = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests);
+        BatchUpdateSpreadsheetResponse insertResponse = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchInsertRequest).execute();
+
+        List<Request> requests = new ArrayList<>();
+        GoogleSheet.addItemForUpdate(item.getCategory(), id, 0, sheetId, requests);
+        GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
+        String date = localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
+        String tmp = item.getValue();
+        double value = Double.parseDouble(tmp);
+        GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
+        GoogleSheet.addItemForUpdate(item.getDescription(), id, 4, sheetId, requests);
+        GoogleSheet.addItemForUpdate(item.getType(), link, ";", id, 5, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
