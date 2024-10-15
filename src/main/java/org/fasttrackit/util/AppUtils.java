@@ -5,6 +5,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
+import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
@@ -36,8 +37,13 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowForItem(String fileName, String category, String description, double value, String dovada) {
-        String link = uploadFileInDrive(dovada, fileName, "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
+    public void uploadFileAndAddRowForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value) {
+        boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
+        String facturaLink = "";
+        if (hasFactura) {
+            facturaLink = uploadFileInDrive(facturaFilePath, "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY"); // 2024/facturi
+        }
+        String dovadaLink = uploadFileInDrive(dovadaFilePath, "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_"); // 2024/dovada
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2024" + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
@@ -50,7 +56,12 @@ public class AppUtils {
         GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
         GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
         GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
-        GoogleSheet.addItemForUpdate("Dovada", link, ";", id, 5, sheetId, requests);
+        int columnIndex = 5;
+        if (hasFactura) {
+            GoogleSheet.addItemForUpdate("Factura", facturaLink, ";", id, 5, sheetId, requests);
+            columnIndex++;
+        }
+        GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", id, columnIndex, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -61,7 +72,7 @@ public class AppUtils {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int year = localDate.getYear();
-        String link = uploadFileInDrive(location, item.getFileName(), "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
+        String link = uploadFileInDrive(location + item.getFileName(), "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
@@ -104,22 +115,23 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public String uploadFileInDrive(String location, String fileName, String driveFolderId) {
-        java.io.File filePath = new java.io.File(location + fileName);
-        String name = filePath.getName();
+    public String uploadFileInDrive(String filePath, String driveFolderId) {
+        java.io.File file = new java.io.File(filePath);
+        String name = file.getName();
         String extension = name.substring(name.lastIndexOf(".") + 1);
         String type = switch (extension) {
             case "pdf" -> "application/pdf";
             case "csv" -> "text/csv";
+            case "jpeg" -> "image/jpeg";
             default -> null;
         };
         Drive driveService = GoogleSheet.getDriveService();
         File fileMetadata = new File();
         fileMetadata.setName(name);
         fileMetadata.setParents(Collections.singletonList(driveFolderId));
-        FileContent mediaContent = new FileContent(type, filePath);
-        File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
-        return driveService.files().get(file.getId()).setFields("webViewLink").execute().getWebViewLink();
+        FileContent mediaContent = new FileContent(type, file);
+        File uploadFile = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+        return driveService.files().get(uploadFile.getId()).setFields("webViewLink").execute().getWebViewLink();
     }
 
     public Integer getSheetId(String spreadsheetId, String number) {

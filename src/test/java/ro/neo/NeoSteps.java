@@ -100,7 +100,7 @@ public class NeoSteps extends TestBase {
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(item.getSum());
                     String category = item.getName().replaceAll(" ", "") + "Out";
-                    new AppUtils().uploadFileAndAddRowForItem(fileName, category, "plata", value, dovada());
+                    new AppUtils().uploadFileAndAddRowForItem(null, dovada() + fileName, category, "plata", value);
                 }
             }
         }
@@ -291,9 +291,8 @@ public class NeoSteps extends TestBase {
     @SneakyThrows
     @And("in NeoBT I upload file in google sheet")
     public void inNeoBTIUploadFileInGoogleSheet() {
-        new AppUtils().uploadFileAndAddRowForItem("DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00, dovada());
+        new AppUtils().uploadFileAndAddRowForItem(null, dovada() + "DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
     }
-
 
 
     @And("in NeoBT I send Sustinere educatie from google sheet")
@@ -307,7 +306,7 @@ public class NeoSteps extends TestBase {
                 changeStatusInSheet(memberPay);
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(memberPay.sum());
-                new AppUtils().uploadFileAndAddRowForItem(fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value, dovada());
+                new AppUtils().uploadFileAndAddRowForItem(null, dovada() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
             }
         }
     }
@@ -317,12 +316,12 @@ public class NeoSteps extends TestBase {
         String location = location() + "CSV\\";
         neo.saveReportFrom("|Cont curent|RON", month, location);
         String fileName = Storage.get("fileName");
-        appUtils.uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
+        appUtils.uploadFileInDrive(location + fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
         neo.goToDashboard();
         neo.saveReportFrom("|Cont de economii|RON", month, location);
         fileName = Storage.get("fileName").toString().replaceAll("xls", "csv");
         Utils.sleep(1); // Convert manually xls file to csv in CSV folder
-        appUtils.uploadFileInDrive(location, fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
+        appUtils.uploadFileInDrive(location + fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
     }
 
     @And("in NeoBT I save card report local from {list} month")
@@ -362,7 +361,7 @@ public class NeoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowForItem(fileName, invoice.getCategory(), invoice.getDescription(), value, dovada());
+                appUtils.uploadFileAndAddRowForItem(invoice.getPdfPath(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }
