@@ -4,6 +4,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.fasttrackit.util.AppUtils;
@@ -13,8 +14,12 @@ import ro.neo.Invoice;
 import ro.neo.MemberPay;
 import ro.neo.Pay;
 import ro.neo.Storage;
+import ro.sheet.GoogleSheet;
 
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 public class BTGoSteps extends TestBase {
@@ -63,5 +68,12 @@ public class BTGoSteps extends TestBase {
             }
         }
 
+    }
+
+    @And("in BTGo I save report from current month")
+    public void inBTGoISaveReportFromCurrentMonth() {
+        final Locale roLocale = new Locale("ro", "RO");
+        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
+        String fileId = GoogleSheet.createFile(month);
     }
 }

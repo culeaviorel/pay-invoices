@@ -4,6 +4,8 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
@@ -206,5 +208,29 @@ public class GoogleSheet {
                         )
                 );
         requests.add(request);
+    }
+
+    @SneakyThrows
+    public static String createFile(String month) {
+        Drive driveService = getDriveService();
+        String name = "Raport " + month;
+        String folderId = "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR"; // folder id 2024/CSV
+        String query = String.format("name = '%s' and '%s' in parents and trashed = false", name, folderId);
+        FileList result = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, name)")
+                .execute();
+        if (!result.getFiles().isEmpty()) {
+            return result.getFiles().get(0).getId();
+        } else {
+            File fileMetadata = new File();
+            fileMetadata.setName(name);
+            fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet");
+            fileMetadata.setParents(List.of(folderId)); // folder id 2024/CSV
+            File file = driveService.files().create(fileMetadata)
+                    .setFields("id")
+                    .execute();
+            return file.getId();
+        }
     }
 }
