@@ -30,6 +30,8 @@ public class AppUtils {
 
     private static Sheets sheetsService;
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
+    private final String facturiFolderId = "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY";// 2024/facturi
+    private final String dovadaFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";// 2024/dovada
 
     public static void openUrl(String url) {
         LOGGER.info("open {}", url);
@@ -41,9 +43,9 @@ public class AppUtils {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         String facturaLink = "";
         if (hasFactura) {
-            facturaLink = uploadFileInDrive(facturaFilePath, "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY"); // 2024/facturi
+            facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId); // 2024/facturi
         }
-        String dovadaLink = uploadFileInDrive(dovadaFilePath, "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_"); // 2024/dovada
+        String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId); // 2024/dovada
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2024" + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
@@ -72,7 +74,7 @@ public class AppUtils {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int year = localDate.getYear();
-        String link = uploadFileInDrive(location + item.getFileName(), "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_");
+        String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
