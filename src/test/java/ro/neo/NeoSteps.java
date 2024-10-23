@@ -342,8 +342,8 @@ public class NeoSteps extends TestBase {
     public void inNeoBTIPayInvoices(List<Invoice> invoices) {
 //        double total = invoices.stream().flatMapToDouble(i -> DoubleStream.of(Double.parseDouble(i.getValue()))).sum();
         for (Invoice invoice : invoices) {
-            if (invoice.getPdfPath().contains(".pdf")) {
-                PDDocument document = PDDocument.load(new java.io.File(invoice.getPdfPath()));
+            if (invoice.getFileName().contains(".pdf")) {
+                PDDocument document = PDDocument.load(new java.io.File(facturi() + invoice.getFileName()));
                 PDFTextStripper pdfStripper = new PDFTextStripper();
                 String text = pdfStripper.getText(document);
                 document.close();
@@ -361,7 +361,7 @@ public class NeoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowForItem(invoice.getPdfPath(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+                appUtils.uploadFileAndAddRowForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }

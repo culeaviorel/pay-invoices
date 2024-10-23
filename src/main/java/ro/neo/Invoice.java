@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Invoice {
-    private String pdfPath;
+    private String fileName;
     private String category;
     private String value;
     private String description;

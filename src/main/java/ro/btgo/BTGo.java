@@ -30,6 +30,8 @@ import java.util.Locale;
 public class BTGo {
     private final Locale roLocale = new Locale("ro", "RO");
     private final Button nextButton = new Button().setId("moveForwardBtn");
+    private final WebLink goHome = new WebLink().setId("homeScreenBtn");
+    private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("user");
@@ -65,12 +67,14 @@ public class BTGo {
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
             transfer.click();
             WebLocator sourceAccount = new WebLocator().setId("sourceAccount");
+            WebLocatorUtils.scrollToWebLocator(sourceAccount);
             WebLocator openAccounts = new WebLocator(sourceAccount).setClasses("accounts-drd");
             openAccounts.click();
             WebLocator contEconomii = new WebLocator().setText(" Cont de economii ");
             WebLocator contEconomiiEl = new WebLocator().setTag("fba-account-details").setChildNodes(contEconomii);
             contEconomiiEl.click();
             WebLocator targetAccount = new WebLocator().setId("targetAccount");
+            WebLocatorUtils.scrollToWebLocator(targetAccount);
             WebLocator openTargetAccounts = new WebLocator(targetAccount).setClasses("accounts-drd");
             openTargetAccounts.click();
             WebLocator contCurent = new WebLocator().setText(" Cont curent ");
@@ -81,6 +85,9 @@ public class BTGo {
 
             nextButton.click();
             Utils.sleep(1);
+            nextButton.click();
+            goHome.click();
+            goBack.click();
         }
     }
 
@@ -120,6 +127,7 @@ public class BTGo {
         Utils.sleep(1); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
         download.ready(Duration.ofSeconds(30));
+        WebLocatorUtils.scrollToWebLocator(download);
         download.click();
         Files.walk(Paths.get(WebDriverConfig.getDownloadPath()))
                 .filter(Files::isRegularFile)
@@ -136,9 +144,7 @@ public class BTGo {
         File pdfFile = new File(pdfPath);
         boolean success = pdfFile.exists();
         pdfFile.renameTo(new File(dovada + fileName));
-        WebLink goHome = new WebLink().setId("homeScreenBtn");
         goHome.click();
-        WebLocator goBack = new WebLocator().setId("historyBackBtn");
         goBack.click();
         return success;
     }
