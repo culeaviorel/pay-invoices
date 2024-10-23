@@ -7,12 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ItemTO {
-    private String fileName;
-    private String type;
-    private String plata;
+public class UserTO {
+    private String name;
     private String category;
     private String data;
     private String value;
     private String description;
+    private String type;
 }

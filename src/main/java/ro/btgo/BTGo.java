@@ -84,8 +84,10 @@ public class BTGo {
             sumaEl.setValue(String.valueOf(intValue));
 
             nextButton.click();
-            Utils.sleep(1);
+            Utils.sleep(1000);
+            WebLocatorUtils.scrollToWebLocator(nextButton);
             nextButton.click();
+            goHome.ready(Duration.ofSeconds(10));
             goHome.click();
             goBack.click();
         }

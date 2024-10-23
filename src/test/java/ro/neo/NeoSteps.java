@@ -100,7 +100,7 @@ public class NeoSteps extends TestBase {
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(item.getSum());
                     String category = item.getName().replaceAll(" ", "") + "Out";
-                    new AppUtils().uploadFileAndAddRowForItem(null, dovada() + fileName, category, "plata", value);
+                    new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, category, "plata", value);
                 }
             }
         }
@@ -291,7 +291,7 @@ public class NeoSteps extends TestBase {
     @SneakyThrows
     @And("in NeoBT I upload file in google sheet")
     public void inNeoBTIUploadFileInGoogleSheet() {
-        new AppUtils().uploadFileAndAddRowForItem(null, dovada() + "DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
+        new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + "DovadaPlataCasaFilipAprilie.pdf", "CasaFilipOut", "plata", 200.00);
     }
 
 
@@ -306,7 +306,7 @@ public class NeoSteps extends TestBase {
                 changeStatusInSheet(memberPay);
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(memberPay.sum());
-                new AppUtils().uploadFileAndAddRowForItem(null, dovada() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
+                new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
             }
         }
     }
@@ -361,7 +361,7 @@ public class NeoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }

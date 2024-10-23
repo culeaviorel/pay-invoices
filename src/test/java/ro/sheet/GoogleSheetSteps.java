@@ -15,7 +15,7 @@ public class GoogleSheetSteps extends TestBase {
     @And("I add in Facturi or Bonuri in google sheet:")
     public void iAddInFacturiOrBonuriInGoogleSheet(List<ItemTO> items) {
         for (ItemTO item : items) {
-            appUtils.uploadFileAndAddRowForItem(item, facturi());
+            appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturi());
         }
     }
 }

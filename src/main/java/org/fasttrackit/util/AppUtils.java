@@ -9,6 +9,7 @@ import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.neo.Invoice;
@@ -20,16 +21,15 @@ import ro.sheet.RowTO;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.TextStyle;
+import java.util.*;
 
 public class AppUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppUtils.class);
 
     private static Sheets sheetsService;
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
+    private static final String contSheetId = "1xIQFX2gGdBj4nV-42-GcbmkVVKFzF4uIKPaVmxCfZAE";
     private final String facturiFolderId = "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY";// 2024/facturi
     private final String dovadaFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";// 2024/dovada
 
@@ -39,7 +39,7 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value) {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         String facturaLink = "";
         if (hasFactura) {
@@ -70,27 +70,17 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowForItem(ItemTO item, String location) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String location) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int year = localDate.getYear();
+        String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
         String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
         List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
-        Optional<RowTO> firstRow = list.stream().filter(i -> {
-            try {
-                LocalDate date = LocalDate.parse(i.getData(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                boolean before = localDate.isBefore(date);
-                if (before) {
-                    Utils.sleep(1);
-                }
-                return before;
-            } catch (DateTimeParseException e) {
-                return false;
-            }
-        }).findFirst();
+        Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).findFirst();
         int id = list.size();
         if (firstRow.isPresent()) {
             id = list.indexOf(firstRow.get());
@@ -103,7 +93,7 @@ public class AppUtils {
 
         List<Request> requests = new ArrayList<>();
         GoogleSheet.addItemForUpdate(item.getCategory(), id, 0, sheetId, requests);
-        GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
+        GoogleSheet.addItemForUpdate(item.getPlata(), id, 1, sheetId, requests);
         String date = localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
         String tmp = item.getValue();
@@ -114,6 +104,66 @@ public class AppUtils {
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
+        if (item.getPlata().equals("Cash")) {
+            ValueRange valueRange1 = sheetsService.spreadsheets().values().get(contSheetId, month + "!A1:I").execute();
+            List<List<Object>> values1 = valueRange1.getValues();
+            values1 = values1.stream().filter(i -> i.size() > 7).toList();
+            List<RowTO> list1 = values1.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(4), (String) i.get(6), (String) i.get(7))).toList();
+            Optional<RowTO> firstRow1 = list1.stream().filter(i -> isBefore(i, localDate)).findFirst();
+            int id1 = list1.size();
+            if (firstRow1.isPresent()) {
+                id1 = list1.indexOf(firstRow1.get());
+            }
+            List<Request> insertRequests1 = new ArrayList<>();
+            Integer sheetId1 = getSheetId(contSheetId, month);
+            GoogleSheet.insertItem(id1, sheetId1, insertRequests1);
+            BatchUpdateSpreadsheetRequest batchInsertRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests1);
+            BatchUpdateSpreadsheetResponse insertResponse1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchInsertRequest1).execute();
+
+            List<Request> requests1 = new ArrayList<>();
+            GoogleSheet.addItemForUpdate("Cheltuieli", id1, 0, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate(item.getCategory(), id1, 1, sheetId1, requests1);
+            date = localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            GoogleSheet.addItemForUpdateDate(date, id1, 2, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate(value, id1, 4, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate(item.getType(), link, ";", id1, 7, sheetId1, requests1);
+            BatchUpdateSpreadsheetRequest batchUpdateRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(requests1);
+            BatchUpdateSpreadsheetResponse response1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchUpdateRequest1).execute();
+            Utils.sleep(1);
+        }
+    }
+
+    private static boolean isBefore(RowTO i, LocalDate localDate) {
+        try {
+            String data = i.getData();
+            String format = detectDateFormat(data);
+            LocalDate date1 = LocalDate.parse(data, DateTimeFormatter.ofPattern(format));
+            return localDate.isBefore(date1);
+        } catch (DateTimeParseException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public static String detectDateFormat(String dateStr) {
+        List<String> possibleFormats = List.of(
+                "dd.MM.yyyy",   // Zi, lună, an
+                "MM.dd.yyyy",   // Lună, zi, an (ex. SUA)
+                "dd/MM/yyyy",
+                "yyyy.MM.dd"    // An, lună, zi
+        );
+
+        return possibleFormats.stream()
+                .filter(format -> {
+                    try {
+                        LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(format));
+                        return true;
+                    } catch (DateTimeParseException e) {
+                        return false;
+                    }
+                })
+                .findFirst()
+                .orElse("Unknown format for: " + dateStr);
     }
 
     @SneakyThrows

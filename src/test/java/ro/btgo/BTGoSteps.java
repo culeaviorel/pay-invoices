@@ -64,7 +64,7 @@ public class BTGoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }
