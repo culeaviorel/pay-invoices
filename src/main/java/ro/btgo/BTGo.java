@@ -1,5 +1,6 @@
 package ro.btgo;
 
+import com.google.common.base.Strings;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.WebLocator;
@@ -81,14 +82,14 @@ public class BTGo {
             WebLocator contCurentEl = new WebLocator().setTag("fba-account-details").setChildNodes(contCurent);
             contCurentEl.click();
             TextField sumaEl = new TextField().setId("destinationAccountValueInput");
-            sumaEl.setValue(String.valueOf(intValue));
-
+            sumaEl.setValue(String.valueOf(intValue - sumaActuala + 5));
             nextButton.click();
             Utils.sleep(1000);
             WebLocatorUtils.scrollToWebLocator(nextButton);
             nextButton.click();
             goHome.ready(Duration.ofSeconds(10));
             goHome.click();
+            WebLocatorUtils.scrollToWebLocator(goBack);
             goBack.click();
         }
     }
@@ -126,7 +127,7 @@ public class BTGo {
             }
             return doClick;
         });
-        Utils.sleep(1); // wait for accept from BTGo
+        Utils.sleep(10000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
         download.ready(Duration.ofSeconds(30));
         WebLocatorUtils.scrollToWebLocator(download);
@@ -140,7 +141,8 @@ public class BTGo {
                     }
                 });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String fileName = "DovadaPlata" + invoice.getCategory().replaceAll(" ", "") + month + ".pdf";
+        String extra = Strings.isNullOrEmpty(invoice.getFileName()) ? invoice.getCategory().replaceAll(" ", "") + month : "Factura" + invoice.getNr();
+        String fileName = "DovadaPlata" + extra + ".pdf";
         Storage.set("fileName", fileName);
         String pdfPath = Storage.get("filePath");
         File pdfFile = new File(pdfPath);
