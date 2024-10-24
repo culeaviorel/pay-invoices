@@ -55,7 +55,6 @@ public class BTGo {
         Utils.sleep(1); //wait for accept from BTGo
     }
 
-
     public void transferFromDepozitIntoContCurent(int intValue) {
         WebLocator accountDetails = new WebLocator().setTag("fba-account-details");
         accountDetails.ready(Duration.ofSeconds(10));
