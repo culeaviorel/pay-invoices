@@ -3,6 +3,7 @@ package ro.btgo;
 import com.google.common.base.Strings;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
+import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.button.Button;
 import com.sdl.selenium.web.button.InputButton;
@@ -76,16 +77,17 @@ public class BTGo {
             WebLocator targetAccount = new WebLocator().setId("targetAccount");
             WebLocatorUtils.scrollToWebLocator(targetAccount);
             WebLocator openTargetAccounts = new WebLocator(targetAccount).setClasses("accounts-drd");
-            openTargetAccounts.click();
+            RetryUtils.retry(2, openTargetAccounts::click);
             WebLocator contCurent = new WebLocator().setText(" Cont curent ");
             WebLocator contCurentEl = new WebLocator().setTag("fba-account-details").setChildNodes(contCurent);
             contCurentEl.click();
             TextField sumaEl = new TextField().setId("destinationAccountValueInput");
             sumaEl.setValue(String.valueOf(intValue - sumaActuala + 5));
-            nextButton.click();
+            Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
-            WebLocatorUtils.scrollToWebLocator(nextButton);
-            nextButton.click();
+            Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(transferaButton);
             goHome.ready(Duration.ofSeconds(10));
             goHome.click();
             WebLocatorUtils.scrollToWebLocator(goBack);
@@ -108,24 +110,18 @@ public class BTGo {
         iban.setValue(invoice.getIban());
         iban.sendKeys(Keys.ENTER);
         Utils.sleep(500);
-        WebLocatorUtils.scrollToWebLocator(nextButton);
-        nextButton.click();
+        WebLocatorUtils.scrollToWebLocator(iban);
+        Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+        scrollAndDoClickOn(maiDeparteButton);
         TextField sumaEL = new TextField().setId("transferAmountInput");
         sumaEL.setValue(invoice.getValue());
         TextField descriptionInput = new TextField().setId("descriptionInput");
         descriptionInput.setValue("factura " + invoice.getNr());
-        WebLocatorUtils.scrollToWebLocator(nextButton);
-        nextButton.click();
+        WebLocatorUtils.scrollToWebLocator(descriptionInput);
+        scrollAndDoClickOn(maiDeparteButton);
         Utils.sleep(500);
-        nextButton.ready(Duration.ofSeconds(10));
-        RetryUtils.retry(5, () -> {
-            boolean doClick = nextButton.doClick();
-            if (!doClick) {
-                Utils.sleep(100);
-                WebLocatorUtils.scrollToWebLocator(nextButton);
-            }
-            return doClick;
-        });
+        Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
+        scrollAndDoClickOn(laSemnareButton);
         Utils.sleep(10000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
         download.ready(Duration.ofSeconds(30));
@@ -150,5 +146,17 @@ public class BTGo {
         goHome.click();
         goBack.click();
         return success;
+    }
+
+    private void scrollAndDoClickOn(Button button) {
+        button.ready(Duration.ofSeconds(10));
+        RetryUtils.retry(15, () -> {
+            boolean doClick = button.doClick();
+            if (!doClick) {
+                Utils.sleep(100);
+                WebLocatorUtils.scrollToWebLocator(button);
+            }
+            return doClick;
+        });
     }
 }
