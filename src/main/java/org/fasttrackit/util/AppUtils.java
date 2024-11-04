@@ -218,6 +218,39 @@ public class AppUtils {
         }
     }
 
+    public void collectForGas(Invoice invoice, List<String> list) {
+        String total = "";
+        String nrFacturii = "";
+        String codAbonat = "";
+        for (String row : list) {
+            if (row.contains("Total de plată la data de")) {
+                total = splitAfterLastSpace(row)[1];
+            } else if (row.contains("MS EON")) {
+                nrFacturii = row.split("MS EON")[1].trim().split(" ")[0].trim();
+            } else if (row.contains("Cod client")) {
+                codAbonat = "1003628159";
+            }
+            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
+                invoice.setValue(total.replaceAll(",", "."));
+                invoice.setNr(nrFacturii);
+                invoice.setCod(codAbonat);
+                invoice.setDescription("factura de Gaz");
+                invoice.setFurnizor("EON ENERGIE ROMANIA (GAZ SI ELECTRICITATE)");
+                break;
+            }
+        }
+    }
+
+    public static String[] splitAfterLastSpace(String input) {
+        int lastSpaceIndex = input.lastIndexOf(' ');
+        if (lastSpaceIndex == -1) {
+            return new String[]{input}; // No space found, return the original string
+        }
+        String part1 = input.substring(0, lastSpaceIndex);
+        String part2 = input.substring(lastSpaceIndex + 1);
+        return new String[]{part1, part2};
+    }
+
     public void collectForGunoi(Invoice invoice, List<String> list) {
         String total = "";
         String nrFacturii = "";
@@ -236,6 +269,8 @@ public class AppUtils {
                 invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
                 invoice.setCod(codAbonat);
                 invoice.setDescription("factura de Gunoi");
+                invoice.setFurnizor("SUPERCOM SA");
+                invoice.setIban("RO85CECEB00030RON2670130");
                 break;
             }
         }

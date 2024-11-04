@@ -31,7 +31,7 @@ import java.util.Locale;
 @Slf4j
 public class BTGo {
     private final Locale roLocale = new Locale("ro", "RO");
-    private final Button nextButton = new Button().setId("moveForwardBtn");
+    //    private final Button nextButton = new Button().setId("moveForwardBtn");
     private final WebLink goHome = new WebLink().setId("homeScreenBtn");
     private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
 
@@ -83,9 +83,13 @@ public class BTGo {
             contCurentEl.click();
             TextField sumaEl = new TextField().setId("destinationAccountValueInput");
             sumaEl.setValue(String.valueOf(intValue - sumaActuala + 5));
+            WebLocator descriptionInput = new WebLocator().setId("descriptionInput");
+            WebLocatorUtils.scrollToWebLocator(descriptionInput);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
+            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
+            WebLocatorUtils.scrollToWebLocator(description);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
             goHome.ready(Duration.ofSeconds(10));
@@ -97,31 +101,63 @@ public class BTGo {
 
     @SneakyThrows
     public boolean invoicePayment(Invoice invoice, String dovada) {
-        WebLocator textEl = new WebLocator().setText(" Plată nouă ");
-        WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
-        transfer.click();
-        WebLocator transferBani = new WebLocator().setText(" Transferă bani ");
-        transferBani.click();
-        WebLink destinatarNou = new WebLink(null, " Beneficiar nou ");
-        destinatarNou.click();
-        TextField nume = new TextField().setId("partnerNameInput");
-        nume.setValue(invoice.getFurnizor());
-        TextField iban = new TextField().setId("ibanInput");
-        iban.setValue(invoice.getIban());
-        iban.sendKeys(Keys.ENTER);
-        Utils.sleep(500);
-        WebLocatorUtils.scrollToWebLocator(iban);
-        Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
-        scrollAndDoClickOn(maiDeparteButton);
-        TextField sumaEL = new TextField().setId("transferAmountInput");
-        sumaEL.setValue(invoice.getValue());
-        TextField descriptionInput = new TextField().setId("descriptionInput");
-        descriptionInput.setValue("factura " + invoice.getNr());
-        WebLocatorUtils.scrollToWebLocator(descriptionInput);
-        scrollAndDoClickOn(maiDeparteButton);
-        Utils.sleep(500);
-        Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
-        scrollAndDoClickOn(laSemnareButton);
+        boolean utilitati = invoice.getCategory().equals("Apa")
+//                || invoice.getCategory().equals("Gunoi")
+                || invoice.getCategory().equals("Curent")
+                || invoice.getCategory().equals("Gaz");
+        if (utilitati) {
+            WebLocator textEl = new WebLocator().setText(" Plată nouă ");
+            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
+            transfer.click();
+            WebLocator platesteUtilitati = new WebLocator().setText(" Plătește utilități ");
+            platesteUtilitati.click();
+            TextField search = new TextField().setId("searchInput");
+            WebLocatorUtils.scrollToWebLocator(search);
+            search.setValue(invoice.getFurnizor());
+            WebLocator list = new WebLocator().setId("providersList");
+            WebLocator row = new WebLocator(list).setClasses("row").setText(invoice.getFurnizor(), SearchType.DEEP_CHILD_NODE_OR_SELF);
+            row.click();
+            Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(maiDeparteButton);
+            TextField sumaEl = new TextField().setId("transferAmountInput");
+            sumaEl.setValue(invoice.getValue());
+            TextField codAbonatEl = new TextField().setId("paymentRef1Input");
+            codAbonatEl.setValue(invoice.getCod());
+            TextField facturaEl = new TextField().setId("paymentRef2Input");
+            WebLocatorUtils.scrollToWebLocator(facturaEl);
+            facturaEl.setValue(invoice.getNr());
+            scrollAndDoClickOn(maiDeparteButton);
+            WebLocator nrFacturaEl = new WebLocator().setText(" Numar factura");
+            WebLocatorUtils.scrollToWebLocator(nrFacturaEl);
+            Button semneazaButton = new Button(null, "Semnează", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(semneazaButton);
+        } else {
+            WebLocator textEl = new WebLocator().setText(" Plată nouă ");
+            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
+            transfer.click();
+            WebLocator transferBani = new WebLocator().setText(" Transferă bani ");
+            transferBani.click();
+            WebLink destinatarNou = new WebLink(null, " Beneficiar nou ");
+            destinatarNou.click();
+            TextField nume = new TextField().setId("partnerNameInput");
+            nume.setValue(invoice.getFurnizor());
+            TextField iban = new TextField().setId("ibanInput");
+            iban.setValue(invoice.getIban());
+            iban.sendKeys(Keys.ENTER);
+            Utils.sleep(500);
+            WebLocatorUtils.scrollToWebLocator(iban);
+            Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(maiDeparteButton);
+            TextField sumaEL = new TextField().setId("transferAmountInput");
+            sumaEL.setValue(invoice.getValue());
+            TextField descriptionInput = new TextField().setId("descriptionInput");
+            descriptionInput.setValue("factura " + invoice.getNr());
+            WebLocatorUtils.scrollToWebLocator(descriptionInput);
+            scrollAndDoClickOn(maiDeparteButton);            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
+            WebLocatorUtils.scrollToWebLocator(description);            Utils.sleep(500);
+            Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
+            scrollAndDoClickOn(laSemnareButton);
+        }
         Utils.sleep(10000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
         download.ready(Duration.ofSeconds(30));

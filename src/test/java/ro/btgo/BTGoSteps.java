@@ -53,13 +53,13 @@ public class BTGoSteps extends TestBase {
                     case "Apa" -> appUtils.collectForApa(invoice, list);
                     case "Gunoi" -> appUtils.collectForGunoi(invoice, list);
                     case "Curent" -> appUtils.collectForCurent(invoice, list);
+                    case "Gaz" -> appUtils.collectForGas(invoice, list);
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
             int intValue = (int) doubleValue + 1;
             btGo.transferFromDepozitIntoContCurent(intValue);
-//            invoice.setFurnizor("SUPERCOM SA");
-//            invoice.setIban("RO85CECEB00030RON2670130");
+
             boolean success = btGo.invoicePayment(invoice, dovada());
             if (success) {
                 String fileName = Storage.get("fileName");
