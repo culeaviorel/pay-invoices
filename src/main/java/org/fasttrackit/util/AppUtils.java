@@ -293,9 +293,9 @@ public class AppUtils {
                 invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
                 invoice.setCod(codAbonat);
                 invoice.setDescription("factura de Apa");
+                invoice.setFurnizor("COMPANIA DE APA SOMES - CLUJ");
                 break;
             }
         }
     }
-
 }

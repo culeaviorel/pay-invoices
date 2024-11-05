@@ -127,6 +127,7 @@ public class BTGo {
             WebLocatorUtils.scrollToWebLocator(facturaEl);
             facturaEl.setValue(invoice.getNr());
             scrollAndDoClickOn(maiDeparteButton);
+            Utils.sleep(1000);
             WebLocator nrFacturaEl = new WebLocator().setText(" Numar factura");
             WebLocatorUtils.scrollToWebLocator(nrFacturaEl);
             Button semneazaButton = new Button(null, "Semnează", SearchType.TRIM).setId("moveForwardBtn");
