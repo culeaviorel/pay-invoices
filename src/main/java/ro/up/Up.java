@@ -38,7 +38,7 @@ public class Up {
         close.click();
         WebLocator popup2 = new WebLocator().setId("modal_popup_welcome2");
         WebLink close2 = new WebLink(popup2).setClasses("close-button");
-        close2.click();
+        close2.doClick();
 
     }
 

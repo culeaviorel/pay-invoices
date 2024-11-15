@@ -207,7 +207,7 @@ public class View {
             }
             String val = sum.replaceAll("\\." + number + "5", "." + num);
 //            27.95=>27.9
-//            73.45=>73.5
+//            73.45=>73.5, 9.25=>9.3
             return val;
         } else {
             double s = Double.parseDouble(sum);
