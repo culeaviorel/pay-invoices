@@ -261,7 +261,7 @@ public class View {
             transaction = new Transaction(finder.getName(), "Tratament");
         } else if ((finder = find(restaurant, name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Restaurant");
-        } else if ((finder = find(List.of(new Category("SDL LANGUAGE WEAVER", "SDL LANGUAGE WEAVER SRL")), name)).getPresent()) {
+        } else if ((finder = find(List.of(new Category("Bonuri de masa", "SDL LANGUAGE WEAVER SRL")), name)).getPresent()) {
             transaction = new Transaction(finder.getName(), "Bonuri de masa");
         }
         return transaction;

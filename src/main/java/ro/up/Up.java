@@ -39,14 +39,12 @@ public class Up {
         WebLocator popup2 = new WebLocator().setId("modal_popup_welcome2");
         WebLink close2 = new WebLink(popup2).setClasses("close-button");
         close2.doClick();
-
     }
 
     private void acceptAll() {
         WebLink acceptAllButton = new WebLink(app, "ACCEPTA");
         acceptAllButton.doClick();
     }
-
 
     public List<ItemTO> collectData() {
         WebLocator picker = new WebLocator().setClasses("vue-daterange-picker");
