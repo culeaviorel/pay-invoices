@@ -389,6 +389,7 @@ public class View {
             , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
             , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", "MCDONALD S")
             , new Category("Cafea", "JOAYOKANU COFFEE SRL")
+            , new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
     );
 
     List<Category> medicamente = List.of(

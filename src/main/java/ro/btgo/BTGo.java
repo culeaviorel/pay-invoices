@@ -154,8 +154,10 @@ public class BTGo {
             TextField descriptionInput = new TextField().setId("descriptionInput");
             descriptionInput.setValue("factura " + invoice.getNr());
             WebLocatorUtils.scrollToWebLocator(descriptionInput);
-            scrollAndDoClickOn(maiDeparteButton);            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
-            WebLocatorUtils.scrollToWebLocator(description);            Utils.sleep(500);
+            scrollAndDoClickOn(maiDeparteButton);
+            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
+            WebLocatorUtils.scrollToWebLocator(description);
+            Utils.sleep(500);
             Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(laSemnareButton);
         }
@@ -181,6 +183,7 @@ public class BTGo {
         boolean success = pdfFile.exists();
         pdfFile.renameTo(new File(dovada + fileName));
         goHome.click();
+        Utils.sleep(1000);
         goBack.click();
         return success;
     }
