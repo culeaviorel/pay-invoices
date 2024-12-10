@@ -314,14 +314,15 @@ public class NeoSteps extends TestBase {
     @And("in NeoBT I save report from {string} month")
     public void inNeoBTISaveReportFromMonth(String month) {
         String location = location() + "CSV\\";
-        neo.saveReportFrom("|Cont curent|RON", month, location);
+        neo.saveReportFrom("RO46BTRL06701205T61531XX", month, location);
         String fileName = Storage.get("fileName");
-        appUtils.uploadFileInDrive(location + fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
+        String csvFolderId = "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR"; //2024/CSV
+        appUtils.uploadFileInDrive(location + fileName, csvFolderId);
         neo.goToDashboard();
-        neo.saveReportFrom("|Cont de economii|RON", month, location);
+        neo.saveReportFrom("RO38BTRLRONECON0T6153101", month, location);
         fileName = Storage.get("fileName").toString().replaceAll("xls", "csv");
         Utils.sleep(1); // Convert manually xls file to csv in CSV folder
-        appUtils.uploadFileInDrive(location + fileName, "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR");
+        appUtils.uploadFileInDrive(location + fileName, csvFolderId);
     }
 
     @And("in NeoBT I save card report local from {list} month")

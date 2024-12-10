@@ -1,5 +1,6 @@
 package ro.neo;
 
+import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
@@ -226,15 +227,17 @@ public class Neo {
         }
         String firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        WebLocator panelConturi = new WebLocator().setClasses("productListLP");
-        WebLocator child = new WebLocator().setText(identify, SearchType.CONTAINS_ALL);
-        WebLocator row = new WebLocator(panelConturi).setClasses("row").setChildNodes(child);
-        WebLink istoricLink = new WebLink(row, "Istoric", SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM);
-        istoricLink.click();
+        WebLocator productList = new WebLocator().setClasses("productListLP");
+        WebLocator child = new WebLocator().setText(identify);
+        WebLocator row = new WebLocator(productList).setClasses("row", "product-container").setChildNodes(child);
+        WebLocator span = new WebLocator(row).setClasses("primary-description");
+        span.click();
+        WebLink transaction = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwContainer_goTransaction");
+        transaction.click();
         filter(firstDayOfMonth, lastDayOfMonth);
         boolean contCurrent = identify.contains("Cont curent");
-        if (contCurrent) {
-            WebLink exportCSV = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a8");
+        WebLink exportCSV = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a8");
+        if (exportCSV.isPresent()) {
             RetryUtils.retry(2, exportCSV::click);
         } else {
             WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a6");
@@ -320,6 +323,7 @@ public class Neo {
 
     private static void filter(String firstDayOfMonth, String lastDayOfMonth) {
         WebLocator filterEl = new WebLocator().setId("lblClose");
+        WebLocatorUtils.scrollToWebLocator(filterEl, -200);
         filterEl.click();
         WebLocator fromEl = new WebLocator().setTag("input").setId("MainContent_TransactionMainContent_txpTransactions_ctl01_dpFromTo_dateFromPicker_txField");
         fromEl.clear();
