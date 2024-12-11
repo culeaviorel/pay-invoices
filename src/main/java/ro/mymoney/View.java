@@ -198,22 +198,25 @@ public class View {
     public String getCorrectValue(String sum) {
         Pattern pattern = Pattern.compile("(\\.\\d5)");
         Matcher matcher = pattern.matcher(sum);
-        if (matcher.find()) {
+        String result;
+        boolean find = matcher.find();
+        if (find) {
             int length = sum.length();
             String number = sum.substring(length - 2, length - 1);
-            int num = Integer.parseInt(number);
-            if (num > 1 && num < 5) {
-                num = num + 1;
+            int num = Integer.parseInt(number) + 1;
+            if (num == 10) {
+                String first = sum.split("\\.")[0];
+                int firstNum = Integer.parseInt(first) + 1;
+                result = sum.replaceAll(first + "\\." + number + "5", firstNum + ".0");
+            } else {
+                result = sum.replaceAll("\\." + number + "5", "." + num);
             }
-            String val = sum.replaceAll("\\." + number + "5", "." + num);
-//            27.95=>27.9
-//            73.45=>73.5, 9.25=>9.3
-            return val;
         } else {
             double s = Double.parseDouble(sum);
             String format = String.format("%.1f", s);
-            return format.contains(".") ? format : format + ".0";
+            result = format.contains(".") ? format : format + ".0";
         }
+        return result;
     }
 
     public Transaction getSubCategory(String name) {
@@ -280,16 +283,18 @@ public class View {
             , new Category("Jumbo", List.of("JUMBO ORADEA C8", "JUMBO CONSTANTA")), new Category("semintegazon", "mpy*semintegazon")
             , new Category("Smart Home", "SMART HOME 360"), new Category("GradinaMax", "GradinaMax")
             , new Category("bioculturi", "mpy*bioculturi"), new Category("vexio.ro", "PayU*vexio.ro")
-            , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL"), new Category("Shelly", "ALLTERCOROB")
+            , new Category("AGRO TOTAL", "AGRO TOTAL EXPRES SRL"), new Category("Shelly", List.of("ALLTERCOROB", "Allterco Robotics"))
             , new Category("Asigurare Casa", "INTER BROKER DE ASIG"), new Category("CLEANEXPERT", "CLEANEXPERT SHOP SRL")
             , new Category("SALICE", "SALICE COMPROD"), new Category("Remarcabil", "EUROTRANS SRL")
             , new Category("gardencentrum", "*EPgardencentrum.net"), new Category("Magazinul Gospodarului", "Magazinul Gospodarului")
             , new Category("Aliexpress", "aliexpress"), new Category("TIRANA", "TIRANA SEDIU CENTRAL")
             , new Category("NIGE", "SC NIGE IMPEX SRL"), new Category("MAFCOM", "MAFCOM PROD IMPEX SRL")
             , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB")
+            , new Category("JIEDUOBEKU4", "*PAYPAL JIEDUOBEKU4")
+            , new Category("Ventilatie", "DYNAMIC PARCEL DISTRIB")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
-            , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
+            , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj", "AUC 0004 CLUJ")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
             , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS")
             , new Category("La Vestar", "LA VESTAR"), new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA")
@@ -307,7 +312,9 @@ public class View {
             , new Category("EURO MARKET", "EURO MARKET"), new Category("INMEDIO", "INMEDIO")
             , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA"), new Category("PULSAR", "PULSAR TEO SRL")
             , new Category("CBA", "CBA NORD VEST SRL"), new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
-            , new Category("SHOP&GO", "SHOP&GO")
+            , new Category("SHOP&GO", "SHOP&GO"), new Category("Mavios", "MAVIOS IMPEX")
+            , new Category("Oncos", "SC ONCOS TRANSILVANIA")
+            , new Category("Piccolino", "PICCOLINO CAFFE SRL")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -320,7 +327,7 @@ public class View {
             , new Category("BRUUJ", "BRUUJ SRL"), new Category("Deichmann", "Deichmann Cluj 037")
             , new Category("JURBAKA", "JURBAKA FASHION SRL")
     );
-    private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL"))
+    private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL", "ROMPETROL"))
             , new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
             , new Category("EPiesa", List.of("EURO PARTS DISTRIB")), new Category("SAFETY BROKER", "SAFETY BROKER")
             , new Category("SOS ITP SERVICE", "SOS ITP SERVICE"), new Category("MALL DOROBANTILOR", List.of("MALL DOROBANTILOR SERVICE", "ITP DOROBANTILOR SRL"))
@@ -390,6 +397,8 @@ public class View {
             , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", "MCDONALD S")
             , new Category("Cafea", "JOAYOKANU COFFEE SRL")
             , new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
+            , new Category("Poco Loco", "POCO LOCO CITY")
+            , new Category("Taco Bueno", "TACO BUENO")
     );
 
     List<Category> medicamente = List.of(
@@ -408,8 +417,8 @@ public class View {
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"), new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
             , new Category("Noriel", "NORIEL TOYS IULIUS MAL"), new Category("BOB CRISTINA", "BOB CRISTINA MARIA INTRE")
-            , new Category("Florarie", "ILCA LAURA II FLORARIE")
-            , new Category("DECATHLON", "DECATHLON BRASOV LN")
+            , new Category("Florarie", "ILCA LAURA II FLORARIE"), new Category("DECATHLON", "DECATHLON BRASOV LN")
+            , new Category("Castelul Piticilor", "CASTELUL PITICILOR SRL")
     );
 
     List<Category> concediu = List.of(new Category("Hotel", "Hotel at Booking.com"), new Category("SUFRO COMPANY", "SUFRO COMPANY SRL")
@@ -435,6 +444,7 @@ public class View {
     List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG")
             , new Category("Stomatologie", "STOMPRAX MEDICA SRL")
             , new Category("Stomatologie", "REJOICE DENT S R L")
+            , new Category("Stomatologie", "DENTAL CHIQUE CLINIQUE")
     );
 
     private Finder find(List<Category> categories, String name) {
