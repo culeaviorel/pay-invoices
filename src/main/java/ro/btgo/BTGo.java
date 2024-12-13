@@ -138,21 +138,31 @@ public class BTGo {
             transfer.click();
             WebLocator transferBani = new WebLocator().setText(" Transferă bani ");
             transferBani.click();
-            WebLink destinatarNou = new WebLink(null, " Beneficiar nou ");
-            destinatarNou.click();
-            TextField nume = new TextField().setId("partnerNameInput");
-            nume.setValue(invoice.getFurnizor());
-            TextField iban = new TextField().setId("ibanInput");
-            iban.setValue(invoice.getIban());
-            iban.sendKeys(Keys.ENTER);
-            Utils.sleep(500);
-            WebLocatorUtils.scrollToWebLocator(iban);
+            if (Strings.isNullOrEmpty(invoice.getIban())) {
+                WebLink alegeBeneficiarul = new WebLink(null, "Alege beneficiarul", SearchType.TRIM);
+                alegeBeneficiarul.click();
+                TextField search = new TextField().setId("searchInput");
+                search.setValue(invoice.getFurnizor());
+                WebLocator nameEl = new WebLocator().setTag("span").setText(invoice.getFurnizor());
+                WebLocator card = new WebLocator().setClasses("card", "flex-row").setChildNodes(nameEl);
+                scrollAndDoClickOn(card);
+            } else {
+                WebLink destinatarNou = new WebLink(null, "Beneficiar nou", SearchType.TRIM);
+                destinatarNou.click();
+                TextField nume = new TextField().setId("partnerNameInput");
+                nume.setValue(invoice.getFurnizor());
+                TextField iban = new TextField().setId("ibanInput");
+                iban.setValue(invoice.getIban());
+                iban.sendKeys(Keys.ENTER);
+                Utils.sleep(500);
+                WebLocatorUtils.scrollToWebLocator(iban);
+            }
             Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(maiDeparteButton);
             TextField sumaEL = new TextField().setId("transferAmountInput");
             sumaEL.setValue(invoice.getValue());
             TextField descriptionInput = new TextField().setId("descriptionInput");
-            descriptionInput.setValue("factura " + invoice.getNr());
+            descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
             WebLocatorUtils.scrollToWebLocator(descriptionInput);
             scrollAndDoClickOn(maiDeparteButton);
             WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
@@ -163,9 +173,7 @@ public class BTGo {
         }
         Utils.sleep(10000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
-        download.ready(Duration.ofSeconds(30));
-        WebLocatorUtils.scrollToWebLocator(download);
-        download.click();
+        scrollAndDoClickOn(download); Utils.sleep(1000);
         Files.walk(Paths.get(WebDriverConfig.getDownloadPath()))
                 .filter(Files::isRegularFile)
                 .forEach(file -> {
@@ -175,7 +183,7 @@ public class BTGo {
                     }
                 });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String extra = Strings.isNullOrEmpty(invoice.getFileName()) ? invoice.getCategory().replaceAll(" ", "") + month : "Factura" + invoice.getNr();
+        String extra = Strings.isNullOrEmpty(invoice.getFileName()) ? invoice.getCategory().replaceAll(" ", "") + month : (Strings.isNullOrEmpty(invoice.getNr()) ? "" : "Factura" + invoice.getNr());
         String fileName = "DovadaPlata" + extra + ".pdf";
         Storage.set("fileName", fileName);
         String pdfPath = Storage.get("filePath");
@@ -188,7 +196,7 @@ public class BTGo {
         return success;
     }
 
-    private void scrollAndDoClickOn(Button button) {
+    private void scrollAndDoClickOn(WebLocator button) {
         button.ready(Duration.ofSeconds(10));
         RetryUtils.retry(15, () -> {
             boolean doClick = button.doClick();

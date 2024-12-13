@@ -1,6 +1,7 @@
 package ro.btgo;
 
 import com.google.api.services.sheets.v4.Sheets;
+import com.google.common.base.Strings;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class BTGoSteps extends TestBase {
     @And("in BTGo I pay invoices:")
     public void inBTGoIPayInvoices(List<Invoice> invoices) {
         for (Invoice invoice : invoices) {
-            if (invoice.getFileName().contains(".pdf")) {
+            if (!Strings.isNullOrEmpty(invoice.getFileName()) && invoice.getFileName().contains(".pdf")) {
                 PDDocument document = PDDocument.load(new java.io.File(facturi() + invoice.getFileName()));
                 PDFTextStripper pdfStripper = new PDFTextStripper();
                 String text = pdfStripper.getText(document);
@@ -64,7 +65,7 @@ public class BTGoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi() + invoice.getFileName()), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }
