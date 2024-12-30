@@ -134,7 +134,7 @@ public class BTGoSteps extends TestBase {
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(String.valueOf(sumForDestination));
                     String category = invoice.getCategory().replaceAll(" ", "") + "Out";
-                    new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, category, "plata", value);
+                    appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, category, "plata", value);
                 }
             }
         }
