@@ -1,6 +1,10 @@
 package ro.btgo;
 
 import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
+import com.google.api.services.sheets.v4.model.Request;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.base.Strings;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
@@ -13,14 +17,16 @@ import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
 import ro.neo.Invoice;
 import ro.neo.MemberPay;
-import ro.neo.Pay;
 import ro.neo.Storage;
 import ro.sheet.GoogleSheet;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class BTGoSteps extends TestBase {
@@ -33,6 +39,7 @@ public class BTGoSteps extends TestBase {
     private static List<Pay> pays;
     private static List<MemberPay> memberPays;
     private static Sheets sheetsService;
+    private final Locale roLocale = new Locale("ro", "RO");
 
     @And("I login in BTGo")
     public void iLoginInBTGo() {
@@ -72,8 +79,77 @@ public class BTGoSteps extends TestBase {
 
     @And("in BTGo I save report from current month")
     public void inBTGoISaveReportFromCurrentMonth() {
-        final Locale roLocale = new Locale("ro", "RO");
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
         String fileId = GoogleSheet.createFile(month);
+    }
+
+    @SneakyThrows
+    @And("I prepare data for Donatii cu destinatie speciala New from google sheet")
+    public void iPrepareDataForDonatiiCuDestinatieSpecialaNewFromGoogleSheet() {
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(contracteDeSponsorizareId, "Donatii cu destinatie speciala New" + "!B2:F").execute();
+        List<List<Object>> values = valueRange.getValues();
+        pays = values.stream().map(i -> new Pay(
+                        i.get(0).toString(),
+                        i.get(1).toString(),
+                        i.get(2).toString(),
+                        i.get(3).toString(),
+                        i.get(4).toString()
+                )).filter(i -> !Strings.isNullOrEmpty(i.destination()))
+                .filter(i -> Integer.parseInt(i.suma()) > 0)
+                .toList();
+    }
+
+    @And("in BTGo I send Donatii cu destinatie speciala from google sheet")
+    public void inBTGoISendDonatiiCuDestinatieSpecialaFromGoogleSheet() {
+        LocalDate now = LocalDate.now();
+        List<Pay> paysResult = new ArrayList<>();
+        for (Pay pay : pays) {
+            for (int i = 0; i < 12; i++) {
+                String month = now.minusMonths(i).getMonth().getDisplayName(TextStyle.FULL, roLocale);
+                if (pay.month().equalsIgnoreCase(month)) {
+                    break;
+                } else {
+                    paysResult.add(pay);
+                }
+            }
+        }
+        int sum = paysResult.stream().mapToInt(n -> Integer.parseInt(n.suma())).sum();
+        if (sum > 0) {
+//            btGo.transferFromDepozitIntoContCurent(sum);
+            Map<String, List<Pay>> listMap = paysResult.stream().collect(Collectors.groupingBy(Pay::destination));
+            Integer sheetId = appUtils.getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala New");
+            String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
+            for (Map.Entry<String, List<Pay>> stringListEntry : listMap.entrySet()) {
+                String key = stringListEntry.getKey();
+                List<Pay> payList = stringListEntry.getValue();
+                int sumForDestination = payList.stream().mapToInt(n -> Integer.parseInt(n.suma())).sum();
+                List<Pay> payDistinct = payList.stream().distinct().toList();
+                List<String> descriptions = payDistinct.stream().map(Pay::description).toList();
+                String descriptionString = String.join(", ", descriptions);
+                Invoice invoice = new Invoice(null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, null, null);
+                boolean successPayment = btGo.invoicePayment(invoice, dovada());
+                if (successPayment) {
+                    changeMonthInSheetNew(month, payDistinct, pays, sheetId);
+                    String fileName = Storage.get("fileName");
+                    double value = Double.parseDouble(String.valueOf(sumForDestination));
+                    String category = invoice.getCategory().replaceAll(" ", "") + "Out";
+                    new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, category, "plata", value);
+                }
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void changeMonthInSheetNew(String month, List<Pay> payList, List<Pay> pays, Integer sheetId) {
+        int columnIndex = 5;
+        for (Pay pay : payList) {
+            List<Request> requests = new ArrayList<>();
+            int rowIndex = pays.indexOf(pay) + 1;
+            GoogleSheet.addItemForUpdate(month, rowIndex, columnIndex, sheetId, requests);
+            BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+            BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
+            log.info("add month: {} for category: {}", month, pay.destination());
+        }
     }
 }
