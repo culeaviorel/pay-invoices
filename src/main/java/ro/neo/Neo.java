@@ -86,7 +86,7 @@ public class Neo {
                 sumaEl.sendKeys(Keys.TAB);
                 String value = sumaEl.getValue().replaceAll(",", "");
                 int actualSum = (int) Float.parseFloat(value);
-                return sum == actualSum;
+                return finalSum == actualSum;
             });
             TextField descriptionEl = new TextField().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_FlowInnerContainerAmount_txtPaymentReference_txField");
             descriptionEl.setValue("rAuto");
@@ -121,7 +121,7 @@ public class Neo {
         nextWebLink.click();
         WebLocator message = new WebLocator().setId("MainContent_TransactionMainContent_divMessage");
         String text = RetryUtils.retry(20, message::getText);
-        boolean success = text.equals("Plată inițiată cu succes. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiunea Tranzacții, disponibilă la nivelul contului.");
+        boolean success = text.equals("Tranzacție în curs de procesare. Verifică starea finală a acesteia în secțiunea Activitatea mea sau în secțiuneaTranzacții, disponibilă la nivelul contului");
         WebLink salvezPDF = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_proofControl_a1");
         String filePath = WebDriverConfig.getDownloadPath() + File.separator + "Plată.pdf";
         File pdfFile = new File(filePath);
