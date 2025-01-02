@@ -6,8 +6,10 @@ import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.Request;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.base.Strings;
+import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.link.WebLink;
+import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
@@ -100,7 +102,13 @@ public class BTGoSteps extends TestBase {
         String firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         WebLink maiMulte = new WebLink(null, "Mai multe", SearchType.TRIM);
-        maiMulte.ready(Duration.ofSeconds(15));
+        RetryUtils.retry(2, () -> {
+            boolean ready = maiMulte.ready(Duration.ofSeconds(15));
+            if (!ready) {
+                WebDriverConfig.getDriver().navigate().refresh();
+            }
+            return ready;
+        });
         maiMulte.click();
         String fileName = btGo.saveReport(credentials.getContCurent(), firstDayOfMonth, lastDayOfMonth, csv2025());
 

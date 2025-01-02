@@ -228,13 +228,14 @@ public class BTGo {
         scrollAndDoClickOn(openFilter);
         WebLocator filterWindow = new WebLocator().setClasses("offcanvas", "offcanvas-end", "show");
         boolean ready1 = filterWindow.ready(Duration.ofSeconds(10));
+        Utils.sleep(1000);
         WebLocator period = new WebLocator(filterWindow).setId("periodOTHERRadioBtn");
         period.click();
         List<SearchText> searchTexts = List.of(new SearchText("mat-datepicker-0"), new SearchText("mat-datepicker-2"));
         TextField startDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts.toArray(new SearchText[0]));
         startDate.setValue(firstDayOfMonth);
         List<SearchText> searchTexts1 = List.of(new SearchText("mat-datepicker-1"), new SearchText("mat-datepicker-3"));
-        TextField endDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts.toArray(new SearchText[0]));
+        TextField endDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts1.toArray(new SearchText[0]));
         endDate.setValue(lastDayOfMonth);
         Button viewTransactions = new Button(filterWindow, "Vezi tranzacții", SearchType.TRIM);
         viewTransactions.click();
