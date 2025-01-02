@@ -6,6 +6,9 @@ import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.Request;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.common.base.Strings;
+import com.sdl.selenium.web.SearchType;
+import com.sdl.selenium.web.link.WebLink;
+import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +23,11 @@ import ro.neo.MemberPay;
 import ro.neo.Storage;
 import ro.sheet.GoogleSheet;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -34,17 +40,20 @@ public class BTGoSteps extends TestBase {
     private static final String contracteDeSponsorizareId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
     private static final String membriCuCopiiiLaGradinitaId = "1uxtyl_NBBHTWnmN7FVF_N5uE43iiqHHG1tDKC4-7ANg";
+    private static final String csvFolderId = "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR"; //2024/CSV
+    private static final String csv2025FolderId = "1lCbGDNT0uY833xkKoMEXLezsa2mDwkqD"; //2025/CSV
     private final BTGo btGo = new BTGo();
     private final AppUtils appUtils = new AppUtils();
     private static List<Pay> pays;
     private static List<MemberPay> memberPays;
     private static Sheets sheetsService;
     private final Locale roLocale = new Locale("ro", "RO");
+    private final UserCredentials credentials = new UserCredentials();
 
     @And("I login in BTGo")
     public void iLoginInBTGo() {
-        UserCredentials credentials = new UserCredentials();
         btGo.login(credentials.getBTGoID(), credentials.getBTGoPassword());
+        Utils.sleep(1); //wait for accept from BTGo
     }
 
     @SneakyThrows
@@ -77,10 +86,29 @@ public class BTGoSteps extends TestBase {
         }
     }
 
-    @And("in BTGo I save report from current month")
-    public void inBTGoISaveReportFromCurrentMonth() {
-        String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String fileId = GoogleSheet.createFile(month);
+    @And("in BTGo I save report from {string} month")
+    public void inBTGoISaveReportFromCurrentMonth(String selectedMonth) {
+        String actualMonth;
+        LocalDate now = null;
+        for (int i = 0; i < 12; i++) {
+            now = LocalDate.now().minusMonths(i);
+            actualMonth = now.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, roLocale);
+            if (actualMonth.equalsIgnoreCase(selectedMonth)) {
+                break;
+            }
+        }
+        String firstDayOfMonth = now.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        WebLink maiMulte = new WebLink(null, "Mai multe", SearchType.TRIM);
+        maiMulte.ready(Duration.ofSeconds(15));
+        maiMulte.click();
+        String fileName = btGo.saveReport(credentials.getContCurent(), firstDayOfMonth, lastDayOfMonth, csv2025());
+
+        appUtils.uploadFileInDrive(csv2025() + fileName, csv2025FolderId);
+
+        fileName = btGo.saveReport(credentials.getContDeEconomii(), firstDayOfMonth, lastDayOfMonth, csv2025());
+        appUtils.uploadFileInDrive(csv2025() + fileName, csv2025FolderId);
+        Utils.sleep(1);
     }
 
     @SneakyThrows

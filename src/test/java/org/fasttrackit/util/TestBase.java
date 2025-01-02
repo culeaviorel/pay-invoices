@@ -28,12 +28,32 @@ public abstract class TestBase {
         return facturi() + "Dovada\\";
     }
 
+    public static String dovada2025() {
+        return facturi2025() + "Dovada\\";
+    }
+
     public static String facturi() {
         return location() + "Facturi\\";
     }
 
+    public static String facturi2025() {
+        return location2025() + "Facturi\\";
+    }
+
+    public static String csv() {
+        return location() + "CSV\\";
+    }
+
+    public static String csv2025() {
+        return location2025() + "CSV\\";
+    }
+
     public static String location() {
         return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
+    }
+
+    public static String location2025() {
+        return "C:\\Users\\vculea\\Desktop\\Biserica\\2025\\";
     }
 
     public static String bt() {

@@ -3,6 +3,8 @@ package ro.btgo;
 import com.google.common.base.Strings;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
+import com.sdl.selenium.web.Operator;
+import com.sdl.selenium.web.SearchText;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.button.Button;
@@ -20,12 +22,14 @@ import ro.neo.Storage;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 
 @Slf4j
@@ -53,7 +57,6 @@ public class BTGo {
             }
             return doClick;
         });
-        Utils.sleep(1); //wait for accept from BTGo
     }
 
     public void transferFromDepozitIntoContCurent(int intValue) {
@@ -173,7 +176,8 @@ public class BTGo {
         }
         Utils.sleep(10000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
-        scrollAndDoClickOn(download); Utils.sleep(1000);
+        scrollAndDoClickOn(download);
+        Utils.sleep(1000);
         Files.walk(Paths.get(WebDriverConfig.getDownloadPath()))
                 .filter(Files::isRegularFile)
                 .forEach(file -> {
@@ -206,5 +210,52 @@ public class BTGo {
             }
             return doClick;
         });
+    }
+
+    public String saveReport(String contCurent, String firstDayOfMonth, String lastDayOfMonth, String location) {
+        WebLocator detailsContainer = new WebLocator().setTag("fba-accounts-root").setClasses("ng-star-inserted");
+        boolean ready = detailsContainer.ready(Duration.ofSeconds(10));
+        WebLocator title = new WebLocator().setTag("p").setText(contCurent);
+        WebLocator card = new WebLocator(detailsContainer).setClasses("card").setChildNodes(title);
+        if (!card.isPresent()) {
+            WebLocator selectAccount = new WebLocator().setId("selectAccountBtn");
+            selectAccount.click();
+            WebLocator modal = new WebLocator().setClasses("d-block", "modal", "fade", "show");
+            Card contEl = new Card(modal, contCurent);
+            contEl.click();
+        }
+        Button openFilter = new Button().setId("openOffcanvasFiltersBtn");
+        scrollAndDoClickOn(openFilter);
+        WebLocator filterWindow = new WebLocator().setClasses("offcanvas", "offcanvas-end", "show");
+        boolean ready1 = filterWindow.ready(Duration.ofSeconds(10));
+        WebLocator period = new WebLocator(filterWindow).setId("periodOTHERRadioBtn");
+        period.click();
+        List<SearchText> searchTexts = List.of(new SearchText("mat-datepicker-0"), new SearchText("mat-datepicker-2"));
+        TextField startDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts.toArray(new SearchText[0]));
+        startDate.setValue(firstDayOfMonth);
+        List<SearchText> searchTexts1 = List.of(new SearchText("mat-datepicker-1"), new SearchText("mat-datepicker-3"));
+        TextField endDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts.toArray(new SearchText[0]));
+        endDate.setValue(lastDayOfMonth);
+        Button viewTransactions = new Button(filterWindow, "Vezi tranzacții", SearchType.TRIM);
+        viewTransactions.click();
+        Button export = new Button().setId("exportBtn");
+        export.click();
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+            List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
+            if (!paths.isEmpty()) {
+                return paths;
+            } else {
+                return null;
+            }
+        });
+        Optional<Path> first = list.stream().filter(i -> !Files.isDirectory(i)).findFirst();
+        String fileName = "";
+        if (first.isPresent()) {
+            Path path = first.get();
+            File file = path.toFile();
+            fileName = file.getName();
+            file.renameTo(new File(location + fileName));
+        }
+        return fileName;
     }
 }

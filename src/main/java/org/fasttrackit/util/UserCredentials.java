@@ -49,4 +49,12 @@ public class UserCredentials extends PropertiesReader {
     public String getUpPassword() {
         return getProperty("up.password");
     }
+
+    public String getContDeEconomii() {
+        return getProperty("cont.de.economii");
+    }
+
+    public String getContCurent() {
+        return getProperty("cont.curent");
+    }
 }
