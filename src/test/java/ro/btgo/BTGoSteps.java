@@ -63,7 +63,7 @@ public class BTGoSteps extends TestBase {
     public void inBTGoIPayInvoices(List<Invoice> invoices) {
         for (Invoice invoice : invoices) {
             if (!Strings.isNullOrEmpty(invoice.getFileName()) && invoice.getFileName().contains(".pdf")) {
-                PDDocument document = PDDocument.load(new java.io.File(facturi() + invoice.getFileName()));
+                PDDocument document = PDDocument.load(new java.io.File(facturi2025() + invoice.getFileName()));
                 PDFTextStripper pdfStripper = new PDFTextStripper();
                 String text = pdfStripper.getText(document);
                 document.close();
@@ -79,11 +79,11 @@ public class BTGoSteps extends TestBase {
             int intValue = (int) doubleValue + 1;
             btGo.transferFromDepozitIntoContCurent(intValue);
 
-            boolean success = btGo.invoicePayment(invoice, dovada());
+            boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi() + invoice.getFileName()), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, invoice.getCategory(), invoice.getDescription(), value);
             }
         }
     }

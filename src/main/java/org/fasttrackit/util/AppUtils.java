@@ -32,7 +32,7 @@ public class AppUtils {
     private static final String contSheetId = "1UMkkX0VPDrRzu8RlLq2wILIx1VEJ5Sv2nQQDEBjEC8o";
     private final String facturiFolderId = "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY";// 2024/facturi
     private final String facturi2025FolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/facturi
-    private final String dovadaFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";// 2024/dovada
+    private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/dovada
 
     public static void openUrl(String url) {
         LOGGER.info("open {}", url);
@@ -44,15 +44,15 @@ public class AppUtils {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         String facturaLink = "";
         if (hasFactura) {
-            facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId); // 2024/facturi
+            facturaLink = uploadFileInDrive(facturaFilePath, facturi2025FolderId); // 2025/facturi
         }
         String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId); // 2024/dovada
         sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2024" + "!A1:G").execute();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2025" + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
         int id = values.size();
         List<Request> requests = new ArrayList<>();
-        Integer sheetId = getSheetId(facturiSheetId, "2024");
+        Integer sheetId = getSheetId(facturiSheetId, "2025");
         GoogleSheet.addItemForUpdate(category, id, 0, sheetId, requests);
         GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
