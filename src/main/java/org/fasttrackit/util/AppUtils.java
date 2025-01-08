@@ -31,6 +31,7 @@ public class AppUtils {
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
     private static final String contSheetId = "1xIQFX2gGdBj4nV-42-GcbmkVVKFzF4uIKPaVmxCfZAE";
     private final String facturiFolderId = "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY";// 2024/facturi
+    private final String facturi2025FolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/facturi
     private final String dovadaFolderId = "1mh2XGLQxiqIyAlkhjMLjlCGkryG1VfS_";// 2024/dovada
 
     public static void openUrl(String url) {
@@ -75,7 +76,7 @@ public class AppUtils {
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int year = localDate.getYear();
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
-        String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
+        String link = uploadFileInDrive(location + item.getFileName(), facturi2025FolderId);
         sheetsService = GoogleSheet.getSheetsService();
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
