@@ -81,7 +81,7 @@ public class AppUtils {
         ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
         List<List<Object>> values = valueRange.getValues();
         List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
-        Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).findFirst();
+        Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> second);
         int id = list.size();
         if (firstRow.isPresent()) {
             id = list.indexOf(firstRow.get());
@@ -110,7 +110,7 @@ public class AppUtils {
             List<List<Object>> values1 = valueRange1.getValues();
             values1 = values1.stream().filter(i -> i.size() > 7).toList();
             List<RowTO> list1 = values1.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(4), (String) i.get(6), (String) i.get(7))).toList();
-            Optional<RowTO> firstRow1 = list1.stream().filter(i -> isBefore(i, localDate)).findFirst();
+            Optional<RowTO> firstRow1 = list1.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> second);
             int id1 = list1.size();
             if (firstRow1.isPresent()) {
                 id1 = list1.indexOf(firstRow1.get());
@@ -140,7 +140,8 @@ public class AppUtils {
             String data = i.getData();
             String format = detectDateFormat(data);
             LocalDate date1 = LocalDate.parse(data, DateTimeFormatter.ofPattern(format));
-            return localDate.isBefore(date1);
+            boolean before = localDate.isBefore(date1);
+            return before;
         } catch (DateTimeParseException | IllegalArgumentException e) {
             return false;
         }
