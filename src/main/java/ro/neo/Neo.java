@@ -267,7 +267,6 @@ public class Neo {
 
     @SneakyThrows
     public void saveCardReportFrom(String identify, String month, String location) {
-        org.apache.commons.io.FileUtils.cleanDirectory(new File(WebDriverConfig.getDownloadPath()));
         String actualMonth = "";
         LocalDate now = null;
         for (int i = 0; i < 12; i++) {

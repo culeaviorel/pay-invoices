@@ -289,9 +289,9 @@ public class View {
             , new Category("gardencentrum", "*EPgardencentrum.net"), new Category("Magazinul Gospodarului", "Magazinul Gospodarului")
             , new Category("Aliexpress", "aliexpress"), new Category("TIRANA", "TIRANA SEDIU CENTRAL")
             , new Category("NIGE", "SC NIGE IMPEX SRL"), new Category("MAFCOM", "MAFCOM PROD IMPEX SRL")
-            , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB")
-            , new Category("JIEDUOBEKU4", "*PAYPAL JIEDUOBEKU4")
+            , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB"), new Category("JIEDUOBEKU4", "*PAYPAL JIEDUOBEKU4")
             , new Category("Ventilatie", "DYNAMIC PARCEL DISTRIB")
+            , new Category("Tindie", "TINDIE.COM")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
             , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj", "AUC 0004 CLUJ")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
@@ -318,7 +318,7 @@ public class View {
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
-            , new Category("LANELKA", "LANELKA"), new Category("MELI MELO", "MELI MELO"), new Category("Sinsay", "SINSAY")
+            , new Category("LANELKA", "LANELKA"), new Category("MELI MELO", "MELI MELO"), new Category("Sinsay", List.of("SINSAY", "Sinsay"))
             , new Category("REGALALIMENTNONSTO", "REGALALIMENTNONSTO"), new Category("JYSK", "JYSK"), new Category("THE BODY SHOP", "THE BODY SHOP")
             , new Category("BricoStore", "BRICOSTORE"), new Category("C&A", "C & A")
             , new Category("Decathlon", List.of("ROUMASPORT SRL", "Decathlon", "DECATHLON CLUJ")), new Category("Tabita", "TABITA IMPEX SRL")
@@ -395,10 +395,10 @@ public class View {
             , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
             , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
             , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", "MCDONALD S")
-            , new Category("Cafea", "JOAYOKANU COFFEE SRL")
-            , new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
-            , new Category("Poco Loco", "POCO LOCO CITY")
-            , new Category("Taco Bueno", "TACO BUENO")
+            , new Category("Cafea", "JOAYOKANU COFFEE SRL"), new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
+            , new Category("Poco Loco", "POCO LOCO CITY"), new Category("Taco Bueno", "TACO BUENO")
+            , new Category("KOVACS", "KOVACS")
+            , new Category("VKUSNO CONCEPT", "VKUSNO CONCEPT")
     );
 
     List<Category> medicamente = List.of(
@@ -406,7 +406,7 @@ public class View {
             , new Category("ELMAFARM", "ELMAFARM SRL"), new Category("Farmactiv", "Farmactiv SRL")
             , new Category("Ducfarm", "DUCFARM SRL"), new Category("FARMACIA TOMA", "SC FARMACIA TOMA")
             , new Category("VITAFARM", "VITAFARM PLUS SRL"), new Category("AMBROSIA", "AMBROSIA FARM 1")
-            , new Category("Catena", List.of("CATENA CLUJ 7", "CATENA FARMACIE - CLUJ"))
+            , new Category("Catena", List.of("CATENA CLUJ", "CATENA FARMACIE - CLUJ"))
     );
 
     List<Category> igiena = List.of(new Category("ABURIDO", "ABURIDO SRL"), new Category("Promomix", "WWW.PROMOMIX.RO")
