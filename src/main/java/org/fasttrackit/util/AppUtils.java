@@ -30,8 +30,7 @@ public class AppUtils {
     private static Sheets sheetsService;
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
     private static final String contSheetId = "1UMkkX0VPDrRzu8RlLq2wILIx1VEJ5Sv2nQQDEBjEC8o";
-    private final String facturiFolderId = "1IGKjzGInv8ub7f_puvnC585HHR_pyrmY";// 2024/facturi
-    private final String facturi2025FolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/facturi
+    private final String facturiFolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/facturi
     private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/dovada
 
     public static void openUrl(String url) {
@@ -44,12 +43,10 @@ public class AppUtils {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         String facturaLink = "";
         if (hasFactura) {
-            facturaLink = uploadFileInDrive(facturaFilePath, facturi2025FolderId); // 2025/facturi
+            facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId);
         }
-        String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId); // 2024/dovada
-        sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, "2025" + "!A1:G").execute();
-        List<List<Object>> values = valueRange.getValues();
+        String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId);
+        List<List<Object>> values = getValues(facturiSheetId,"2025!A1:G");
         int id = values.size();
         List<Request> requests = new ArrayList<>();
         Integer sheetId = getSheetId(facturiSheetId, "2025");
@@ -71,15 +68,20 @@ public class AppUtils {
     }
 
     @SneakyThrows
+    public List<List<Object>> getValues(String sheetId, String range) {
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, range).execute();
+        return valueRange.getValues();
+    }
+
+    @SneakyThrows
     public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String location) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         int year = localDate.getYear();
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
-        String link = uploadFileInDrive(location + item.getFileName(), facturi2025FolderId);
-        sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(facturiSheetId, year + "!A1:G").execute();
-        List<List<Object>> values = valueRange.getValues();
+        String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
+        List<List<Object>> values = getValues(facturiSheetId, year + "!A1:G");
         List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
         Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> second);
         int id = list.size();

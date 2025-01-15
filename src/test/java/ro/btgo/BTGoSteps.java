@@ -43,6 +43,7 @@ public class BTGoSteps extends TestBase {
     private static final String contracteDeSponsorizareId = "13SphvJvXIInYDd1pzYc-gIa0pI1HxEWa5JAUgAqhXfI";
     private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
     private static final String membriCuCopiiiLaGradinitaId = "1uxtyl_NBBHTWnmN7FVF_N5uE43iiqHHG1tDKC4-7ANg";
+    private static final String beneficiariId = "1ctmU3ZKJm9u44fvHsfn2IjS1XXNRU6YEFMT6TV_cCvU";
     private static final String csvFolderId = "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR"; //2024/CSV
     private static final String csv2025FolderId = "1lCbGDNT0uY833xkKoMEXLezsa2mDwkqD"; //2025/CSV
     private final BTGo btGo = new BTGo();
@@ -153,7 +154,16 @@ public class BTGoSteps extends TestBase {
         }
         int sum = paysResult.stream().mapToInt(n -> Integer.parseInt(n.suma())).sum();
         if (sum > 0) {
-//            btGo.transferFromDepozitIntoContCurent(sum);
+            List<List<Object>> values = appUtils.getValues(beneficiariId, "Beneficiari!A2:D");
+            List<Beneficiar> beneficiars = values.stream().map(i -> {
+                Beneficiar beneficiar = new Beneficiar(
+                        i.get(0).toString(),
+                        i.get(1).toString(),
+                        i.get(2).toString(),
+                        i.size() == 4 ? i.get(3).toString() : "");
+                return beneficiar;
+            }).toList();
+            btGo.transferFromDepozitIntoContCurent(sum, credentials.getContCurent(), credentials.getContDeEconomii());
             Map<String, List<Pay>> listMap = paysResult.stream().collect(Collectors.groupingBy(Pay::destination));
             Integer sheetId = appUtils.getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala New");
             String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
@@ -164,14 +174,15 @@ public class BTGoSteps extends TestBase {
                 List<Pay> payDistinct = payList.stream().distinct().toList();
                 List<String> descriptions = payDistinct.stream().map(Pay::description).toList();
                 String descriptionString = String.join(", ", descriptions);
-                Invoice invoice = new Invoice(null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, null, null);
-                boolean successPayment = btGo.invoicePayment(invoice, dovada());
+                Beneficiar beneficiar = beneficiars.stream().filter(i -> i.name().equals(key)).findFirst().orElseGet(() -> new Beneficiar(key, "", "", ""));
+                Invoice invoice = new Invoice(null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, beneficiar.beneficiar(), beneficiar.iban());
+                boolean successPayment = btGo.invoicePayment(invoice, dovada2025());
                 if (successPayment) {
                     changeMonthInSheetNew(month, payDistinct, pays, sheetId);
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(String.valueOf(sumForDestination));
                     String category = invoice.getCategory().replaceAll(" ", "") + "Out";
-                    appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, category, "plata", value);
+                    appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, category, "plata", value);
                 }
             }
         }

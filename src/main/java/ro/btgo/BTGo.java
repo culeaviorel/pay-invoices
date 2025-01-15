@@ -174,7 +174,7 @@ public class BTGo {
             TextField descriptionInput = new TextField().setId("descriptionInput");
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
             WebLocatorUtils.scrollToWebLocator(descriptionInput);
-            scrollAndDoClickOn(maiDeparteButton);
+            scrollAndDoClickOn(maiDeparteButton);            Utils.sleep(500);
             WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
             WebLocatorUtils.scrollToWebLocator(description);
             Utils.sleep(500);
@@ -182,6 +182,7 @@ public class BTGo {
             scrollAndDoClickOn(laSemnareButton);
         }
         Utils.sleep(10000); // wait for accept from BTGo
+        WebLocatorUtils.scrollToWebLocator(goHome);
         Button download = new Button().setId("successPageActionBtn");
         scrollAndDoClickOn(download);
         Utils.sleep(1000);
@@ -211,7 +212,7 @@ public class BTGo {
         String extra;
         if (Strings.isNullOrEmpty(invoice.getFileName())) {
             extra = invoice.getCategory().replaceAll(" ", "");
-            if (!Strings.isNullOrEmpty(invoice.getFurnizor())) {
+            if (invoice.getCategory().equals("Sustinere Educatie") && !Strings.isNullOrEmpty(invoice.getFurnizor())) {
                 extra = extra + invoice.getFurnizor().replaceAll(" ", "");
             }
             extra = extra + month;
