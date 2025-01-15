@@ -59,21 +59,6 @@ public class NeoSteps extends TestBase {
         Utils.sleep(1);
     }
 
-    @SneakyThrows
-    @And("I prepare data for Sustinere educatie from google sheet")
-    public void iPrepareDataForSustinereEducatieFromGoogleSheet() {
-        sheetsService = GoogleSheet.getSheetsService();
-        ValueRange valueRange = sheetsService.spreadsheets().values().get(membriCuCopiiiLaGradinitaId, "2024" + "!A2:D").execute();
-        List<List<Object>> values = valueRange.getValues();
-        memberPays = values.stream().map(i -> new MemberPay(
-                i.get(0).toString(),
-                i.get(1).toString(),
-                i.get(2).toString(),
-                i.size() == 4 ? i.get(3).toString() : ""
-        )).toList();
-        Utils.sleep(1);
-    }
-
     @And("in NeoBT I select profile {string}")
     public void inNeoBTISelectProfile(String profile) {
         neo.selectProfile(profile);
@@ -117,16 +102,6 @@ public class NeoSteps extends TestBase {
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
         log.info("add month: {} for category: {}", month, name);
-    }
-
-    @SneakyThrows
-    private void changeStatusInSheet(MemberPay memberPay) {
-        int row = memberPays.indexOf(memberPay) + 1;
-        Integer sheetId = appUtils.getSheetId(membriCuCopiiiLaGradinitaId, "Membri cu copiii la gradinita");
-        List<Request> requests = new ArrayList<>();
-        GoogleSheet.addItemForUpdate("Trimis", row, 3, sheetId, requests);
-        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(membriCuCopiiiLaGradinitaId, batchUpdateRequest).execute();
     }
 
     private Payment preparePayment(PayCount payCount) {
@@ -303,7 +278,7 @@ public class NeoSteps extends TestBase {
         for (MemberPay memberPay : memberPayList) {
             boolean success = neo.makePayment(new Item(memberPay.name(), memberPay.sum(), memberPay.description()), dovada());
             if (success) {
-                changeStatusInSheet(memberPay);
+//                changeStatusInSheet(memberPay);
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(memberPay.sum());
                 new AppUtils().uploadFileAndAddRowInFacturiAndContForItem(null, dovada() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);

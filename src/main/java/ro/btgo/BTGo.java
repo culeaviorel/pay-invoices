@@ -59,7 +59,7 @@ public class BTGo {
         });
     }
 
-    public void transferFromDepozitIntoContCurent(int intValue) {
+    public void transferFromDepozitIntoContCurent(int intValue, String contCurent, String contDeEconomii) {
         WebLocator accountDetails = new WebLocator().setTag("fba-account-details");
         accountDetails.ready(Duration.ofSeconds(10));
         List<String> list = accountDetails.getText().lines().toList();
@@ -70,22 +70,29 @@ public class BTGo {
             WebLocator textEl = new WebLocator().setText(" Transfer intern ");
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
             transfer.click();
+            WebLocator container = new WebLocator().setTag("fba-transfer-accounts-container");
             WebLocator sourceAccount = new WebLocator().setId("sourceAccount");
             WebLocatorUtils.scrollToWebLocator(sourceAccount);
-            WebLocator openAccounts = new WebLocator(sourceAccount).setClasses("accounts-drd");
-            openAccounts.click();
-            WebLocator contEconomii = new WebLocator().setText(" Cont de economii ");
-            WebLocator contEconomiiEl = new WebLocator().setTag("fba-account-details").setChildNodes(contEconomii);
-            contEconomiiEl.click();
-            WebLocator targetAccount = new WebLocator().setId("targetAccount");
-            WebLocatorUtils.scrollToWebLocator(targetAccount);
-            WebLocator openTargetAccounts = new WebLocator(targetAccount).setClasses("accounts-drd");
-            RetryUtils.retry(2, openTargetAccounts::click);
-            WebLocator contCurent = new WebLocator().setText(" Cont curent ");
-            WebLocator contCurentEl = new WebLocator().setTag("fba-account-details").setChildNodes(contCurent);
-            contCurentEl.click();
-            TextField sumaEl = new TextField().setId("destinationAccountValueInput");
-            sumaEl.setValue(String.valueOf(intValue - sumaActuala + 5));
+            Card cardEconomii = new Card(container, contDeEconomii);
+            if (!cardEconomii.isSource()) {
+                Button schimba = new Button(container).setClasses("exchange-icon");
+                schimba.click();
+            }
+            Card cardContCurent = new Card(container, contCurent);
+//            WebLocator openAccounts = new WebLocator(sourceAccount).setClasses("accounts-drd");
+//            openAccounts.click();
+//            WebLocator contEconomii = new WebLocator().setText(" Cont de economii ");
+//            WebLocator contEconomiiEl = new WebLocator().setTag("fba-account-details").setChildNodes(contEconomii);
+//            contEconomiiEl.click();
+//            WebLocator targetAccount = new WebLocator().setId("targetAccount");
+//            WebLocatorUtils.scrollToWebLocator(targetAccount);
+//            WebLocator openTargetAccounts = new WebLocator(targetAccount).setClasses("accounts-drd");
+//            RetryUtils.retry(2, openTargetAccounts::click);
+//            WebLocator contCurentText = new WebLocator().setText(" Cont curent ");
+//            WebLocator contCurentEl = new WebLocator().setTag("fba-account-details").setChildNodes(contCurentText);
+//            contCurentEl.click();
+//            TextField sumaEl = new TextField().setId("destinationAccountValueInput");
+            cardContCurent.setValue(String.valueOf(intValue - sumaActuala + 5));
             WebLocator descriptionInput = new WebLocator().setId("descriptionInput");
             WebLocatorUtils.scrollToWebLocator(descriptionInput);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
@@ -187,7 +194,7 @@ public class BTGo {
                     }
                 });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
-        String extra = Strings.isNullOrEmpty(invoice.getFileName()) ? invoice.getCategory().replaceAll(" ", "") + month : (Strings.isNullOrEmpty(invoice.getNr()) ? "" : "Factura" + invoice.getNr());
+        String extra = getExtra(invoice, month);
         String fileName = "DovadaPlata" + extra + ".pdf";
         Storage.set("fileName", fileName);
         String pdfPath = Storage.get("filePath");
@@ -198,6 +205,25 @@ public class BTGo {
         Utils.sleep(1000);
         goBack.click();
         return success;
+    }
+
+    private static String getExtra(Invoice invoice, String month) {
+        String extra;
+        if (Strings.isNullOrEmpty(invoice.getFileName())) {
+            extra = invoice.getCategory().replaceAll(" ", "");
+            if (!Strings.isNullOrEmpty(invoice.getFurnizor())) {
+                extra = extra + invoice.getFurnizor().replaceAll(" ", "");
+            }
+            extra = extra + month;
+        } else {
+            if (Strings.isNullOrEmpty(invoice.getNr())) {
+                extra = "";
+            } else {
+                extra = "Factura" + invoice.getNr();
+            }
+        }
+//        return Strings.isNullOrEmpty(invoice.getFileName()) ? invoice.getCategory().replaceAll(" ", "") + month : (Strings.isNullOrEmpty(invoice.getNr()) ? "" : "Factura" + invoice.getNr());
+        return extra;
     }
 
     private void scrollAndDoClickOn(WebLocator button) {

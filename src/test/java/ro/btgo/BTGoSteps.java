@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class BTGoSteps extends TestBase {
@@ -77,7 +78,7 @@ public class BTGoSteps extends TestBase {
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
             int intValue = (int) doubleValue + 1;
-            btGo.transferFromDepozitIntoContCurent(intValue);
+            btGo.transferFromDepozitIntoContCurent(intValue, credentials.getContCurent(), credentials.getContDeEconomii());
 
             boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
@@ -187,5 +188,48 @@ public class BTGoSteps extends TestBase {
             BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(contracteDeSponsorizareId, batchUpdateRequest).execute();
             log.info("add month: {} for category: {}", month, pay.destination());
         }
+    }
+
+    @SneakyThrows
+    @And("I prepare data for Sustinere educatie from google sheet")
+    public void iPrepareDataForSustinereEducatieFromGoogleSheet() {
+        sheetsService = GoogleSheet.getSheetsService();
+        ValueRange valueRange = sheetsService.spreadsheets().values().get(membriCuCopiiiLaGradinitaId, "2025!A2:E").execute();
+        List<List<Object>> values = valueRange.getValues();
+        memberPays = values.stream().map(i -> new MemberPay(
+                i.get(0).toString(),
+                i.get(1).toString(),
+                i.get(2).toString(),
+                i.get(3).toString(),
+                i.size() == 5 ? i.get(4).toString() : ""
+        )).toList();
+        Utils.sleep(1);
+    }
+
+    @And("in BTGo I send Sustinere educatie from google sheet")
+    public void inBTGoISendSustinereEducatieFromGoogleSheet() {
+        List<MemberPay> memberPayList = memberPays.stream().filter(i -> Strings.isNullOrEmpty(i.status())).toList();
+        int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
+        btGo.transferFromDepozitIntoContCurent(total, credentials.getContCurent(), credentials.getContDeEconomii());
+        for (MemberPay memberPay : memberPayList) {
+            Invoice invoice = new Invoice(null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban());
+            boolean success = btGo.invoicePayment(invoice, dovada2025());
+            if (success) {
+                changeStatusInSheet(memberPay);
+                String fileName = Storage.get("fileName");
+                double value = Double.parseDouble(memberPay.sum());
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value);
+            }
+        }
+    }
+
+    @SneakyThrows
+    private void changeStatusInSheet(MemberPay memberPay) {
+        int row = memberPays.indexOf(memberPay) + 1;
+        Integer sheetId = appUtils.getSheetId(membriCuCopiiiLaGradinitaId, "Membri cu copiii la gradinita");
+        List<Request> requests = new ArrayList<>();
+        GoogleSheet.addItemForUpdate("Trimis", row, 4, sheetId, requests);
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(membriCuCopiiiLaGradinitaId, batchUpdateRequest).execute();
     }
 }
