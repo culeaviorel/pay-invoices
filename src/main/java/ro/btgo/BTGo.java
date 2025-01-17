@@ -59,47 +59,33 @@ public class BTGo {
         });
     }
 
-    public void transferFromDepozitIntoContCurent(int intValue, String contCurent, String contDeEconomii) {
+    public void transferBetweenConts(int value, String fromCont, String toCont) {
         WebLocator accountDetails = new WebLocator().setTag("fba-account-details");
         accountDetails.ready(Duration.ofSeconds(10));
         List<String> list = accountDetails.getText().lines().toList();
         String sumaInCont = list.get(2).replaceAll(",", "");
         float tmpValue = Float.parseFloat(sumaInCont);
-        int sumaActuala = (int) tmpValue;
-        if (sumaActuala < intValue) {
+        int actualValue = (int) tmpValue;
+        if (value == 0 || actualValue < value) {
             WebLocator textEl = new WebLocator().setText(" Transfer intern ");
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
             transfer.click();
             WebLocator container = new WebLocator().setTag("fba-transfer-accounts-container");
             WebLocator sourceAccount = new WebLocator().setId("sourceAccount");
             WebLocatorUtils.scrollToWebLocator(sourceAccount);
-            Card cardEconomii = new Card(container, contDeEconomii);
-            if (!cardEconomii.isSource()) {
-                Button schimba = new Button(container).setClasses("exchange-icon");
-                schimba.click();
+            Card cardFromCont = new Card(container, fromCont);
+            if (!cardFromCont.isSource()) {
+                Button change = new Button(container).setClasses("exchange-icon");
+                change.click();
             }
-            Card cardContCurent = new Card(container, contCurent);
-//            WebLocator openAccounts = new WebLocator(sourceAccount).setClasses("accounts-drd");
-//            openAccounts.click();
-//            WebLocator contEconomii = new WebLocator().setText(" Cont de economii ");
-//            WebLocator contEconomiiEl = new WebLocator().setTag("fba-account-details").setChildNodes(contEconomii);
-//            contEconomiiEl.click();
-//            WebLocator targetAccount = new WebLocator().setId("targetAccount");
-//            WebLocatorUtils.scrollToWebLocator(targetAccount);
-//            WebLocator openTargetAccounts = new WebLocator(targetAccount).setClasses("accounts-drd");
-//            RetryUtils.retry(2, openTargetAccounts::click);
-//            WebLocator contCurentText = new WebLocator().setText(" Cont curent ");
-//            WebLocator contCurentEl = new WebLocator().setTag("fba-account-details").setChildNodes(contCurentText);
-//            contCurentEl.click();
-//            TextField sumaEl = new TextField().setId("destinationAccountValueInput");
-            cardContCurent.setValue(String.valueOf(intValue - sumaActuala + 5));
-            WebLocator descriptionInput = new WebLocator().setId("descriptionInput");
-            WebLocatorUtils.scrollToWebLocator(descriptionInput);
+            Card cardToCont = new Card(container, toCont);
+            String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue + 5);
+            cardToCont.setValue(moveValue);
+            WebLocatorUtils.scroll(0, 2000);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
-            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
-            WebLocatorUtils.scrollToWebLocator(description);
+            WebLocatorUtils.scroll(0, 2000);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
             goHome.ready(Duration.ofSeconds(10));
@@ -164,8 +150,9 @@ public class BTGo {
                 TextField iban = new TextField().setId("ibanInput");
                 iban.setValue(invoice.getIban());
                 iban.sendKeys(Keys.ENTER);
-                Utils.sleep(500);
-                WebLocatorUtils.scrollToWebLocator(iban);
+                Utils.sleep(2000);
+                WebLocatorUtils.scroll(0, 1000);
+                log.info("scroll-2");
             }
             Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(maiDeparteButton);
@@ -173,16 +160,20 @@ public class BTGo {
             sumaEL.setValue(invoice.getValue());
             TextField descriptionInput = new TextField().setId("descriptionInput");
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
-            WebLocatorUtils.scrollToWebLocator(descriptionInput);
-            scrollAndDoClickOn(maiDeparteButton);            Utils.sleep(500);
-            WebLocator description = new WebLocator().setText(" Descrierea tranzacției ");
-            WebLocatorUtils.scrollToWebLocator(description);
+            Utils.sleep(2000);
+            WebLocatorUtils.scroll(0, 1000);
+            log.info("scroll-3");
+            scrollAndDoClickOn(maiDeparteButton);
+            Utils.sleep(2000);
+            WebLocatorUtils.scroll(0, 1000);
+            log.info("scroll-4");
             Utils.sleep(500);
             Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(laSemnareButton);
         }
         Utils.sleep(10000); // wait for accept from BTGo
-        WebLocatorUtils.scrollToWebLocator(goHome);
+        WebLocatorUtils.scroll(0, 1000);
+        log.info("scroll-5");
         Button download = new Button().setId("successPageActionBtn");
         scrollAndDoClickOn(download);
         Utils.sleep(1000);
@@ -232,7 +223,7 @@ public class BTGo {
         RetryUtils.retry(15, () -> {
             boolean doClick = button.doClick();
             if (!doClick) {
-                Utils.sleep(100);
+                Utils.sleep(50);
                 WebLocatorUtils.scrollToWebLocator(button);
             }
             return doClick;

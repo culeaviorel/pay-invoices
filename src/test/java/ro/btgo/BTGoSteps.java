@@ -79,7 +79,7 @@ public class BTGoSteps extends TestBase {
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
             int intValue = (int) doubleValue + 1;
-            btGo.transferFromDepozitIntoContCurent(intValue, credentials.getContCurent(), credentials.getContDeEconomii());
+            btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
 
             boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
@@ -163,7 +163,7 @@ public class BTGoSteps extends TestBase {
                         i.size() == 4 ? i.get(3).toString() : "");
                 return beneficiar;
             }).toList();
-            btGo.transferFromDepozitIntoContCurent(sum, credentials.getContCurent(), credentials.getContDeEconomii());
+            btGo.transferBetweenConts(sum, credentials.getContDeEconomii(), credentials.getContCurent());
             Map<String, List<Pay>> listMap = paysResult.stream().collect(Collectors.groupingBy(Pay::destination));
             Integer sheetId = appUtils.getSheetId(contracteDeSponsorizareId, "Donatii cu destinatie speciala New");
             String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
@@ -221,7 +221,7 @@ public class BTGoSteps extends TestBase {
     public void inBTGoISendSustinereEducatieFromGoogleSheet() {
         List<MemberPay> memberPayList = memberPays.stream().filter(i -> Strings.isNullOrEmpty(i.status())).toList();
         int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
-        btGo.transferFromDepozitIntoContCurent(total, credentials.getContCurent(), credentials.getContDeEconomii());
+        btGo.transferBetweenConts(total, credentials.getContDeEconomii(), credentials.getContCurent());
         for (MemberPay memberPay : memberPayList) {
             Invoice invoice = new Invoice(null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban());
             boolean success = btGo.invoicePayment(invoice, dovada2025());
@@ -242,5 +242,11 @@ public class BTGoSteps extends TestBase {
         GoogleSheet.addItemForUpdate("Trimis", row, 4, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(membriCuCopiiiLaGradinitaId, batchUpdateRequest).execute();
+    }
+
+    @And("I move all from Cont Current to Depozit in BTGo")
+    public void iMoveAllFromContCurrentToDepozitInBTGo() {
+        int sum = 0;
+        btGo.transferBetweenConts(sum, credentials.getContCurent(), credentials.getContDeEconomii());
     }
 }

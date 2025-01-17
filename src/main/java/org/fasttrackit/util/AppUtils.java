@@ -22,7 +22,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 public class AppUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppUtils.class);
@@ -184,7 +187,7 @@ public class AppUtils {
         Drive driveService = GoogleSheet.getDriveService();
         File fileMetadata = new File();
         fileMetadata.setName(name);
-        fileMetadata.setParents(Collections.singletonList(driveFolderId));
+        fileMetadata.setParents(List.of(driveFolderId));
         FileContent mediaContent = new FileContent(type, file);
         File uploadFile = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
         return driveService.files().get(uploadFile.getId()).setFields("webViewLink").execute().getWebViewLink();

@@ -16,17 +16,10 @@ import lombok.SneakyThrows;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class GoogleSheet {
-    private static Sheets sheetsService;
-    private static final String sheetId = "16zaLSn9PqIZ3zeR51ZJS97p9HmG8agnc2EwIAG3GaKY";
 
     @SneakyThrows
     public static Sheets getSheetsService() {
@@ -47,13 +40,8 @@ public class GoogleSheet {
     }
 
     @SneakyThrows
-    public static List<Sheet> getSheets() {
-        return getSheets(sheetId);
-    }
-
-    @SneakyThrows
     public static List<Sheet> getSheets(String spreadsheetId) {
-        sheetsService = getSheetsService();
+        Sheets sheetsService = getSheetsService();
         Spreadsheet execute = sheetsService.spreadsheets().get(spreadsheetId).execute();
         return execute.getSheets();
     }
@@ -71,37 +59,6 @@ public class GoogleSheet {
             }
         }
         return properties;
-    }
-
-    @SneakyThrows
-    public static String getNameFromActualSheet() {
-        List<Sheet> sheets = getSheets();
-        List<Sheet> activeSheets = sheets.stream().filter(i -> i.getProperties().getHidden() == null).toList();
-        for (Sheet sheet : activeSheets) {
-            String title = sheet.getProperties().getTitle();
-            ValueRange response = sheetsService.spreadsheets().values().get(sheetId, title + "!B2:B6").execute();
-            List<List<Object>> values = response.getValues();
-            if (values.size() > 3) {
-                String start = String.valueOf(values.get(1).get(0));
-                String end = String.valueOf(values.get(3).get(0));
-                LocalDate today = LocalDate.now();
-                LocalDate startDate;
-                LocalDate endDate;
-                try {
-                    DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd MMMM yyyy").toFormatter(Locale.forLanguageTag("ro-RO"));
-                    startDate = LocalDate.parse(start, formatter);
-                    endDate = LocalDate.parse(end, formatter);
-                } catch (DateTimeParseException e) {
-                    DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd MMM yyyy").toFormatter();
-                    startDate = LocalDate.parse(start, formatter);
-                    endDate = LocalDate.parse(end, formatter);
-                }
-                if (today.isAfter(startDate) && today.isBefore(endDate)) {
-                    return title;
-                }
-            }
-        }
-        return null;
     }
 
     public static void addItemForUpdate(String value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
