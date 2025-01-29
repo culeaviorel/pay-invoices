@@ -9,8 +9,10 @@ import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.button.Button;
 import com.sdl.selenium.web.button.InputButton;
+import com.sdl.selenium.web.form.CheckBox;
 import com.sdl.selenium.web.form.TextField;
 import com.sdl.selenium.web.link.WebLink;
+import com.sdl.selenium.web.table.Table;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
@@ -31,11 +33,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-
 @Slf4j
 public class BTGo {
     private final Locale roLocale = new Locale("ro", "RO");
-    //    private final Button nextButton = new Button().setId("moveForwardBtn");
     private final WebLink goHome = new WebLink().setId("homeScreenBtn");
     private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
 
@@ -88,10 +88,7 @@ public class BTGo {
             WebLocatorUtils.scroll(0, 2000);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
-            goHome.ready(Duration.ofSeconds(10));
-            goHome.click();
-            WebLocatorUtils.scrollToWebLocator(goBack);
-            goBack.click();
+            goHomeAndBack();
         }
     }
 
@@ -193,9 +190,7 @@ public class BTGo {
         File pdfFile = new File(pdfPath);
         boolean success = pdfFile.exists();
         pdfFile.renameTo(new File(dovada + fileName));
-        goHome.click();
-        Utils.sleep(1000);
-        goBack.click();
+        goHomeAndBack();
         return success;
     }
 
@@ -219,6 +214,7 @@ public class BTGo {
     }
 
     private void scrollAndDoClickOn(WebLocator button) {
+        WebLocatorUtils.scroll(0, 2000);
         button.ready(Duration.ofSeconds(10));
         RetryUtils.retry(15, () -> {
             boolean doClick = button.doClick();
@@ -276,5 +272,72 @@ public class BTGo {
             file.renameTo(new File(location + fileName));
         }
         return fileName;
+    }
+
+    public void generateExtrasFromAll() {
+        WebLocator widgetAccounts = new WebLocator().setClasses("dashboard-accounts");
+        widgetAccounts.click();
+        Button extasContsButton = new Button().setId("accountStatementsBtn");
+        extasContsButton.click();
+        Button calendar = new Button().setClasses("mdc-icon-button");
+        WebLocator popUpCalendar = new WebLocator().setTag("mat-datepicker-content");
+        Table table = new Table(popUpCalendar);
+        Button generateExtras = new Button().setId("generateStatementsBtn");
+        List<String> months = List.of(
+//                "IAN",
+//                "FEB",
+//                "MART",
+//                "APR",
+//                "MAI",
+//                "IUN",
+                "IUL",
+                "AUG",
+                "SEPT",
+                "OCT"
+        );
+        for (String month : months) {
+            calendar.click();
+            table.getCell(month, SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM).click();
+            generateExtras.click();
+            Utils.sleep(1000);
+        }
+        Utils.sleep(1);
+    }
+
+    public void createDepozit(String value) {
+        WebLocator depoziteEl = new WebLocator().setId("savingsBtn");
+        depoziteEl.click();
+        Button openDepozit = new Button().setId("moveToOpenDepositPageBtn");
+        openDepozit.click();
+        WebLocator clasicDecpozit = new WebLocator().setId("classicDepositBtn");
+        clasicDecpozit.click();
+        WebLocator depozitClasicCointainer = new WebLocator().setTag("fba-deposit-saving-accounts-root");
+        Card fromCont = new Card(depozitClasicCointainer);
+        fromCont.setValue(value);
+        WebLocator periodEl = new WebLocator().setId("slider-item-2");
+        WebLocatorUtils.scrollToWebLocator(periodEl);
+        periodEl.click();
+        WebLocator autoRollover = new WebLocator().setId("autoRolloverSwitch");
+        CheckBox automat = new CheckBox(autoRollover);
+        automat.check(true);
+        WebLocator termsAndConditionsEl = new WebLocator().setId("termsAndConditionsCheckbox");
+        CheckBox termsAndConditions = new CheckBox(termsAndConditionsEl);
+        termsAndConditions.check(true);
+        Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+        scrollAndDoClickOn(nextButton);
+        Utils.sleep(1000);
+        Button semneazaButton = new Button(null, "Semnează", SearchType.TRIM).setId("moveForwardBtn");
+        scrollAndDoClickOn(semneazaButton);
+        Utils.sleep(1); // wait for accept from BTGo
+        goHomeAndBack();
+    }
+
+    private void goHomeAndBack() {
+        WebLocatorUtils.scroll(0, 2000);
+        goHome.ready(Duration.ofSeconds(10));
+        goHome.click();
+        Utils.sleep(500);
+        WebLocatorUtils.scrollToWebLocator(goBack);
+        goBack.click();
     }
 }

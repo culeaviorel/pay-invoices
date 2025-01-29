@@ -249,4 +249,16 @@ public class BTGoSteps extends TestBase {
         int sum = 0;
         btGo.transferBetweenConts(sum, credentials.getContCurent(), credentials.getContDeEconomii());
     }
+
+    @And("I generate extras from all in BTGo")
+    public void iGenerateExtrasFromAllInBTGo() {
+        btGo.generateExtrasFromAll();
+    }
+
+    @And("I create depozit from Cont de Economii in BTGo")
+    public void iCreateDepozitFromContDeEconomiiInBTGo() {
+        int value = 200000;
+        btGo.transferBetweenConts(value, credentials.getContDeEconomii(), credentials.getContCurent());
+        btGo.createDepozit(value + "");
+    }
 }
