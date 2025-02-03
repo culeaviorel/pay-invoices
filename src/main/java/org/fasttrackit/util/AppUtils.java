@@ -49,7 +49,7 @@ public class AppUtils {
             facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId);
         }
         String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId);
-        List<List<Object>> values = getValues(facturiSheetId,"2025!A1:G");
+        List<List<Object>> values = getValues(facturiSheetId, "2025!A1:G");
         int id = values.size();
         List<Request> requests = new ArrayList<>();
         Integer sheetId = getSheetId(facturiSheetId, "2025");
@@ -238,7 +238,8 @@ public class AppUtils {
                 codAbonat = "1003628159";
             }
             if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
-                invoice.setValue(total.replaceAll(",", "."));
+                String value = fixString(total);
+                invoice.setValue(value);
                 invoice.setNr(nrFacturii);
                 invoice.setCod(codAbonat);
                 invoice.setDescription("factura de Gaz");
@@ -246,6 +247,11 @@ public class AppUtils {
                 break;
             }
         }
+    }
+
+    private static String fixString(String total) {
+        total = total.replaceAll("\\.", "");
+        return total.replaceAll(",", ".");
     }
 
     public static String[] splitAfterLastSpace(String input) {

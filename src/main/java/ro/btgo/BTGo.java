@@ -81,7 +81,6 @@ public class BTGo {
             Card cardToCont = new Card(container, toCont);
             String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue + 5);
             cardToCont.setValue(moveValue);
-            WebLocatorUtils.scroll(0, 2000);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
