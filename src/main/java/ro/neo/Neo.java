@@ -12,6 +12,7 @@ import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.utils.FileUtils;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
+import io.cucumber.java.zh_cn.假如;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -285,9 +286,10 @@ public class Neo {
         filter(firstDayOfMonth, lastDayOfMonth);
         WebLink exportExcel = new WebLink().setId("MainContent_TransactionMainContent_txpTransactions_ctl01_flwData1_proofControl_a6");
         RetryUtils.retry(2, exportExcel::click);
-        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(45), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
-            if (!paths.isEmpty()) {
+            Optional<Path> xls = paths.stream().filter(i -> !i.getFileName().toString().endsWith("xls")).findAny();
+            if (!paths.isEmpty() && xls.isEmpty()) {
                 return paths;
             } else {
                 return null;

@@ -56,7 +56,7 @@ public class MyMoneySteps extends TestBase {
         List<Item> list = new ArrayList<>();
         for (CSVRecord record : records) {
             String val = record.toList().get(0);
-            if (val.contains("-2024")) {
+            if (val.contains("-2025")) {
                 List<String> values = record.toList();
                 if ("Decontat".equals(values.get(2))) {
                     list.add(new Item(values.get(0).split(" ")[0], values.get(3), values.get(4).replace(",", ".")));

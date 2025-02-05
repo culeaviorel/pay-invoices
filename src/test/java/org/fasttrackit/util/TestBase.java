@@ -57,6 +57,6 @@ public abstract class TestBase {
     }
 
     public static String bt() {
-        return "C:\\Users\\vculea\\Desktop\\BT\\2024\\";
+        return "C:\\Users\\vculea\\Desktop\\BT\\2025\\";
     }
 }

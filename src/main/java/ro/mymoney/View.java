@@ -203,7 +203,11 @@ public class View {
         if (find) {
             int length = sum.length();
             String number = sum.substring(length - 2, length - 1);
-            int num = Integer.parseInt(number) + 1;
+            int numberInt = Integer.parseInt(number);
+            int num = numberInt;
+            if (numberInt > 5) {
+                num = num + 1;
+            }
             if (num == 10) {
                 String first = sum.split("\\.")[0];
                 int firstNum = Integer.parseInt(first) + 1;
@@ -290,11 +294,13 @@ public class View {
             , new Category("Aliexpress", "aliexpress"), new Category("TIRANA", "TIRANA SEDIU CENTRAL")
             , new Category("NIGE", "SC NIGE IMPEX SRL"), new Category("MAFCOM", "MAFCOM PROD IMPEX SRL")
             , new Category("TAE ELECTRIC", "TAE ELECTRIC DISTRIB"), new Category("JIEDUOBEKU4", "*PAYPAL JIEDUOBEKU4")
-            , new Category("Ventilatie", "DYNAMIC PARCEL DISTRIB")
-            , new Category("Tindie", "TINDIE.COM")
+            , new Category("Ventilatie", "DYNAMIC PARCEL DISTRIB"), new Category("Tindie", "TINDIE.COM")
+            , new Category("Temu", "Temu.com"), new Category("CarteFunciara", "ANCPI NETOPIA")
+            , new Category("AtuTech", "ATU TECH SRL")
+            , new Category("Saimon Electronics", "SAIMON ELECTRONICS")
     );
     private final List<Category> produseAlimentare = List.of(new Category("Lidl", List.of("Lidl", "LIDL")), new Category("Dedeman", "DEDEMAN")
-            , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj", "AUC 0004 CLUJ")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
+            , new Category("Auchan", List.of("AUCHAN", "Auchan Cluj", "AUC 0004 CLUJ", "AUC 0037 CJ IR")), new Category("Penny", "PENNY"), new Category("Kaufland", "KAUFLAND")
             , new Category("Kaufland", "Kaufland"), new Category("Mega Image", List.of("MEGAIMAGE", "MEGA IMAGE")), new Category("Bonas", "BONAS")
             , new Category("La Vestar", "LA VESTAR"), new Category("BUCURCRISS", "BUCURCRISS")
             , new Category("Profi", "PROFI"), new Category("CICMAR", "CICMAR"), new Category("VARGA", "VARGA")
@@ -378,7 +384,7 @@ public class View {
             , new Category("MEAT UP", "MEAT UP"), new Category("MILENIUM LANDSCAPE DEV", "MILENIUM LANDSCAPE DEV")
             , new Category("SAVANNAH DRINKS", "SAVANNAH DRINKS"), new Category("SONMARE SRL", "SONMARE SRL")
             , new Category("Twelve", "MARKET TWELVE SRL"), new Category("Cantina Bosch", List.of("Eurest Rom SRL Bosch", "Eurest Cantina Bosch"))
-            , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("ROSA FOOD ART", "ROSA FOOD ART SRL")
+            , new Category("JAMON FOOD", "JAMON FOOD SRL"), new Category("Rosa", List.of("ROSA FOOD ART SRL", "Rosa"))
             , new Category("MADISONBAGEL", "MADISONBAGEL"), new Category("Pizza Big Belly", List.of("bigbelly-cluj", "RES QUALITY FOOD"))
             , new Category("DONUTERIE", "DONUTERIE OPERATIONAL SR"), new Category("Lunch Box", "LUNCH BOX SRL")
             , new Category("MST BUBBLE", "MST BUBBLE CONCEPT SRL"), new Category("Meron", List.of("MERON POLUS", "MERON 2"))
@@ -394,7 +400,7 @@ public class View {
             , new Category("COFFEE CUP ROASTERS", "COFFEE CUP ROASTERS SRL"), new Category("SalatBox", "BIO BOX SRL")
             , new Category("TERASA JANKA", "TERASA JANKA SRL"), new Category("CARTOFISSERIE", "CARTOFISSERIE IULIUS M")
             , new Category("CHOPSTIX", "CHOPSTIX IULIUS CL"), new Category("MORITZ", "MORITZ EIS SRL CLUJ NA")
-            , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", "MCDONALD S")
+            , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", List.of("MCDONALD S", "MCD 52 CLUJ POLUS"))
             , new Category("Cafea", "JOAYOKANU COFFEE SRL"), new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
             , new Category("Poco Loco", "POCO LOCO CITY"), new Category("Taco Bueno", "TACO BUENO")
             , new Category("KOVACS", "KOVACS")
@@ -445,6 +451,7 @@ public class View {
             , new Category("Stomatologie", "STOMPRAX MEDICA SRL")
             , new Category("Stomatologie", "REJOICE DENT S R L")
             , new Category("Stomatologie", "DENTAL CHIQUE CLINIQUE")
+            , new Category("Stomatologie", "CLINICA DENTARA CLUJ")
     );
 
     private Finder find(List<Category> categories, String name) {
