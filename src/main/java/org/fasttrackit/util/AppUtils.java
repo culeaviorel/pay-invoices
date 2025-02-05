@@ -55,8 +55,9 @@ public class AppUtils {
         Integer sheetId = getSheetId(facturiSheetId, "2025");
         GoogleSheet.addItemForUpdate(category, id, 0, sheetId, requests);
         GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
-        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
+        LocalDate now = LocalDate.now();
+        now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        GoogleSheet.addItemForUpdateDate(now, id, 2, sheetId, requests);
         GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
         GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
         int columnIndex = 5;
@@ -100,8 +101,7 @@ public class AppUtils {
         List<Request> requests = new ArrayList<>();
         GoogleSheet.addItemForUpdate(item.getCategory(), id, 0, sheetId, requests);
         GoogleSheet.addItemForUpdate(item.getPlata(), id, 1, sheetId, requests);
-        String date = localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        GoogleSheet.addItemForUpdateDate(date, id, 2, sheetId, requests);
+        GoogleSheet.addItemForUpdateDate(localDate, id, 2, sheetId, requests);
         String tmp = item.getValue();
         double value = Double.parseDouble(tmp);
         GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
@@ -123,15 +123,16 @@ public class AppUtils {
             List<Request> insertRequests1 = new ArrayList<>();
             Integer sheetId1 = getSheetId(contSheetId, month);
             GoogleSheet.insertItem(id1, sheetId1, insertRequests1);
+            GoogleSheet.addItemForUpdateFormula("F" + (id1 + 1) + "+D" + (id1 + 2) + "-E" + (id1 + 2), id1 + 1, 5, sheetId1, insertRequests1);
             BatchUpdateSpreadsheetRequest batchInsertRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests1);
             BatchUpdateSpreadsheetResponse insertResponse1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchInsertRequest1).execute();
 
             List<Request> requests1 = new ArrayList<>();
             GoogleSheet.addItemForUpdate("Cheltuieli", id1, 0, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getCategory(), id1, 1, sheetId1, requests1);
-            date = localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            GoogleSheet.addItemForUpdateDate(date, id1, 2, sheetId1, requests1);
+            GoogleSheet.addItemForUpdateDate(localDate, id1, 2, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(value, id1, 4, sheetId1, requests1);
+            GoogleSheet.addItemForUpdateFormula("F" + id1 + "+D" + (id1 + 1) + "-E" + (id1 + 1), id1, 5, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getType(), link, ";", id1, 7, sheetId1, requests1);
             BatchUpdateSpreadsheetRequest batchUpdateRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(requests1);

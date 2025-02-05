@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -131,12 +132,10 @@ public class GoogleSheet {
         requests.add(request);
     }
 
-    public static void addItemForUpdateDate(String value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
-        NumberFormat numberFormat = new NumberFormat();
-        numberFormat.setPattern("dd/MM/yyyy");
-        numberFormat.setType("DATE");
+    public static void addItemForUpdateDate(LocalDate date, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        NumberFormat numberFormat = new NumberFormat().setPattern("dd/MM/yyyy").setType("DATE");
         CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
-        ExtendedValue userEnteredValue = new ExtendedValue().setStringValue(value);
+        ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue((double) date.toEpochDay() + 25569.0);
         CellData cellData = new CellData()
                 .setUserEnteredValue(userEnteredValue)
                 .setUserEnteredFormat(cellFormat);
@@ -151,6 +150,24 @@ public class GoogleSheet {
                         )
                         .setRows(List.of(rowData))
                         .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
+        requests.add(request);
+    }
+
+    public static void addItemForUpdateFormula(String formula, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        ExtendedValue userEnteredValue = new ExtendedValue().setFormulaValue("=" + formula);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(userEnteredValue);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(sheetId)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+                        .setFields("userEnteredValue"));
         requests.add(request);
     }
 
