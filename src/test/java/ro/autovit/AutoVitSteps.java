@@ -30,11 +30,9 @@ public class AutoVitSteps extends TestBase {
         acceptAll();
         WebLocator container = new WebLocator().setAttribute("data-testid", "main-container");
         WebLocator grid = new WebLocator(container).setAttribute("data-testid", "search-results");
-        WebLocator paginationContainer = new WebLocator(container).setClasses("pagination-list");
-        WebLocator nextPage = new WebLocator(paginationContainer).setAttribute("data-testid", "pagination-step-forwards").setAttribute("aria-disabled", "false");
+        WebLocator nextPage = new WebLocator().setTag("li").setAttribute("title", "Go to next Page").setAttribute("aria-disabled", "false");
         List<String> links = new ArrayList<>();
         collectAllLinks(grid, links);
-        WebLocatorUtils.scrollToWebLocator(paginationContainer, -200);
         while (nextPage.ready(Duration.ofSeconds(1))) {
             nextPage.mouseOver();
             RetryUtils.retry(8, () -> {
@@ -46,7 +44,6 @@ public class AutoVitSteps extends TestBase {
             });
             Utils.sleep(2000);
             collectAllLinks(grid, links);
-            WebLocatorUtils.scrollToWebLocator(paginationContainer, -200);
         }
         links = links.stream().filter(link -> !(Strings.isNullOrEmpty(link)
                 || link.contains("smart")
@@ -165,7 +162,7 @@ public class AutoVitSteps extends TestBase {
                 String an = getValueFormItem("Anul producției");
                 GoogleSheet.addItemForUpdate(an, rowIndex, 3, sheetId, requests);
                 try {
-                    String km = getValueFormItem("Km");
+                    String km = getValueFormDetails("Km");
                     GoogleSheet.addItemForUpdate(km, rowIndex, 4, sheetId, requests);
                 } catch (NullPointerException e) {
                     log.info("km not found? {}", link);
@@ -196,7 +193,13 @@ public class AutoVitSteps extends TestBase {
 
     private static String getValueFormItem(String label) {
         WebLocator pEl = new WebLocator().setTag("p").setText(label);
-        WebLocator detailsItemEl = new WebLocator().setAttribute("data-testid", "advert-details-item").setChildNodes(pEl);
+        WebLocator detailsItemEl = new WebLocator().setAttribute("data-testid", "year").setChildNodes(pEl);
+        return detailsItemEl.getText().split("\n")[1];
+    }
+
+    private static String getValueFormDetails(String label) {
+        WebLocator pEl = new WebLocator().setTag("p").setText(label);
+        WebLocator detailsItemEl = new WebLocator().setAttribute("data-testid", "detail").setChildNodes(pEl);
         return detailsItemEl.getText().split("\n")[1];
     }
 }

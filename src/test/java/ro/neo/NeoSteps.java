@@ -10,8 +10,6 @@ import com.sdl.selenium.web.utils.Utils;
 import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.fasttrackit.util.AppUtils;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
@@ -313,34 +311,34 @@ public class NeoSteps extends TestBase {
         }
     }
 
-    @SneakyThrows
-    @And("in NeoBT I pay invoices:")
-    public void inNeoBTIPayInvoices(List<Invoice> invoices) {
-//        double total = invoices.stream().flatMapToDouble(i -> DoubleStream.of(Double.parseDouble(i.getValue()))).sum();
-        for (Invoice invoice : invoices) {
-            if (invoice.getFileName().contains(".pdf")) {
-                PDDocument document = PDDocument.load(new java.io.File(facturi() + invoice.getFileName()));
-                PDFTextStripper pdfStripper = new PDFTextStripper();
-                String text = pdfStripper.getText(document);
-                document.close();
-                List<String> list = text.lines().toList();
-                switch (invoice.getCategory()) {
-                    case "Apa" -> appUtils.collectForApa(invoice, list);
-                    case "Gunoi" -> appUtils.collectForGunoi(invoice, list);
-                    case "Curent" -> appUtils.collectForCurent(invoice, list);
-                }
-            }
-            double doubleValue = Double.parseDouble(invoice.getValue());
-            int intValue = (int) doubleValue + 1;
-            neo.transferFromDepozitIntoContCurent(intValue);
-            boolean success = neo.invoicePayment(invoice, dovada());
-            if (success) {
-                String fileName = Storage.get("fileName");
-                double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
-            }
-        }
-    }
+//    @SneakyThrows
+//    @And("in NeoBT I pay invoices:")
+//    public void inNeoBTIPayInvoices(List<Invoice> invoices) {
+////        double total = invoices.stream().flatMapToDouble(i -> DoubleStream.of(Double.parseDouble(i.getValue()))).sum();
+//        for (Invoice invoice : invoices) {
+//            if (invoice.getFileName().contains(".pdf")) {
+//                PDDocument document = PDDocument.load(new java.io.File(facturi() + invoice.getFileName()));
+//                PDFTextStripper pdfStripper = new PDFTextStripper();
+//                String text = pdfStripper.getText(document);
+//                document.close();
+//                List<String> list = text.lines().toList();
+//                switch (invoice.getCategory()) {
+//                    case "Apa" -> appUtils.collectForApa(invoice, list);
+//                    case "Gunoi" -> appUtils.collectForGunoi(invoice, list);
+//                    case "Curent" -> appUtils.collectForCurent(invoice, list);
+//                }
+//            }
+//            double doubleValue = Double.parseDouble(invoice.getValue());
+//            int intValue = (int) doubleValue + 1;
+//            neo.transferFromDepozitIntoContCurent(intValue);
+//            boolean success = neo.invoicePayment(invoice, dovada());
+//            if (success) {
+//                String fileName = Storage.get("fileName");
+//                double value = Double.parseDouble(invoice.getValue());
+//                appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturi() + invoice.getFileName(), dovada() + fileName, invoice.getCategory(), invoice.getDescription(), value);
+//            }
+//        }
+//    }
 
     @And("in NeoBT I convert to CSV, the file {string}")
     public void inNeoBTIConvertToCSVTheFile(String path) {
