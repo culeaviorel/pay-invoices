@@ -8,6 +8,7 @@ import com.google.api.services.sheets.v4.model.*;
 import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,18 +28,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+@Getter
 public class AppUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppUtils.class);
 
     private static Sheets sheetsService;
-    private static final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
-    private static final String contSheetId = "1UMkkX0VPDrRzu8RlLq2wILIx1VEJ5Sv2nQQDEBjEC8o";
-    private final String facturiFolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/facturi
-    private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/dovada
+    private final String facturiSheetId = "1SL4EGDDC3qf1X80s32OOEMxmVbvlL7WRbh5Kr88hPy0";
+    private final String contSheetId = "1UMkkX0VPDrRzu8RlLq2wILIx1VEJ5Sv2nQQDEBjEC8o";
+    private final String facturiFolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/Facturi
+    private final String eFacturaFolderId = "1RYfZhFf2GUkDggn6LdEGz_BubzaVfbpC";// 2025/Facturi/eFactura
+    private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/Dovada
 
     public static void openUrl(String url) {
         LOGGER.info("open {}", url);
         WebDriverConfig.getDriver().get(url);
+    }
+
+    public Sheets getSheetsService() {
+        return sheetsService;
     }
 
     @SneakyThrows
@@ -202,6 +209,10 @@ public class AppUtils {
             Storage.set(spreadsheetId + "sheetId", sheetId);
         }
         return sheetId;
+    }
+
+    public Integer getFacturiSheetId(String number) {
+        return getSheetId(facturiSheetId, number);
     }
 
     public void collectForCurent(Invoice invoice, List<String> list) {

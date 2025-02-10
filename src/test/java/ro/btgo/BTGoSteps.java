@@ -15,9 +15,8 @@ import io.cucumber.java.en.And;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.fasttrackit.util.AppUtils;
+import org.fasttrackit.util.FileUtility;
 import org.fasttrackit.util.TestBase;
 import org.fasttrackit.util.UserCredentials;
 import ro.neo.Invoice;
@@ -25,6 +24,7 @@ import ro.neo.MemberPay;
 import ro.neo.Storage;
 import ro.sheet.GoogleSheet;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -65,10 +65,8 @@ public class BTGoSteps extends TestBase {
     public void inBTGoIPayInvoices(List<Invoice> invoices) {
         for (Invoice invoice : invoices) {
             if (!Strings.isNullOrEmpty(invoice.getFileName()) && invoice.getFileName().contains(".pdf")) {
-                PDDocument document = PDDocument.load(new java.io.File(facturi2025() + invoice.getFileName()));
-                PDFTextStripper pdfStripper = new PDFTextStripper();
-                String text = pdfStripper.getText(document);
-                document.close();
+                File file = new File(facturi2025() + invoice.getFileName());
+                String text = FileUtility.getPDFContent(file);
                 List<String> list = text.lines().toList();
                 switch (invoice.getCategory()) {
                     case "Apa" -> appUtils.collectForApa(invoice, list);

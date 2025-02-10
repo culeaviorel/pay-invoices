@@ -207,4 +207,17 @@ public class GoogleSheet {
             return file.getId();
         }
     }
+
+    @SneakyThrows
+    public static List<String> getFiles(String folderId) {
+        Drive driveService = getDriveService();
+        String query = String.format("mimeType = 'application/pdf' and '%s' in parents", folderId);
+        FileList result = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, name)")
+                .execute();
+        List<File> files = result.getFiles();
+        List<String> list = files.stream().map(i -> i.getName().split("\\.")[0]).toList();
+        return list;
+    }
 }
