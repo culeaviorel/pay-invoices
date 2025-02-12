@@ -68,7 +68,7 @@ public class ANAF {
         int size = table.getCount();
         AppUtils appUtils = new AppUtils();
         Integer sheetId = appUtils.getFacturiSheetId("2025");
-        List<String> excludeFiles = List.of("4165820332");
+        List<String> excludeFiles = List.of("4165820332", "4194944233");
         boolean next;
         do {
             for (int i = 1; i <= size; i++) {
@@ -110,7 +110,7 @@ public class ANAF {
                                 break;
                             }
                         }
-                        Double expected = Double.parseDouble("1075.16");
+                        Double expected = Double.parseDouble("81.00");
                         if (value.equals(expected)) {
                             Utils.sleep(1);
                         }

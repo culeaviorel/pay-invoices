@@ -167,7 +167,7 @@ public class BTGo {
             Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(laSemnareButton);
         }
-        Utils.sleep(10000); // wait for accept from BTGo
+        Utils.sleep(5000); // wait for accept from BTGo
         WebLocatorUtils.scroll(0, 1000);
         log.info("scroll-5");
         Button download = new Button().setId("successPageActionBtn");
@@ -335,8 +335,8 @@ public class BTGo {
         WebLocatorUtils.scroll(0, 2000);
         goHome.ready(Duration.ofSeconds(10));
         goHome.click();
-        Utils.sleep(500);
+        Utils.sleep(600);
         WebLocatorUtils.scrollToWebLocator(goBack);
-        goBack.click();
+        RetryUtils.retry(2, goBack::doClick);
     }
 }
