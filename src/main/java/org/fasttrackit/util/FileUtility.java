@@ -16,8 +16,8 @@ import java.util.Optional;
 
 public class FileUtility {
 
-    public static File getFileFromDownload() {
-        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+    public static File getFileFromDownload(String fileName) {
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(10), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
             if (!paths.isEmpty()) {
                 return paths;
@@ -25,10 +25,17 @@ public class FileUtility {
                 return null;
             }
         });
-        Optional<Path> first = list.stream().filter(p -> !Files.isDirectory(p)).findFirst();
-        if (first.isPresent()) {
-            Path path = first.get();
-            return path.toFile();
+        if (list != null) {
+            Optional<Path> first = list.stream().filter(p -> {
+                String name = p.toFile().getName();
+                return !Files.isDirectory(p) && name.startsWith(fileName);
+            }).findFirst();
+            if (first.isPresent()) {
+                Path path = first.get();
+                return path.toFile();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
