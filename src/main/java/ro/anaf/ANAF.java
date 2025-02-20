@@ -68,7 +68,7 @@ public class ANAF {
         int size = table.getCount();
         AppUtils appUtils = new AppUtils();
         Integer sheetId = appUtils.getFacturiSheetId("2025");
-        List<String> excludeFiles = List.of("4165820332", "4194944233");
+        List<String> excludeFiles = List.of("4287110211", "4270174043", "4215259346");
         boolean next;
         do {
             for (int i = 1; i <= size; i++) {
@@ -102,8 +102,9 @@ public class ANAF {
                                 } catch (ArrayIndexOutOfBoundsException e) {
                                     Utils.sleep(1);
                                 }
-                            } else if (row.contains("Codul tipului")) {
-                                String valueString = rows.get(j + 1).split(" ")[2];
+                            } else if (row.endsWith("Codul tipului")) {
+                                String rowValue = rows.get(j + 1);
+                                String valueString = rowValue.split(" ")[2];
                                 value = Double.parseDouble(valueString);
                             }
                             if (!date.isEmpty() && value != null && dataScadenta != null) {

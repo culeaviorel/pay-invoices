@@ -335,7 +335,7 @@ public class BTGo {
         WebLocatorUtils.scroll(0, 2000);
         goHome.ready(Duration.ofSeconds(10));
         goHome.click();
-        Utils.sleep(600);
+        Utils.sleep(1000);
         WebLocatorUtils.scrollToWebLocator(goBack);
         RetryUtils.retry(2, goBack::doClick);
     }
