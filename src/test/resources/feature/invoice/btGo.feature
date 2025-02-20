@@ -22,7 +22,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category   | value | furnizor               | iban                     | nr   | description           |
+#      | fileName                                           | category  | value | furnizor            | iban                     | nr   | description   |
+#      | FacturaAS0397-BISERICA_CRESTINA_BAPTISTA_NR.11.pdf | Inchinare | 0  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | 0397 | Cursuri canto |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | IesireaBiserica | 4386  | Asociatia Actiunea Felix | RO30CECEBH0143RON0496616 | 217 | donatie cazare comitet |
 
@@ -40,10 +41,10 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName          | category |
+#      | fileName                           | category |
 #      | Factura_CASOMES_5163653.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
-#      | Vanzari Factura CJL1C000717980.pdf | Gunoi    |
+#      | Vanzari Factura CJL1C000751193.pdf | Gunoi    |
 
 #  Scenario: Generate extras conturi in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
@@ -62,7 +63,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName       | type    | plata | category | data       | value  | description                       |
+#      | fileName      | type       | plata | category   | data       | value  | description                      |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -81,16 +82,16 @@ Feature: As a Customer I pay all my invoices
 #      | Factura12.pdf          | Factura | Cont  | Invitati   | 12.01.2025 | 2289   | cazare Marius Cruceru + mese |
 #      | BonCuCUI1.pdf | Bon cu CUI | Cash  | Alimentare | 04.02.2025 | 24.95 | Produse alimentare (Ioana) |
 #      | Factura19.pdf          | Factura | Cont  | Alimentare | 08.02.2025 | 125.38 | Cafea si lapte            |
-#      | Factura20.pdf          | Factura | Cash  | Alimentare | 07.02.2025 | 43.20  | Prosoape de hartie (Doru) |
-#      | Factura21.pdf          | Factura | Cash  | Alimentare | 08.02.2025 | 155.04 | Produse (Ioana Pop)       |
-#      | Factura22.pdf          | Factura | Cash  | Alimentare | 05.02.2025 | 24.95  | Produse (Ioana Pop)       |
-#      | Factura23.pdf          | Factura | Cash  | Alimentare | 06.02.2025 | 87.90  | Produse (Ioana Pop)       |
-#      | Factura24.pdf          | Factura | Cash  | Alimentare | 07.02.2025 | 43.30  | Produse (Ioana Pop)       |
+#      | Factura26.pdf | Factura    | Cash  | Alimentare | 11.02.2025 | 417.99 | Pahare si farfurii (Doru)        |
+#      | Factura27.pdf | Factura    | Cont  | Alimentare | 15.02.2025 | 324.95 | Cafea                            |
+#      | Factura28.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 144.48 | Sucuri (Matei)                   |
+#      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
+#      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
 #      | Factura25.pdf          | Factura | Cash  | Diverse    | 06.02.2025 | 188.91 | Semnatura digitala        |
 #      | Factura8.pdf           | Factura | Cont  | Alimentare | 09.01.2025 | 234.51 | Pizza pentru invitat      |
 #      | Factura10.pdf          | Factura | Cont  | Alimentare | 10.01.2025 | 194.26 | Produse pentru conferinta    |
 #      | Factura11.pdf          | Factura | Cont  | Alimentare | 12.01.2025 | 776.55 | Pizza pentru biserica        |
-#      | Factura5.pdf | Bon cu CUI | Cash  | Alimentare | 06.01.2025 | 483.70 | Mancare KFS |
+#      | Factura31.pdf | Bon cu CUI | Cash  | Femei      | 16.02.2025 | 120    | Flori pentru invitata (Catalina) |
 #      | Factura3.pdf | Factura    | Cont  | Alimentare | 07.01.2025 | 238.01 | Produse pentru invitati |
 #      | Factura167.pdf | Factura | Cash  | Sanitare    | 09.12.2024 | 81.91  | Role, Saci (Doru)                |
 #      | Factura168.pdf | Factura | Cash  | Sanitare    | 10.12.2024 | 181.54 | Prosoape hartie (Doru)           |

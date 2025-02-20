@@ -8,7 +8,8 @@ import org.junit.runner.RunWith;
         plugin = {"pretty", "html:target/cucumber", "json:target/jsonReports/BTGoRunner.json"},
         glue = {
                 "org.fasttrackit.util",
-                "ro.btgo"
+                "ro.btgo",
+                "ro.sheet"
         },
         features = {
                 "src/test/resources/feature/invoice/btGo.feature"
