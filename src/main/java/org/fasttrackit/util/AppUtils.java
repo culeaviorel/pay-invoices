@@ -306,12 +306,12 @@ public class AppUtils {
         String nrFacturii = "";
         String codAbonat = "";
         for (String row : list) {
-            if (row.contains("Total factura curenta:")) {
-                total = row.split("Total factura curenta:")[1].trim();
+            if (row.contains("Total factura curenta")) {
+                total = row.split("Total factura curenta :")[1].trim();
             } else if (row.contains("Numar:")) {
                 nrFacturii = row.split("Numar:")[1].trim();
-            } else if (row.contains("Cod abonat:")) {
-                codAbonat = row.split("Cod abonat:")[1].trim();
+            } else if (row.contains("Partener afaceri:")) {
+                codAbonat = row.split("Partener afaceri:")[1].trim();
             }
             if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
                 invoice.setValue(total);
