@@ -22,9 +22,10 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName | category       | value | furnizor                       | iban                     | nr | description            |
+#      | fileName      | category  | value | furnizor                  | iban                     | nr          | description   |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
-#      | FacturaAS0397-BISERICA_CRESTINA_BAPTISTA_NR.11.pdf | Inchinare | 0  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | 0397 | Cursuri canto |
+#      | Factura37.pdf | Inchinare | 0     | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | 0397 | Cursuri canto |
+#      | Factura37.pdf | Inchinare | 480   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025134 | Cursuri canto |
 #      | Factura32.pdf | Femei    | 671.16 | KRAFTCHAIN ENTERPRISES SRL | RO53INGB0000999912169965 | 311 | atelier (Momco) |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | IesireaBiserica | 4386  | Asociatia Actiunea Felix | RO30CECEBH0143RON0496616 | 217 | donatie cazare comitet |
