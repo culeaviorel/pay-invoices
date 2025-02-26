@@ -110,12 +110,12 @@ public class BTGoSteps extends TestBase {
             return ready;
         });
         maiMulte.click();
-        String fileName = btGo.saveReport(credentials.getContCurent(), firstDayOfMonth, lastDayOfMonth, csv2025());
+        String fileName = btGo.saveReport(credentials.getContCurent(), firstDayOfMonth, lastDayOfMonth, csv());
 
-        appUtils.uploadFileInDrive(csv2025() + fileName, csv2025FolderId);
+        appUtils.uploadFileInDrive(csv() + fileName, csv2025FolderId);
 
-        fileName = btGo.saveReport(credentials.getContDeEconomii(), firstDayOfMonth, lastDayOfMonth, csv2025());
-        appUtils.uploadFileInDrive(csv2025() + fileName, csv2025FolderId);
+        fileName = btGo.saveReport(credentials.getContDeEconomii(), firstDayOfMonth, lastDayOfMonth, csv());
+        appUtils.uploadFileInDrive(csv() + fileName, csv2025FolderId);
         Utils.sleep(1);
     }
 

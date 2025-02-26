@@ -41,10 +41,6 @@ public abstract class TestBase {
     }
 
     public static String csv() {
-        return location() + "CSV\\";
-    }
-
-    public static String csv2025() {
         return location2025() + "CSV\\";
     }
 
