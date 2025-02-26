@@ -22,7 +22,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category | value  | furnizor                   | iban                     | nr  | description     |
+#      | fileName | category       | value | furnizor                       | iban                     | nr | description            |
+#      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
 #      | FacturaAS0397-BISERICA_CRESTINA_BAPTISTA_NR.11.pdf | Inchinare | 0  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | 0397 | Cursuri canto |
 #      | Factura32.pdf | Femei    | 671.16 | KRAFTCHAIN ENTERPRISES SRL | RO53INGB0000999912169965 | 311 | atelier (Momco) |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
@@ -32,7 +33,7 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | category       | value | furnizor              | description |
+#      | category | value | furnizor                                         | description |
 ###      | RVE      | 12000 | Asociatia RADIO VOCEA EVANGHELIEI sucursala Cluj | donatie     |
 ###      | CredoTV     | 2000  | ASOCIATIA CREDO TELEVISION NETWORK | donatie     |
 ##      | SeerRomania | 500   | Fundatia Seer Romania | donatie     |
@@ -64,7 +65,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type       | plata | category   | data       | value  | description                  |
+#      | fileName      | type    | plata | category | data       | value  | description |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -76,7 +77,7 @@ Feature: As a Customer I pay all my invoices
 #      | WhatsApp Image 2024-12-22 at 20.23.38.jpeg | Factura    | Cash  | Copiii   | 15.12.2024 | 50.64 | Produce pentru copii (Damaris) |
 #      | WhatsApp Image 2024-12-22 at 20.23.47.jpeg | Bon cu CUI | Cash  | Copiii   | 02.12.2024 | 115   | Produce pentru copii (Damaris) |
 #      | Factura184.pdf                             | Bon cu CUI | Cash  | Copiii   | 16.12.2024 | 69.98 | Produce pentru copii (Damaris) |
-#      | Factura165.pdf | Factura | Cont  | Femei    | 08.12.2024 | 1805  | Platouri pentru femei |
+#      | Factura36.pdf | Factura | Cont  | Femei    | 25.02.2025 | 154.70 | Farurii     |
 #      | DispozitieDePlata5.pdf | Factura | Cash  | Invitati   | 10.01.2025 | 600    | pentru Claudiu Pop           |
 #      | DispozitieDePlata6.pdf | Factura | Cash  | Invitati   | 12.01.2025 | 1500   | pentru Marius Cruceru        |
 #      | DispozitieDePlata8.pdf | Factura | Cash  | Conferinta | 09.02.2025 | 100    | conferinta evanghelizare  |
