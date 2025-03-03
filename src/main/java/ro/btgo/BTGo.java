@@ -226,16 +226,16 @@ public class BTGo {
         });
     }
 
-    public String saveReport(String contCurent, String firstDayOfMonth, String lastDayOfMonth, String location) {
+    public String saveReport(String cont, String firstDayOfMonth, String lastDayOfMonth, String location) {
         WebLocator detailsContainer = new WebLocator().setTag("fba-accounts-root").setClasses("ng-star-inserted");
         boolean ready = detailsContainer.ready(Duration.ofSeconds(10));
-        WebLocator title = new WebLocator().setTag("p").setText(contCurent);
+        WebLocator title = new WebLocator().setTag("p").setText(cont);
         WebLocator card = new WebLocator(detailsContainer).setClasses("card").setChildNodes(title);
         if (!card.isPresent()) {
             WebLocator selectAccount = new WebLocator().setId("selectAccountBtn");
             selectAccount.click();
             WebLocator modal = new WebLocator().setClasses("d-block", "modal", "fade", "show");
-            Card contEl = new Card(modal, contCurent);
+            Card contEl = new Card(modal, cont);
             contEl.click();
         }
         Button openFilter = new Button().setId("openOffcanvasFiltersBtn");
@@ -251,8 +251,8 @@ public class BTGo {
         List<SearchText> searchTexts1 = List.of(new SearchText("mat-datepicker-1"), new SearchText("mat-datepicker-3"));
         TextField endDate = new TextField().setAttributes("data-mat-calendar", Operator.OR, searchTexts1.toArray(new SearchText[0]));
         endDate.setValue(lastDayOfMonth);
-        Button viewTransactions = new Button(filterWindow, "Vezi tranzacții", SearchType.TRIM);
-        viewTransactions.click();
+        Button filtering = new Button(filterWindow, "Filtrează", SearchType.TRIM);
+        filtering.click();
         Button export = new Button().setId("exportBtn");
         export.click();
         List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {

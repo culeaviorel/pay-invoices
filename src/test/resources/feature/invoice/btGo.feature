@@ -16,7 +16,7 @@ Feature: As a Customer I pay all my invoices
 #  Scenario: Save reports din BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
-#    And in BTGo I save report from "Ianuarie" month
+#    And in BTGo I save report from "Februarie" month
 
 #  Scenario: Plateste orice factura in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
