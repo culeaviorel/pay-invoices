@@ -50,6 +50,13 @@ public class UserCredentials extends PropertiesReader {
         return getProperty("up.password");
     }
 
+    public String getMyVirtualEmail() {
+        return getProperty("my.virtual.email");
+    }
+    public String getMyVirtualPassword() {
+        return getProperty("my.virtual.password");
+    }
+
     public String getContDeEconomii() {
         return getProperty("cont.de.economii");
     }

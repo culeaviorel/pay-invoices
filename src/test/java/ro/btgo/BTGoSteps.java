@@ -76,7 +76,7 @@ public class BTGoSteps extends TestBase {
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
-            int intValue = (int) doubleValue + 1;
+            int intValue = (int) doubleValue + 5;
             btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
 
             boolean success = btGo.invoicePayment(invoice, dovada2025());

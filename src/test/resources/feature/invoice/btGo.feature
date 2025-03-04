@@ -10,7 +10,7 @@ Feature: As a Customer I pay all my invoices
 #  Scenario: Sustinere educatie in BTGo
 #    And I prepare data for Sustinere educatie from google sheet
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
-#    And I login in BTGo
+    And I login in BTGo
 #    And in BTGo I send Sustinere educatie from google sheet
 
 #  Scenario: Save reports din BTGo
@@ -34,11 +34,12 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | category | value | furnizor                                         | description |
+#      | category   | value | furnizor                                          | description | iban                     |
 ###      | RVE      | 12000 | Asociatia RADIO VOCEA EVANGHELIEI sucursala Cluj | donatie     |
 ###      | CredoTV     | 2000  | ASOCIATIA CREDO TELEVISION NETWORK | donatie     |
 ##      | SeerRomania | 500   | Fundatia Seer Romania | donatie     |
-#      | Sf.NectarieOut | 3500  | Asociatia Sfantul Nectarie Cluj | donatie     |
+#      | Comunitate | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj    | donatie     |                          |
+#      | Comunitate | 1000  | Uniunea Bisericilor Crestine Baptiste din Romania | donatie     | RO26RNCB0072049718910001 |
 
 #  Scenario: Plateste factura de utilitati in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
@@ -66,7 +67,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type    | plata | category | data       | value  | description |
+#      | fileName               | type    | plata | category | data       | value | description |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -90,11 +91,12 @@ Feature: As a Customer I pay all my invoices
 #      | Factura28.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 144.48 | Sucuri (Matei)                   |
 #      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
 #      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
-#      | Factura25.pdf          | Factura | Cash  | Diverse    | 06.02.2025 | 188.91 | Semnatura digitala        |
+#      | LEI_invoice_202503.pdf | Factura | Cash  | Diverse  | 03.03.2025 | 297.5 | Cod Lei     |
 #      | Factura8.pdf           | Factura | Cont  | Alimentare | 09.01.2025 | 234.51 | Pizza pentru invitat      |
 #      | Factura10.pdf          | Factura | Cont  | Alimentare | 10.01.2025 | 194.26 | Produse pentru conferinta    |
 #      | Factura11.pdf          | Factura | Cont  | Alimentare | 12.01.2025 | 776.55 | Pizza pentru biserica        |
 #      | Factura31.pdf | Bon cu CUI | Cash  | Femei      | 16.02.2025 | 120    | Flori pentru invitata (Catalina) |
+#      | Factura38.pdf | Factura | Cont  | Femei    | 04.03.2025 | 499   | Manusi      |
 #      | Factura3.pdf | Factura    | Cont  | Alimentare | 07.01.2025 | 238.01 | Produse pentru invitati |
 #      | Factura167.pdf | Factura | Cash  | Sanitare    | 09.12.2024 | 81.91  | Role, Saci (Doru)                |
 #      | Factura34.pdf | Factura    | Cash  | Sanitare   | 16.02.2025 | 49.95  | Hartie egienica (Doru)       |

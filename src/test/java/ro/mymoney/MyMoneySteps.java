@@ -17,6 +17,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.fasttrackit.util.TestBase;
+import org.fasttrackit.util.UserCredentials;
 import ro.neo.Storage;
 
 import java.io.BufferedReader;
@@ -35,10 +36,11 @@ import java.util.Locale;
 public class MyMoneySteps extends TestBase {
     private final Login login = new Login();
     private final View view = new View();
+    private final UserCredentials credentials = new UserCredentials();
 
-    @Then("I login on MyVirtual using {string} and {string}")
-    public void login(String user, String pass) {
-        login.login(user, pass);
+    @Then("I login on MyVirtual")
+    public void login() {
+        login.login(credentials.getMyVirtualEmail(), credentials.getMyVirtualPassword());
     }
 
     @And("I read {string} csv file and insert date")
