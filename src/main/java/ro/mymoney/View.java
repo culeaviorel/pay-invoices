@@ -18,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 @Slf4j
@@ -196,31 +198,10 @@ public class View {
     }
 
     public String getCorrectValue(String sum) {
-        Pattern pattern = Pattern.compile("(\\.\\d5)");
-        Matcher matcher = pattern.matcher(sum);
-        String result;
-        boolean find = matcher.find();
-        if (find) {
-            int length = sum.length();
-            String number = sum.substring(length - 2, length - 1);
-            int numberInt = Integer.parseInt(number);
-            int num = numberInt;
-            if (numberInt > 5) {
-                num = num + 1;
-            }
-            if (num == 10) {
-                String first = sum.split("\\.")[0];
-                int firstNum = Integer.parseInt(first) + 1;
-                result = sum.replaceAll(first + "\\." + number + "5", firstNum + ".0");
-            } else {
-                result = sum.replaceAll("\\." + number + "5", "." + num);
-            }
-        } else {
-            double s = Double.parseDouble(sum);
-            String format = String.format("%.1f", s);
-            result = format.contains(".") ? format : format + ".0";
-        }
-        return result;
+        BigDecimal number = new BigDecimal(sum);
+        BigDecimal roundedNumber = number.setScale(1, RoundingMode.HALF_UP);
+        DecimalFormat df = new DecimalFormat("#,###.0", DecimalFormatSymbols.getInstance(Locale.US));
+        return df.format(roundedNumber);
     }
 
     public Transaction getSubCategory(String name) {
@@ -319,8 +300,8 @@ public class View {
             , new Category("MagazinGradina", "MAGAZIN CLUJ AUREL VLA"), new Category("PULSAR", "PULSAR TEO SRL")
             , new Category("CBA", "CBA NORD VEST SRL"), new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
             , new Category("SHOP&GO", "SHOP&GO"), new Category("Mavios", "MAVIOS IMPEX")
-            , new Category("Oncos", "SC ONCOS TRANSILVANIA")
-            , new Category("Piccolino", "PICCOLINO CAFFE SRL")
+            , new Category("Oncos", "SC ONCOS TRANSILVANIA"), new Category("Piccolino", "PICCOLINO CAFFE SRL")
+            , new Category("ANAMIR", "ANAMIR BIOMARKET")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
@@ -332,6 +313,7 @@ public class View {
             , new Category("Reserved", "RESERVED"), new Category("METASAN", "METASAN RUBY ROSE")
             , new Category("BRUUJ", "BRUUJ SRL"), new Category("Deichmann", "Deichmann Cluj 037")
             , new Category("JURBAKA", "JURBAKA FASHION SRL")
+            , new Category("NEW YORKER", "NEW YORKER CLUJ")
     );
     private final List<Category> masina = List.of(new Category("Motorina", List.of("OMV", "LUKOIL", "ROMPETROL"))
             , new Category("Rovinieta", "Roviniete"), new Category("Taxa De Pod", "Taxa De Pod")
@@ -340,6 +322,7 @@ public class View {
             , new Category("MC BUSINESS", "MC BUSINESS"), new Category("ATTRIUS DEVELOPMENTS", "ATTRIUS DEVELOPMENTS")
             , new Category("Vigneta", List.of("Pago*Vignette", "Pago*Timesafe")), new Category("Parcare Iulius", "MOBILPAYYEPARKING")
             , new Category("Parcare", "*MPYYEPARKING SOLUTIO")
+            , new Category("ITP", "WIGSTEIN SRL")
     );
     private final List<Category> alte = List.of(new Category("EXCELLENTE SOURCE", "EXCELLENTE SOURCE")
             , new Category("PAYU", "PAYU"), new Category("Pasapoarte", "IMPRIMERIA NATIONALA")
@@ -403,8 +386,8 @@ public class View {
             , new Category("CARTOFISSERIE", "CARTOFISSERIE VIVO CLU"), new Category("MCDonalds", List.of("MCDONALD S", "MCD 52 CLUJ POLUS"))
             , new Category("Cafea", "JOAYOKANU COFFEE SRL"), new Category("Restaurant Continental", "RESTAURANT CONTINENTAL HOTELS")
             , new Category("Poco Loco", "POCO LOCO CITY"), new Category("Taco Bueno", "TACO BUENO")
-            , new Category("KOVACS", "KOVACS")
-            , new Category("VKUSNO CONCEPT", "VKUSNO CONCEPT")
+            , new Category("KOVACS", "KOVACS"), new Category("VKUSNO CONCEPT", "VKUSNO CONCEPT")
+            , new Category("COOKOUT", "COOKOUT S R L")
     );
 
     List<Category> medicamente = List.of(
@@ -419,6 +402,7 @@ public class View {
             , new Category("NALA COSMETICS SRL", "NALA COSMETICS SRL"), new Category("German Market", "GERMAN MARKET SRL")
             , new Category("MOBILPAYLADYBUG INVES", "MOBILPAYLADYBUG INVES")
             , new Category("Escapade World", "*EPshop.escapade.world")
+            , new Category("Sephora", "Sephora")
     );
     List<Category> cadouri = List.of(new Category("ANDY EVENTS", "ANDY EVENTS"), new Category("ORANGE SMART STORE", "ORANGE SMART STORE CAH")
             , new Category("EC GARDEN MANAGEMENT", "EC GARDEN MANAGEMENT"), new Category("Flori", List.of("FREYA FLOWERS DESIGN SRL", "FLORARIA NOLINA"))
@@ -448,10 +432,9 @@ public class View {
     );
 
     List<Category> tratament = List.of(new Category("Radiologie", "CENTRU DE RADIOLOGIE DIG")
-            , new Category("Stomatologie", "STOMPRAX MEDICA SRL")
-            , new Category("Stomatologie", "REJOICE DENT S R L")
-            , new Category("Stomatologie", "DENTAL CHIQUE CLINIQUE")
-            , new Category("Stomatologie", "CLINICA DENTARA CLUJ")
+            , new Category("Stomatologie", "STOMPRAX MEDICA SRL"), new Category("Stomatologie", "REJOICE DENT S R L")
+            , new Category("Stomatologie", "DENTAL CHIQUE CLINIQUE"), new Category("Stomatologie", "CLINICA DENTARA CLUJ")
+            , new Category("OptiBlu", "OPTICAL INVESTMENT GROUP")
     );
 
     private Finder find(List<Category> categories, String name) {
