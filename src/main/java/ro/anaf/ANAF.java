@@ -68,7 +68,7 @@ public class ANAF {
         int size = table.getCount();
         AppUtils appUtils = new AppUtils();
         Integer sheetId = appUtils.getFacturiSheetId("2025");
-        List<String> excludeFiles = List.of("4287110211", "4270174043", "4215259346");
+        List<String> excludeFiles = List.of();
         boolean next;
         do {
             for (int i = 1; i <= size; i++) {

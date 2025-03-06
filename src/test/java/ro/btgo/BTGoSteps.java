@@ -250,7 +250,21 @@ public class BTGoSteps extends TestBase {
 
     @And("I generate extras from all in BTGo")
     public void iGenerateExtrasFromAllInBTGo() {
-        btGo.generateExtrasFromAll();
+        List<String> months = List.of(
+                "IAN"
+//                ,"FEB"
+//                ,"MART"
+//                ,"APR"
+//                ,"MAI"
+//                ,"IUN"
+//                ,"IUL"
+//                ,"AUG"
+//                ,"SEPT"
+//                ,"OCT"
+        );
+        for (String month : months) {
+            btGo.generateExtrasFromAll(month, extrase());
+        }
     }
 
     @And("I create depozit from Cont de Economii in BTGo")

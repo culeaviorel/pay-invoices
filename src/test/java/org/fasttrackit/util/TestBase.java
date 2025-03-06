@@ -44,6 +44,10 @@ public abstract class TestBase {
         return location2025() + "CSV\\";
     }
 
+    public static String extrase() {
+        return location2025() + "Extrase\\";
+    }
+
     public static String location() {
         return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
     }

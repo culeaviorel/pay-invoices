@@ -71,8 +71,7 @@ public class BTGo {
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
             transfer.click();
             WebLocator container = new WebLocator().setTag("fba-transfer-accounts-container");
-            WebLocator sourceAccount = new WebLocator().setId("sourceAccount");
-            WebLocatorUtils.scrollToWebLocator(sourceAccount);
+            WebLocatorUtils.scrollToWebLocator(container);
             Card cardFromCont = new Card(container, fromCont);
             if (!cardFromCont.isSource()) {
                 Button change = new Button(container).setClasses("exchange-icon");
@@ -82,6 +81,7 @@ public class BTGo {
             String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue + 5);
             cardToCont.setValue(moveValue);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
+            WebLocatorUtils.scroll(0, 1000);
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
             WebLocatorUtils.scroll(0, 2000);
@@ -96,8 +96,8 @@ public class BTGo {
         boolean utilitati =
                 invoice.getCategory().equals("Apa")
 //                || invoice.getCategory().equals("Gunoi")
-                || invoice.getCategory().equals("Curent")
-                || invoice.getCategory().equals("Gaz");
+                        || invoice.getCategory().equals("Curent")
+                        || invoice.getCategory().equals("Gaz");
         if (utilitati) {
             WebLocator textEl = new WebLocator().setText(" Plată nouă ");
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
@@ -169,7 +169,7 @@ public class BTGo {
             scrollAndDoClickOn(laSemnareButton);
         }
         Utils.sleep(5000); // wait for accept from BTGo
-        WebLocatorUtils.scroll(0, 1000);
+        WebLocatorUtils.scroll(0, 200);
         log.info("scroll-5");
         Button download = new Button().setId("successPageActionBtn");
         scrollAndDoClickOn(download);
@@ -274,34 +274,39 @@ public class BTGo {
         return fileName;
     }
 
-    public void generateExtrasFromAll() {
-        WebLocator widgetAccounts = new WebLocator().setClasses("dashboard-accounts");
-        widgetAccounts.click();
-        Button extasContsButton = new Button().setId("accountStatementsBtn");
-        extasContsButton.click();
+    public String generateExtrasFromAll(String month, String location) {
+        WebLocator extrase = new WebLocator().setAttribute("texttrans", "dashboard.header.operations.statements");
+        extrase.click();
         Button calendar = new Button().setClasses("mdc-icon-button");
         WebLocator popUpCalendar = new WebLocator().setTag("mat-datepicker-content");
         Table table = new Table(popUpCalendar);
         Button generateExtras = new Button().setId("generateStatementsBtn");
-        List<String> months = List.of(
-//                "IAN",
-//                "FEB",
-//                "MART",
-//                "APR",
-//                "MAI",
-//                "IUN",
-                "IUL",
-                "AUG",
-                "SEPT",
-                "OCT"
-        );
-        for (String month : months) {
-            calendar.click();
-            table.getCell(month, SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM).click();
-            generateExtras.click();
-            Utils.sleep(1000);
+        calendar.click();
+        table.getCell(month, SearchType.DEEP_CHILD_NODE_OR_SELF, SearchType.TRIM).click();
+        generateExtras.click();
+        Utils.sleep(1000);
+        WebLocator download = new WebLocator().setAttribute("data-mat-icon-name", "downloadBulk");
+        download.ready(Duration.ofSeconds(50));
+        download.click();
+
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
+            List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
+            if (!paths.isEmpty()) {
+                return paths;
+            } else {
+                return null;
+            }
+        });
+        Optional<Path> first = list.stream().filter(i -> !Files.isDirectory(i)).findFirst();
+        String fileName = "";
+        if (first.isPresent()) {
+            Path path = first.get();
+            File file = path.toFile();
+            fileName = file.getName();
+            file.renameTo(new File(location + fileName));
         }
         Utils.sleep(1);
+        return fileName;
     }
 
     public void createDepozit(String value) {
@@ -333,11 +338,10 @@ public class BTGo {
     }
 
     private void goHomeAndBack() {
-        WebLocatorUtils.scroll(0, 1000);
+        WebLocatorUtils.scroll(0, 100);
         goHome.ready(Duration.ofSeconds(10));
         goHome.doClick();
         Utils.sleep(1000);
-//        WebLocatorUtils.scrollToWebLocator(goBack);
         RetryUtils.retry(2, goBack::doClick);
     }
 }
