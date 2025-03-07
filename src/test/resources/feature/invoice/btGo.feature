@@ -46,8 +46,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                       | category |
-#      | Factura_CASOMES_CAG5168984.pdf | Apa      |
+#      | fileName      | category |
+#      | Factura43.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
 #      | Vanzari Factura CJL1C000751193.pdf | Gunoi    |
 

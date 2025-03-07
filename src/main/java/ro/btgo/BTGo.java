@@ -94,9 +94,9 @@ public class BTGo {
     @SneakyThrows
     public boolean invoicePayment(Invoice invoice, String dovada) {
         boolean utilitati =
-                invoice.getCategory().equals("Apa")
+                invoice.getCategory().equals("Curent")
+//                        || invoice.getCategory().equals("Apa")
 //                || invoice.getCategory().equals("Gunoi")
-                        || invoice.getCategory().equals("Curent")
                         || invoice.getCategory().equals("Gaz");
         if (utilitati) {
             WebLocator textEl = new WebLocator().setText(" Plată nouă ");

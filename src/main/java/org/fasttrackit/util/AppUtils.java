@@ -314,11 +314,13 @@ public class AppUtils {
                 codAbonat = row.split("Partener afaceri:")[1].trim();
             }
             if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
+                total = fixString(total);
                 invoice.setValue(total);
                 invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
                 invoice.setCod(codAbonat);
                 invoice.setDescription("factura de Apa");
                 invoice.setFurnizor("COMPANIA DE APA SOMES - CLUJ");
+                invoice.setIban("RO67BTRL01301202990350XX");
                 break;
             }
         }
