@@ -22,12 +22,12 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName        | category | value | furnizor              | iban                     | nr       | description |
+#      | fileName      | category | value | furnizor           | iban                     | nr       | description           |
 #      |          | TitluriDeStat | 20000 | BT Capital Partners | RO96BTRL01301202925690XX | 1  | titluri de stat (2) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
 #      | Factura39.pdf | Inchinare | 1080  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0438 | Cursuri canto |
 #      | Factura39.pdf | Inchinare | 480   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025134 | Cursuri canto |
-#      | Factura401.jpeg | Femei    | 630   | DINA SELIN SWEETS SRL | RO91BTRLRONCRT0CH8854501 | DINA0081 | prajituri   |
+#      | Factura51.pdf | Femei    | 756   | SC ALASS GROUP SRL | RO40BTRLRONCRT0089359702 | RCH69506 | cazare Botez Stefania |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | IesireaBiserica | 4386  | Asociatia Actiunea Felix | RO30CECEBH0143RON0496616 | 217 | donatie cazare comitet |
 
@@ -68,7 +68,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName                | type    | plata | category | data       | value | description           |
+#      | fileName      | type    | plata | category | data       | value | description           |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -81,7 +81,7 @@ Feature: As a Customer I pay all my invoices
 #      | WhatsApp Image 2024-12-22 at 20.23.47.jpeg | Bon cu CUI | Cash  | Copiii   | 02.12.2024 | 115   | Produce pentru copii (Damaris) |
 #      | Factura184.pdf                             | Bon cu CUI | Cash  | Copiii   | 16.12.2024 | 69.98 | Produce pentru copii (Damaris) |
 #      | Factura44.pdf | Factura | Cont  | Femei    | 09.03.2025 | 130   | Flori pentru invitata |
-#      | DispozitieDePlata5.pdf | Factura | Cash  | Invitati   | 10.01.2025 | 600    | pentru Claudiu Pop           |
+#      | Factura51.pdf | Factura | Cont  | Femei    | 10.03.2025 | 756   | pentru Botez Stefania |
 #      | DispozitieDePlata6.pdf | Factura | Cash  | Invitati   | 12.01.2025 | 1500   | pentru Marius Cruceru        |
 #      | DispozitieDePlata8.pdf | Factura | Cash  | Conferinta | 09.02.2025 | 100    | conferinta evanghelizare  |
 #      | DispozitieDePlata9.pdf  | Factura | Cash  | Femei    | 09.03.2025 | 1000  | pentru Botez Stefania |

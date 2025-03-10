@@ -133,7 +133,7 @@ public class GoogleSheet {
     }
 
     public static void addItemForUpdateV2(double value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
-        NumberFormat numberFormat = new NumberFormat().setPattern("0,00");
+        NumberFormat numberFormat = new NumberFormat().setPattern("#.##0,00").setType("NUMBER");
         CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
         ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue(value);
         CellData cellData = new CellData()
@@ -149,7 +149,7 @@ public class GoogleSheet {
                                 .setColumnIndex(columnIndex)
                         )
                         .setRows(List.of(rowData))
-                        .setFields("userEnteredValue,userEnteredFormat"));
+                        .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
         requests.add(request);
     }
 
