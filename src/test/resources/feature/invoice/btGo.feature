@@ -1,11 +1,11 @@
 @screen
 Feature: As a Customer I pay all my invoices
 
-  Scenario: Donatii cu destinatie speciala in BTGo
-    And I prepare data for Donatii cu destinatie speciala New from google sheet
-    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
-    And I login in BTGo
-    And in BTGo I send Donatii cu destinatie speciala from google sheet
+#  Scenario: Donatii cu destinatie speciala in BTGo
+#    And I prepare data for Donatii cu destinatie speciala New from google sheet
+#    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
+#    And I login in BTGo
+#    And in BTGo I send Donatii cu destinatie speciala from google sheet
 
 #  Scenario: Sustinere educatie in BTGo
 #    And I prepare data for Sustinere educatie from google sheet
