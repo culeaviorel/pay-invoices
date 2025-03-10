@@ -1,11 +1,11 @@
 @screen
 Feature: As a Customer I pay all my invoices
 
-#  Scenario: Donatii cu destinatie speciala in BTGo
-#    And I prepare data for Donatii cu destinatie speciala New from google sheet
-#    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
-#    And I login in BTGo
-#    And in BTGo I send Donatii cu destinatie speciala from google sheet
+  Scenario: Donatii cu destinatie speciala in BTGo
+    And I prepare data for Donatii cu destinatie speciala New from google sheet
+    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
+    And I login in BTGo
+    And in BTGo I send Donatii cu destinatie speciala from google sheet
 
 #  Scenario: Sustinere educatie in BTGo
 #    And I prepare data for Sustinere educatie from google sheet
@@ -22,12 +22,12 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName | category      | value | furnizor            | iban                     | nr | description              |
-#      |          | TitluriDeStat | 10000 | BT Capital Partners | RO96BTRL01301202925690XX | 1  | transfer titluri de stat |
+#      | fileName        | category | value | furnizor              | iban                     | nr       | description |
+#      |          | TitluriDeStat | 20000 | BT Capital Partners | RO96BTRL01301202925690XX | 1  | titluri de stat (2) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
 #      | Factura39.pdf | Inchinare | 1080  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0438 | Cursuri canto |
 #      | Factura39.pdf | Inchinare | 480   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025134 | Cursuri canto |
-#      | Factura32.pdf | Femei    | 671.16 | KRAFTCHAIN ENTERPRISES SRL | RO53INGB0000999912169965 | 311 | atelier (Momco) |
+#      | Factura401.jpeg | Femei    | 630   | DINA SELIN SWEETS SRL | RO91BTRLRONCRT0CH8854501 | DINA0081 | prajituri   |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | IesireaBiserica | 4386  | Asociatia Actiunea Felix | RO30CECEBH0143RON0496616 | 217 | donatie cazare comitet |
 
@@ -68,7 +68,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type    | plata | category   | data       | value  | description        |
+#      | fileName                | type    | plata | category | data       | value | description           |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -80,10 +80,12 @@ Feature: As a Customer I pay all my invoices
 #      | WhatsApp Image 2024-12-22 at 20.23.38.jpeg | Factura    | Cash  | Copiii   | 15.12.2024 | 50.64 | Produce pentru copii (Damaris) |
 #      | WhatsApp Image 2024-12-22 at 20.23.47.jpeg | Bon cu CUI | Cash  | Copiii   | 02.12.2024 | 115   | Produce pentru copii (Damaris) |
 #      | Factura184.pdf                             | Bon cu CUI | Cash  | Copiii   | 16.12.2024 | 69.98 | Produce pentru copii (Damaris) |
-#      | Factura36.pdf | Factura | Cont  | Femei    | 25.02.2025 | 154.70 | Farurii     |
+#      | Factura44.pdf | Factura | Cont  | Femei    | 09.03.2025 | 130   | Flori pentru invitata |
 #      | DispozitieDePlata5.pdf | Factura | Cash  | Invitati   | 10.01.2025 | 600    | pentru Claudiu Pop           |
 #      | DispozitieDePlata6.pdf | Factura | Cash  | Invitati   | 12.01.2025 | 1500   | pentru Marius Cruceru        |
 #      | DispozitieDePlata8.pdf | Factura | Cash  | Conferinta | 09.02.2025 | 100    | conferinta evanghelizare  |
+#      | DispozitieDePlata9.pdf  | Factura | Cash  | Femei    | 09.03.2025 | 1000  | pentru Botez Stefania |
+#      | DispozitieDePlata10.pdf | Factura | Cash  | Femei    | 09.03.2025 | 400   | pentru Ion Vantu      |
 #      | Factura12.pdf          | Factura | Cont  | Invitati   | 12.01.2025 | 2289   | cazare Marius Cruceru + mese |
 #      | Factura33.pdf | Bon cu CUI | Cash  | Alimentare | 22.02.2025 | 306.40 | Produse alimentare (Mariana) |
 #      | Factura19.pdf          | Factura | Cont  | Alimentare | 08.02.2025 | 125.38 | Cafea si lapte            |
@@ -93,11 +95,14 @@ Feature: As a Customer I pay all my invoices
 #      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
 #      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
 #      | LEI_invoice_202503.pdf | Factura | Cash  | Diverse  | 03.03.2025 | 297.5 | Cod Lei     |
-#      | Factura8.pdf           | Factura | Cont  | Alimentare | 09.01.2025 | 234.51 | Pizza pentru invitat      |
-#      | Factura10.pdf          | Factura | Cont  | Alimentare | 10.01.2025 | 194.26 | Produse pentru conferinta    |
+#      | Factura45.pdf | Factura | Cash  | Sanitare   | 13.02.2025 | 25.98  | Domestos (Doru)                                |
+#      | Factura48.pdf | Factura | Cash  | Sanitare   | 19.02.2025 | 39.95  | Saci (Doru)                                    |
+#      | Factura46.pdf | Factura | Cash  | Sanitare   | 06.03.2025 | 242.05 | Prosoape de hartie (Doru)                      |
+#      | Factura47.pdf | Factura | Cash  | Alimentare | 10.01.2025 | 227.58 | Apa (Doru)                                     |
 #      | Factura11.pdf          | Factura | Cont  | Alimentare | 12.01.2025 | 776.55 | Pizza pentru biserica        |
 #      | Factura31.pdf | Bon cu CUI | Cash  | Femei      | 16.02.2025 | 120    | Flori pentru invitata (Catalina) |
-#      | Factura38.pdf | Factura | Cont  | Femei    | 04.03.2025 | 499   | Manusi      |
+#      | Factura50.pdf | Factura | Cash  | Femei      | 03.03.2025 | 114.89 | Produse pentru intalnirea femeilor (Mitras)    |
+#      | Factura49.pdf | Factura | Cash  | Femei      | 08.03.2025 | 539.94 | Produse pentru intalnirea femeilor (Valentina) |
 #      | Factura3.pdf | Factura    | Cont  | Alimentare | 07.01.2025 | 238.01 | Produse pentru invitati |
 #      | Factura41.pdf | Factura | Cont  | Sanitare | 03.03.2025 | 600   | pahare cina |
 #      | Factura34.pdf | Factura    | Cash  | Sanitare   | 16.02.2025 | 49.95  | Hartie egienica (Doru)       |

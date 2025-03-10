@@ -132,8 +132,50 @@ public class GoogleSheet {
         requests.add(request);
     }
 
+    public static void addItemForUpdateV2(double value, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        NumberFormat numberFormat = new NumberFormat().setPattern("0,00");
+        CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
+        ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue(value);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(userEnteredValue)
+                .setUserEnteredFormat(cellFormat);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(sheetId)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+                        .setFields("userEnteredValue,userEnteredFormat"));
+        requests.add(request);
+    }
+
     public static void addItemForUpdateDate(LocalDate date, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
         NumberFormat numberFormat = new NumberFormat().setPattern("dd/MM/yyyy").setType("DATE");
+        CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
+        ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue((double) date.toEpochDay() + 25569.0);
+        CellData cellData = new CellData()
+                .setUserEnteredValue(userEnteredValue)
+                .setUserEnteredFormat(cellFormat);
+        List<CellData> cellValues = List.of(cellData);
+        RowData rowData = new RowData().setValues(cellValues);
+        Request request = new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(sheetId)
+                                .setRowIndex(rowIndex)
+                                .setColumnIndex(columnIndex)
+                        )
+                        .setRows(List.of(rowData))
+                        .setFields("userEnteredValue,userEnteredFormat.numberFormat"));
+        requests.add(request);
+    }
+
+    public static void addItemForUpdateDateV2(LocalDate date, int rowIndex, int columnIndex, int sheetId, final List<Request> requests) {
+        NumberFormat numberFormat = new NumberFormat().setPattern("dd.MM.yyyy").setType("DATE");
         CellFormat cellFormat = new CellFormat().setNumberFormat(numberFormat);
         ExtendedValue userEnteredValue = new ExtendedValue().setNumberValue((double) date.toEpochDay() + 25569.0);
         CellData cellData = new CellData()

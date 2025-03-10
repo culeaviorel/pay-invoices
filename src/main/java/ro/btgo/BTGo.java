@@ -81,7 +81,7 @@ public class BTGo {
             String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue + 5);
             cardToCont.setValue(moveValue);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
-            WebLocatorUtils.scroll(0, 1000);
+            Utils.sleep(1000);            WebLocatorUtils.scroll(0, 1000);
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
             WebLocatorUtils.scroll(0, 2000);
@@ -147,7 +147,7 @@ public class BTGo {
                 TextField iban = new TextField().setId("ibanInput");
                 iban.setValue(invoice.getIban());
                 iban.sendKeys(Keys.ENTER);
-                Utils.sleep(2000);
+                Utils.sleep(1000);
                 WebLocatorUtils.scroll(0, 1000);
                 log.info("scroll-2");
             }

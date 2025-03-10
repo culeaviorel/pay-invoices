@@ -65,7 +65,7 @@ public class AppUtils {
         LocalDate now = LocalDate.now();
         now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         GoogleSheet.addItemForUpdateDate(now, id, 2, sheetId, requests);
-        GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
+        GoogleSheet.addItemForUpdateV2(value, id, 3, sheetId, requests);
         GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
         int columnIndex = 5;
         if (hasFactura) {
@@ -111,7 +111,7 @@ public class AppUtils {
         GoogleSheet.addItemForUpdateDate(localDate, id, 2, sheetId, requests);
         String tmp = item.getValue();
         double value = Double.parseDouble(tmp);
-        GoogleSheet.addItemForUpdate(value, id, 3, sheetId, requests);
+        GoogleSheet.addItemForUpdateV2(value, id, 3, sheetId, requests);
         GoogleSheet.addItemForUpdate(item.getDescription(), id, 4, sheetId, requests);
         GoogleSheet.addItemForUpdate(item.getType(), link, ";", id, 5, sheetId, requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
@@ -137,8 +137,8 @@ public class AppUtils {
             List<Request> requests1 = new ArrayList<>();
             GoogleSheet.addItemForUpdate("Cheltuieli", id1, 0, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getCategory(), id1, 1, sheetId1, requests1);
-            GoogleSheet.addItemForUpdateDate(localDate, id1, 2, sheetId1, requests1);
-            GoogleSheet.addItemForUpdate(value, id1, 4, sheetId1, requests1);
+            GoogleSheet.addItemForUpdateDateV2(localDate, id1, 2, sheetId1, requests1);
+            GoogleSheet.addItemForUpdateV2(value, id1, 4, sheetId1, requests1);
             GoogleSheet.addItemForUpdateFormula("F" + id1 + "+D" + (id1 + 1) + "-E" + (id1 + 1), id1, 5, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getType(), link, ";", id1, 7, sheetId1, requests1);
