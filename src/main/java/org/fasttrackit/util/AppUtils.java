@@ -49,30 +49,27 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value, LocalDate date) {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         String facturaLink = "";
         if (hasFactura) {
             facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId);
         }
         String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId);
-        List<List<Object>> values = getValues(facturiSheetId, "2025!A1:G");
-        int id = values.size();
         List<Request> requests = new ArrayList<>();
-        Integer sheetId = getSheetId(facturiSheetId, "2025");
-        GoogleSheet.addItemForUpdate(category, id, 0, sheetId, requests);
-        GoogleSheet.addItemForUpdate("Cont", id, 1, sheetId, requests);
-        LocalDate now = LocalDate.now();
-        now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        GoogleSheet.addItemForUpdateDate(now, id, 2, sheetId, requests);
-        GoogleSheet.addItemForUpdateV2(value, id, 3, sheetId, requests);
-        GoogleSheet.addItemForUpdate(description, id, 4, sheetId, requests);
+        Result result = addEmptyRowInGoogleSheet(date);
+        GoogleSheet.addItemForUpdate(category, result.id(), 0, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate("Cont", result.id(), 1, result.sheetId(), requests);
+//        date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        GoogleSheet.addItemForUpdateDate(date, result.id(), 2, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdateV2(value, result.id(), 3, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate(description, result.id(), 4, result.sheetId(), requests);
         int columnIndex = 5;
         if (hasFactura) {
-            GoogleSheet.addItemForUpdate("Factura", facturaLink, ";", id, 5, sheetId, requests);
+            GoogleSheet.addItemForUpdate("Factura", facturaLink, ";", result.id(), 5, result.sheetId(), requests);
             columnIndex++;
         }
-        GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", id, columnIndex, sheetId, requests);
+        GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", result.id(), columnIndex, result.sheetId(), requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -89,31 +86,19 @@ public class AppUtils {
     public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String location) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        int year = localDate.getYear();
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
         String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
-        List<List<Object>> values = getValues(facturiSheetId, year + "!A1:G");
-        List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
-        Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> first);
-        int id = list.size();
-        if (firstRow.isPresent()) {
-            id = list.indexOf(firstRow.get());
-        }
-        List<Request> insertRequests = new ArrayList<>();
-        Integer sheetId = getSheetId(facturiSheetId, year + "");
-        GoogleSheet.insertItem(id, sheetId, insertRequests);
-        BatchUpdateSpreadsheetRequest batchInsertRequest = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests);
-        BatchUpdateSpreadsheetResponse insertResponse = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchInsertRequest).execute();
+        Result result = addEmptyRowInGoogleSheet(localDate);
 
         List<Request> requests = new ArrayList<>();
-        GoogleSheet.addItemForUpdate(item.getCategory(), id, 0, sheetId, requests);
-        GoogleSheet.addItemForUpdate(item.getPlata(), id, 1, sheetId, requests);
-        GoogleSheet.addItemForUpdateDate(localDate, id, 2, sheetId, requests);
+        GoogleSheet.addItemForUpdate(item.getCategory(), result.id(), 0, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate(item.getPlata(), result.id(), 1, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdateDate(localDate, result.id(), 2, result.sheetId(), requests);
         String tmp = item.getValue();
         double value = Double.parseDouble(tmp);
-        GoogleSheet.addItemForUpdateV2(value, id, 3, sheetId, requests);
-        GoogleSheet.addItemForUpdate(item.getDescription(), id, 4, sheetId, requests);
-        GoogleSheet.addItemForUpdate(item.getType(), link, ";", id, 5, sheetId, requests);
+        GoogleSheet.addItemForUpdateV2(value, result.id(), 3, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate(item.getDescription(), result.id(), 4, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate(item.getType(), link, ";", result.id(), 5, result.sheetId(), requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -146,6 +131,27 @@ public class AppUtils {
             BatchUpdateSpreadsheetResponse response1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchUpdateRequest1).execute();
             Utils.sleep(1);
         }
+    }
+
+    @SneakyThrows
+    private Result addEmptyRowInGoogleSheet(LocalDate localDate) {
+        int year = localDate.getYear();
+        List<List<Object>> values = getValues(facturiSheetId, year + "!A1:G");
+        List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
+        Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> first);
+        int id = list.size();
+        if (firstRow.isPresent()) {
+            id = list.indexOf(firstRow.get());
+        }
+        List<Request> insertRequests = new ArrayList<>();
+        Integer sheetId = getSheetId(facturiSheetId, year + "");
+        GoogleSheet.insertItem(id, sheetId, insertRequests);
+        BatchUpdateSpreadsheetRequest batchInsertRequest = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests);
+        BatchUpdateSpreadsheetResponse insertResponse = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchInsertRequest).execute();
+        return new Result(id, sheetId);
+    }
+
+    private record Result(int id, Integer sheetId) {
     }
 
     private static boolean isBefore(RowTO i, LocalDate localDate) {
@@ -280,6 +286,7 @@ public class AppUtils {
         String total = "";
         String nrFacturii = "";
         String codAbonat = "";
+        LocalDate date = null;
         for (int i = 0; i < list.size(); i++) {
             String row = list.get(i);
             if (row.contains("Total factura")) {
@@ -288,14 +295,18 @@ public class AppUtils {
                 nrFacturii = row.split("Numar:")[1].trim();
             } else if (row.contains("Cod client:")) {
                 codAbonat = row.split("Cod client:")[1].trim();
+            } else if (row.contains("Data emitere:")) {
+                String dataString = list.get(i + 2);
+                date = LocalDate.parse(dataString, DateTimeFormatter.ofPattern("dd/MM/yy"));
             }
-            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty()) {
+            if (!total.isEmpty() && !nrFacturii.isEmpty() && !codAbonat.isEmpty() && date != null) {
                 invoice.setValue(total);
                 invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
                 invoice.setCod(codAbonat);
                 invoice.setDescription("factura de Gunoi");
                 invoice.setFurnizor("SUPERCOM SA");
                 invoice.setIban("RO85CECEB00030RON2670130");
+                invoice.setData(date);
                 break;
             }
         }

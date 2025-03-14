@@ -3,6 +3,8 @@ package ro.neo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -18,4 +20,5 @@ public class Invoice {
     private String cod;
     private String furnizor;
     private String iban;
+    private LocalDate data;
 }

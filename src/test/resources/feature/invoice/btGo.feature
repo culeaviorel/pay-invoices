@@ -22,11 +22,12 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                   | category | value | furnizor            | iban                     | nr   | description      |
-#      |          | TitluriDeStat | 20000 | BT Capital Partners | RO96BTRL01301202925690XX | 1  | titluri de stat (2) |
+#      | fileName      | category         | value   | furnizor                     | iban                     | nr      | description       |
+#      |          | TitluriDeStat | 470000.00 | BT Capital Partners | RO96BTRL01301202925690XX | 3  | titluri de stat (3) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
 #      | Factura39.pdf | Inchinare | 1080  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0438 | Cursuri canto |
 #      | Factura39.pdf | Inchinare | 480   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025134 | Cursuri canto |
+#      | Factura55.pdf | SchimbDestinatie | 7197.95 | SC BEJAN & PARTNERS TEAM SRL | RO81BTRLRONCRT0535890801 | BEJ0254 | Avans avizare ISU |
 #      | BIS BAPT 11.pdf | Adolescenti | 2000  | Fundatia ELPIS | RO04BTRLRONCRT0093426202 | FE044 | avans tabara |
 #      | Contract donatie Momco.pdf | Femei    | 900   | ASOCIATIA MOPS CLUJ | RO72BTRLRONCRT0642499201 | CD01 | conferinta MomCo |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
@@ -47,10 +48,10 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category |
+#      | fileName                           | category |
 #      | Factura43.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
-#      | Vanzari Factura CJL1C000751193.pdf | Gunoi    |
+#      | Vanzari Factura CJL1C000782345.pdf | Gunoi    |
 
 #  Scenario: Generate extras conturi in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
