@@ -70,7 +70,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type    | plata | category | data       | value | description             |
+#      | fileName      | type    | plata | category | data       | value  | description |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -86,14 +86,14 @@ Feature: As a Customer I pay all my invoices
 #      | Factura52.pdf | Factura | Cash  | Tehnic   | 11.03.2025 | 112.46 | baterii     |
 #      | Factura53.pdf | Factura | Cont  | Dotari   | 12.03.2025 | 942   | mese de la IKEA |
 #      | DispozitieDePlata6.pdf | Factura | Cash  | Invitati   | 12.01.2025 | 1500   | pentru Marius Cruceru        |
-#      | DispozitieDePlata8.pdf | Factura | Cash  | Conferinta | 09.02.2025 | 100    | conferinta evanghelizare  |
+#      | Factura56.pdf | Factura | Cont  | Conferinta | 14.03.2025 | 486.92 | apa conferinta     |
 #      | DispozitieDePlata9.pdf  | Factura | Cash  | Femei    | 09.03.2025 | 1000  | pentru Botez Stefania |
 #      | DispozitieDePlata10.pdf | Factura | Cash  | Femei    | 09.03.2025 | 400   | pentru Ion Vantu      |
 #      | Factura12.pdf          | Factura | Cont  | Invitati   | 12.01.2025 | 2289   | cazare Marius Cruceru + mese |
 #      | Factura33.pdf | Bon cu CUI | Cash  | Alimentare | 22.02.2025 | 306.40 | Produse alimentare (Mariana) |
 #      | Factura19.pdf          | Factura | Cont  | Alimentare | 08.02.2025 | 125.38 | Cafea si lapte            |
-#      | Factura42.pdf | Factura | Cash  | Alimentare | 12.02.2025 | 211.22 | Produse alimentare |
-#      | Factura27.pdf | Factura    | Cont  | Alimentare | 15.02.2025 | 324.95 | Cafea                            |
+#      | Factura58.pdf | Factura | Cash  | Decor    | 10.03.2025 | 229.00 | Decor (?)   |
+#      | Factura27.pdf | Factura | Cont  | Alimentare | 15.02.2025 | 324.95 | Cafea          |
 #      | Factura28.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 144.48 | Sucuri (Matei)                   |
 #      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
 #      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
