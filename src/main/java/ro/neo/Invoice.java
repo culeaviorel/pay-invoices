@@ -20,5 +20,5 @@ public class Invoice {
     private String cod;
     private String furnizor;
     private String iban;
-    private LocalDate data;
+    private LocalDate data = LocalDate.now();
 }

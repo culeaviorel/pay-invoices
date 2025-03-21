@@ -22,7 +22,7 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category         | value   | furnizor                     | iban                     | nr      | description       |
+#      | fileName      | category   | value   | furnizor         | iban                     | nr         | description        |
 #      |          | TitluriDeStat | 470000.00 | BT Capital Partners | RO96BTRL01301202925690XX | 3  | titluri de stat (3) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
 #      | Factura39.pdf | Inchinare | 1080  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0438 | Cursuri canto |
@@ -32,6 +32,7 @@ Feature: As a Customer I pay all my invoices
 #      | Contract donatie Momco.pdf | Femei    | 900   | ASOCIATIA MOPS CLUJ | RO72BTRLRONCRT0642499201 | CD01 | conferinta MomCo |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | IesireaBiserica | 4386  | Asociatia Actiunea Felix | RO30CECEBH0143RON0496616 | 217 | donatie cazare comitet |
+#      | Factura59.pdf | Conferinta | 2727.00 | SC SEGRA COM SRL | RO40BTRLRONCRT0P23874101 | FCT0052598 | mancare conferinta |
 
 #  Scenario: Plateste donatiile in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
