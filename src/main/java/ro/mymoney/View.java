@@ -290,7 +290,7 @@ public class View {
             , new Category("Panemar", "PANEMAR"), new Category("MCFLYING SRL", "MCFLYING SRL")
             , new Category("Carrefour express", "ARTIMA SA"), new Category("MAGAZIN LA 2 PASI", "MAGAZIN LA 2 PASI")
             , new Category("INM KFL CLUJ FAB C1", "INM KFL CLUJ FAB C1"), new Category("SC OPREA AVI COM SRL", "SC OPREA AVI COM SRL")
-            , new Category("ANAMIR BIOMARKET", "ANAMIR BIOMARKET SRL"), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL")
+            , new Category("ANAMIR BIOMARKET", List.of("ANAMIR BIOMARKET SRL", "ANAMIR BIOMARKET")), new Category("MAVIOS IMPEX SRL", "MAVIOS IMPEX SRL")
             , new Category("Carrefour", "CARREFOUR"), new Category("Linela", "Linela"), new Category("Selgros", "SELGROS")
             , new Category("CARMIC IMPEX", "CARMIC IMPEX"), new Category("BODRUM DONER MARASTI", "BODRUM DONER MARASTI")
             , new Category("RODIMEX INVEST", "RODIMEX INVEST"), new Category("MELFRUCTUS", "MELFRUCTUS SRL")
@@ -301,7 +301,7 @@ public class View {
             , new Category("CBA", "CBA NORD VEST SRL"), new Category("Pastravaria", "PASTRAVARIA INCDS GILA")
             , new Category("SHOP&GO", "SHOP&GO"), new Category("Mavios", "MAVIOS IMPEX")
             , new Category("Oncos", "SC ONCOS TRANSILVANIA"), new Category("Piccolino", "PICCOLINO CAFFE SRL")
-            , new Category("ANAMIR", "ANAMIR BIOMARKET")
+            , new Category("SERVUS", "SERVUS"), new Category("MEMO 10", "MEMO 10")
     );
     private final List<Category> haine = List.of(new Category("ZARA", "ZARA"), new Category("H&M", "H&M"), new Category("Pepco", "PEPCO")
             , new Category("ORGANIZATIA CRESTINA", "ORGANIZATIA CRESTINA"), new Category("KiK", "KiK Textilien")
