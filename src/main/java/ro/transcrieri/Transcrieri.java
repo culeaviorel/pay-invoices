@@ -78,6 +78,7 @@ public class Transcrieri {
             InputButton continua = new InputButton().setId("inreg");
             continua.click();
             Utils.sleep(1);
+//        for captcha ->    https://stackoverflow.com/questions/18935696/how-to-read-the-text-from-image-captcha-by-using-selenium-webdriver-with-java
         }
     }
 }

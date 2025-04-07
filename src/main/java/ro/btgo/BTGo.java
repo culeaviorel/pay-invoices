@@ -339,6 +339,7 @@ public class BTGo {
     }
 
     private void goHomeAndBack() {
+        Utils.sleep(1000);
         WebLocatorUtils.scroll(0, 100);
         goHome.ready(Duration.ofSeconds(10));
         goHome.doClick();
