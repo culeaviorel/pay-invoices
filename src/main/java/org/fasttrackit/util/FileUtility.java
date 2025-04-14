@@ -17,7 +17,7 @@ import java.util.Optional;
 public class FileUtility {
 
     public static File getFileFromDownload(String fileName) {
-        List<Path> list = RetryUtils.retry(Duration.ofSeconds(10), () -> {
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(20), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
             if (!paths.isEmpty()) {
                 return paths;

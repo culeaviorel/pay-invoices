@@ -51,8 +51,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                           | category |
-#      | Factura43.pdf | Apa      |
+#      | fileName      | category |
+#      | Factura80.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
 #      | Vanzari Factura CJL1C000782345.pdf | Gunoi    |
 
@@ -73,7 +73,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type       | plata | category    | data       | value  | description                        |
+#      | fileName      | type    | plata | category   | data       | value  | description                       |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -90,13 +90,13 @@ Feature: As a Customer I pay all my invoices
 #      | Factura75.pdf | Factura | Cash  | Femei    | 02.04.2025 | 207.77 | Produse Momco (Andreea S) |
 #      | Factura72.pdf | Factura | Cont  | Tehnic   | 02.04.2025 | 3158.00 | multi efect chitara |
 #      | Factura53.pdf | Factura | Cont  | Dotari   | 12.03.2025 | 942   | mese de la IKEA |
-#      | DispozitieDePlata6.pdf | Factura | Cash  | Invitati   | 12.01.2025 | 1500   | pentru Marius Cruceru        |
+#      | DispozitieDePlata11.pdf | Dovada | Cash  | Diverse  | 13.04.2025 | 275.00 | la tehnic pentru CT |
 #      | Factura60.pdf | Factura | Cash  | Conferinta | 18.03.2025 | 826.01 | produse conferinta      |
 #      | Factura62.pdf | Factura | Cash  | Femei      | 09.03.2025 | 68.20  | Creioane (Dana Copaciu) |
 #      | Factura71.pdf | Factura | Cont  | Femei    | 26.03.2025 | 195.88 | produse pentru Mops |
 #      | Factura12.pdf          | Factura | Cont  | Invitati   | 12.01.2025 | 2289   | cazare Marius Cruceru + mese |
 #      | Factura33.pdf | Bon cu CUI | Cash  | Alimentare | 22.02.2025 | 306.40 | Produse alimentare (Mariana) |
-#      | Factura19.pdf          | Factura | Cont  | Alimentare | 08.02.2025 | 125.38 | Cafea si lapte            |
+#      | Factura82.pdf | Factura | Cash  | Alimentare | 12.04.2025 | 196.25 | Produse alimentare (sora Mariana) |
 #      | Factura63.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 1 (Dana Copaciu)  |
 #      | Factura64.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 2 (Dana Copaciu)  |
 #      | Factura68.pdf | Factura | Cash  | Alimentare | 19.03.2025 | 195.38 | Cafea       |
@@ -125,6 +125,6 @@ Feature: As a Customer I pay all my invoices
 #      | Bonuri-facturi tineri-dec-1.pdf   | Bon cu CUI | Cash  | Tineri     | 16.12.2024 | 201    | Produse pentru tineri (Ovidiu) |
 #      | Bonuri-facturi tineri-dec-2-3.pdf | Bon cu CUI | Cash  | Tineri     | 16.12.2024 | 376    | Produse pentru tineri (Ovidiu) |
 #      | FF tineri March 24.pdf | Factura | Cash  | Tineri   | 24.03.2025 | 126.82 | produse pentru tineri |
-#      | Factura17.pdf | Factura | Cont  | Diverse  | 29.01.2025 | 461   | Pixuri      |
+#      | Factura2000.jpeg | Factura | Cont  | Sustinere familii | 10.04.2025 | 2000.00 | Factura de curent Husar Alexandru |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | Donatie | Cont  | Diverse  | 08.11.2024 | 109.48 | Hartie A4   |
 #      | BibileProject2024.pdf | Donatie | Cash  | BibleProject | 28.12.2024 | 109.48 | Donatie     |
