@@ -40,6 +40,10 @@ public abstract class TestBase {
         return location2025() + "Facturi\\";
     }
 
+    public static String extrasCard2025() {
+        return facturi2025() + "ExtrasCard\\";
+    }
+
     public static String csv() {
         return location2025() + "CSV\\";
     }

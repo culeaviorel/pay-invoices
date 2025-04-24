@@ -22,12 +22,12 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category  | value | furnizor                  | iban                     | nr          | description   |
+#      | fileName      | category  | value  | furnizor            | iban                     | nr     | description   |
 #      |          | TitluriDeStat | 470000.00 | BT Capital Partners | RO96BTRL01301202925690XX | 3  | titluri de stat (3) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
-#      | Factura39.pdf | Inchinare | 1080  | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0438 | Cursuri canto |
+#      | Factura84.pdf | Inchinare | 540.00 | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0586 | Cursuri canto |
 #      | Factura69.pdf | Inchinare | 480   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025212 | Cursuri canto |
-#      | Factura55.pdf | SchimbDestinatie | 7197.95 | SC BEJAN & PARTNERS TEAM SRL | RO81BTRLRONCRT0535890801 | BEJ0254 | Avans avizare ISU |
+#      | Factura83.pdf | SchimbDestinatie | 7197.95 | SC BEJAN & PARTNERS TEAM SRL | RO81BTRLRONCRT0535890801 | BEJ0255 | Intocmire documentatie aviz ISU |
 #      | BIS BAPT 11.pdf | Adolescenti | 2000  | Fundatia ELPIS | RO04BTRLRONCRT0093426202 | FE044 | avans tabara |
 #      | Contract donatie Momco.pdf | Femei    | 900   | ASOCIATIA MOPS CLUJ | RO72BTRLRONCRT0642499201 | CD01 | conferinta MomCo |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
@@ -38,7 +38,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | category          | value | furnizor                               | description                   | iban                     |
+#      | category   | value | furnizor                          | description | iban                     |
+#      | DonatiiOut | 20000 | Asociatia Academia Crestina Logos | Donatie     | RO29BTRLRONCRT0CV7718101 |
 #      | Sustinere familii | 10000 | Asociatia pentru Integritatea Familiei | Donatie pentru Marius Cruceru | RO18BTRLRONCRT0320656501 |
 #      | ProVitaOut | 1000  | Fundatia Clinica Pro-vita | Donatie pentru Marsul pt Viata | RO98BTRL01301205R83319XX |
 ###      | RVE      | 12000 | Asociatia RADIO VOCEA EVANGHELIEI sucursala Cluj | donatie     |
@@ -51,10 +52,10 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName      | category |
+#      | fileName                           | category |
 #      | Factura80.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
-#      | Vanzari Factura CJL1C000782345.pdf | Gunoi    |
+#      | Vanzari Factura CJL1C000814129.pdf | Gunoi    |
 
 #  Scenario: Generate extras conturi in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
@@ -73,7 +74,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | type    | plata | category   | data       | value  | description                       |
+#      | fileName      | extrasCard      | type       | plata | category   | data       | value | description        |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -99,7 +100,7 @@ Feature: As a Customer I pay all my invoices
 #      | Factura82.pdf | Factura | Cash  | Alimentare | 12.04.2025 | 196.25 | Produse alimentare (sora Mariana) |
 #      | Factura63.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 1 (Dana Copaciu)  |
 #      | Factura64.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 2 (Dana Copaciu)  |
-#      | Factura68.pdf | Factura | Cash  | Alimentare | 19.03.2025 | 195.38 | Cafea       |
+#      | Factura86.pdf | ExtrasCard2.pdf | Bon cu CUI | Cash  | Alimentare | 17.04.2025 | 50.33 | Produse alimentare |
 #      | Factura65.pdf | Factura | Cash  | Alimentare | 22.03.2025 | 108.87 | Produse (Pop Ioana)     |
 #      | Factura66.pdf | Factura | Cash  | Alimentare | 20.03.2025 | 172.79 | Produse (Pop Ioana)     |
 #      | Factura67.pdf | Factura | Cash  | Alimentare | 09.02.2025 | 336.52 | Pizza (Florin)          |

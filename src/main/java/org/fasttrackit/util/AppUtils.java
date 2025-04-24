@@ -38,6 +38,7 @@ public class AppUtils {
     private final String facturiFolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/Facturi
     private final String eFacturaFolderId = "1RYfZhFf2GUkDggn6LdEGz_BubzaVfbpC";// 2025/Facturi/eFactura
     private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/Dovada
+    private final String extrasCardFolderId = "1bXiP7dmAaasre_6ghEp_vWQUB49R2lgC";// 2025/ExtrasCard
 
     public static void openUrl(String url) {
         LOGGER.info("open {}", url);
@@ -83,11 +84,12 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String location) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String facturaPath, String extrasCardPath) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
-        String link = uploadFileInDrive(location + item.getFileName(), facturiFolderId);
+        String linkFactura = uploadFileInDrive(facturaPath + item.getFileName(), facturiFolderId);
+        String linkExtrasCard = uploadFileInDrive(extrasCardPath + item.getExtrasCard(), extrasCardFolderId);
         Result result = addEmptyRowInGoogleSheet(localDate);
 
         List<Request> requests = new ArrayList<>();
@@ -98,7 +100,8 @@ public class AppUtils {
         double value = Double.parseDouble(tmp);
         GoogleSheet.addItemForUpdateV2(value, result.id(), 3, result.sheetId(), requests);
         GoogleSheet.addItemForUpdate(item.getDescription(), result.id(), 4, result.sheetId(), requests);
-        GoogleSheet.addItemForUpdate(item.getType(), link, ";", result.id(), 5, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", result.id(), 5, result.sheetId(), requests);
+        GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -126,7 +129,8 @@ public class AppUtils {
             GoogleSheet.addItemForUpdateV2(value, id1, 4, sheetId1, requests1);
             GoogleSheet.addItemForUpdateFormula("F" + id1 + "+D" + (id1 + 1) + "-E" + (id1 + 1), id1, 5, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
-            GoogleSheet.addItemForUpdate(item.getType(), link, ";", id1, 7, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", id1, 7, sheetId1, requests1);
+            GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", id1, 9, sheetId1, requests1);
             BatchUpdateSpreadsheetRequest batchUpdateRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(requests1);
             BatchUpdateSpreadsheetResponse response1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchUpdateRequest1).execute();
             Utils.sleep(1);
