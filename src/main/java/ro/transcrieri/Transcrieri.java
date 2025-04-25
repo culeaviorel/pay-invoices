@@ -26,6 +26,7 @@ public class Transcrieri {
     private final WebLocator containerOre = new WebLocator().setClasses("ore").setAttribute("style", "display: block;", SearchType.CONTAINS);
     private final WebLocator informare = new WebLocator().setClasses("ui-dialog").setVisibility(true);
     private final Button close = new Button(informare).setClasses("ui-dialog-titlebar-close");
+    private final Button continueButton = new Button(informare).setId("btn_continue3");
     private final WebLocator dayEl = new WebLocator().setClasses("af", "af_da", "ok");
     private final WebLocator oreEl = new WebLocator(containerOre).setClasses("min", "mliber").setExcludeClasses("mocupat");
     private final WebLocator dateCompletate = new WebLocator().setClasses("date_sc");
@@ -79,11 +80,11 @@ public class Transcrieri {
             typeEachChar(item.email(), emailEl);
             incarcaFisierulEl.click();
 
-            String pathFile = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", item.file()).toString();
-            upload.sendKeys(pathFile);
-
             acord1.click();
             acord2.click();
+
+            String pathFile = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", item.file()).toString();
+            upload.sendKeys(pathFile);
 
             continua.click();
             Utils.sleep(1);
@@ -93,16 +94,30 @@ public class Transcrieri {
 
     private static void selectDate(Item item) {
         LocalDate now = LocalDate.parse(item.data(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        int year = now.getYear();
+        String year = now.getYear() + "";
         ComboBox yearEl = new ComboBox().setClasses("ui-datepicker-year");
-        new Select(yearEl.getWebElement()).selectByValue(year + "");
+        Select selectYear = new Select(yearEl.getWebElement());
+        RetryUtils.retry(2, () -> {
+            selectYear.selectByValue(year);
+            String selectedOption = selectYear.getFirstSelectedOption().getText();
+            log.info("Selected year: {}", selectedOption);
+            return selectedOption.equals(year);
+        });
+
         String substring = now.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ro", "RO")).substring(0, 3);
         String month = StringUtils.capitalize(substring).replace("Noi", "Noe");
         ComboBox monthEl = new ComboBox().setClasses("ui-datepicker-month");
-        new Select(monthEl.getWebElement()).selectByValue(month);
+        Select selectMonth = new Select(monthEl.getWebElement());
+        RetryUtils.retry(2, () -> {
+            selectMonth.selectByValue(month);
+            String selectedOption = selectMonth.getFirstSelectedOption().getText();
+            log.info("Selected month: {}", selectedOption);
+            return selectedOption.equals(month);
+        });
+
         int day = now.getDayOfMonth();
         WebLocator dayCalendarEl = new WebLocator().setTag("td").setText(day + "").setAttribute("data-handler", "selectDay");
-        dayCalendarEl.click();
+        RetryUtils.retry(2, dayCalendarEl::doClick);
     }
 
     private static void typeEachChar(String value, TextField textField) {
