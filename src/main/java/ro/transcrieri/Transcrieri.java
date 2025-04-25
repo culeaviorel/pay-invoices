@@ -7,6 +7,7 @@ import com.sdl.selenium.web.button.InputButton;
 import com.sdl.selenium.web.form.CheckBox;
 import com.sdl.selenium.web.form.ComboBox;
 import com.sdl.selenium.web.form.TextField;
+import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class Transcrieri {
     private final TextField taraEl = new TextField().setId("tara_cet0");
     private final TextField emailEl = new TextField().setId("email0");
     private final InputButton incarcaFisierulEl = new InputButton().setId("but_up_fis0");
+    private final WebLocator dragAndDrop = new WebLocator().setId("cos_upload");
     private final WebLocator upload = new WebLocator().setId("aux_file0");
     private final CheckBox acord1 = new CheckBox().setId("acord0");
     private final CheckBox acord2 = new CheckBox().setId("termen0");
@@ -78,11 +80,12 @@ public class Transcrieri {
             WebLocator taraEl2 = new WebLocator(taraEl).setClasses("ui-menu-item-wrapper").setText(item.tara());
             taraEl2.click();
             typeEachChar(item.email(), emailEl);
-            incarcaFisierulEl.click();
 
             acord1.click();
             acord2.click();
 
+            incarcaFisierulEl.click();
+            dragAndDrop.click();
             String pathFile = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", item.file()).toString();
             upload.sendKeys(pathFile);
 
@@ -115,9 +118,10 @@ public class Transcrieri {
             return selectedOption.equals(month);
         });
 
-        int day = now.getDayOfMonth();
-        WebLocator dayCalendarEl = new WebLocator().setTag("td").setText(day + "").setAttribute("data-handler", "selectDay");
-        RetryUtils.retry(2, dayCalendarEl::doClick);
+        String day = now.getDayOfMonth() + "";
+        WebLocator dayCalendarEl = new WebLocator().setTag("td").setAttribute("data-handler", "selectDay");
+        WebLink dayEl = new WebLink(dayCalendarEl).setText(day).setClasses("ui-state-default");
+        RetryUtils.retry(2, dayEl::doClick);
     }
 
     private static void typeEachChar(String value, TextField textField) {
