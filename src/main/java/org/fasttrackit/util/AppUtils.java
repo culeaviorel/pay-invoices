@@ -39,6 +39,7 @@ public class AppUtils {
     private final String eFacturaFolderId = "1RYfZhFf2GUkDggn6LdEGz_BubzaVfbpC";// 2025/Facturi/eFactura
     private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/Dovada
     private final String extrasCardFolderId = "1bXiP7dmAaasre_6ghEp_vWQUB49R2lgC";// 2025/ExtrasCard
+    private final String decontFolderId = "1qSc0ZHUwPoetQZI_j2V61tSqBdlDvEca";// 2025/Decont
 
     public static void openUrl(String url) {
         LOGGER.info("open {}", url);
@@ -84,7 +85,7 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String facturaPath, String extrasCardPath) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String facturaPath, String extrasCardPath, String decontPath) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
@@ -92,6 +93,10 @@ public class AppUtils {
         String linkExtrasCard = "";
         if (!extrasCardPath.isEmpty()) {
             linkExtrasCard = uploadFileInDrive(extrasCardPath + item.getExtrasCard(), extrasCardFolderId);
+        }
+        String linkDecont = "";
+        if (!decontPath.isEmpty()) {
+            linkDecont = uploadFileInDrive(decontPath + item.getDecont(), decontFolderId);
         }
         Result result = addEmptyRowInGoogleSheet(localDate);
 
@@ -106,6 +111,9 @@ public class AppUtils {
         GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", result.id(), 5, result.sheetId(), requests);
         if (!extrasCardPath.isEmpty()) {
             GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
+        }
+        if (!decontPath.isEmpty()) {
+            GoogleSheet.addItemForUpdate("Decont", linkDecont, ";", result.id(), 8, result.sheetId(), requests);
         }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
@@ -138,6 +146,9 @@ public class AppUtils {
             if (!extrasCardPath.isEmpty()) {
                 GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", id1, 9, sheetId1, requests1);
             }
+            if (!decontPath.isEmpty()) {
+                GoogleSheet.addItemForUpdate("Decont", linkDecont, ";", id1, 10, sheetId1, requests1);
+            }
             BatchUpdateSpreadsheetRequest batchUpdateRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(requests1);
             BatchUpdateSpreadsheetResponse response1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchUpdateRequest1).execute();
             Utils.sleep(1);
@@ -160,6 +171,29 @@ public class AppUtils {
         BatchUpdateSpreadsheetRequest batchInsertRequest = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests);
         BatchUpdateSpreadsheetResponse insertResponse = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchInsertRequest).execute();
         return new Result(id, sheetId);
+    }
+
+    public Invoice collectForDecont(Invoice invoice, List<String> list) {
+        String total = "";
+        String nume = "";
+        String iban = "";
+        for (String row : list) {
+            if (row.contains("TOTAL")) {
+                total = row.split("TOTAL")[1].trim();
+            } else if (row.contains("Nume:")) {
+                nume = row.split("Nume:")[1].trim();
+            } else if (row.contains("Cont IBAN:")) {
+                iban = row.split("Cont IBAN:")[1].trim();
+            }
+            if (!total.isEmpty() && !nume.isEmpty() && !iban.isEmpty()) {
+                invoice.setValue(total.replaceAll(",", "."));
+                invoice.setFurnizor(nume);
+                invoice.setIban(iban);
+                invoice.setDescription("conform Decont1");
+                break;
+            }
+        }
+        return invoice;
     }
 
     private record Result(int id, Integer sheetId) {

@@ -18,7 +18,8 @@ public class GoogleSheetSteps extends TestBase {
         for (ItemTO item : items) {
             String facturaPath = item.getType().equals("Dovada") ? dovada2025() : facturi2025();
             String extrasCardPath = Strings.isNullOrEmpty(item.getExtrasCard()) ? "" : extrasCard2025();
-            appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturaPath, extrasCardPath);
+            String decontPath = Strings.isNullOrEmpty(item.getDecont()) ? "" : decont2025();
+            appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturaPath, extrasCardPath, decontPath);
         }
     }
 }

@@ -23,6 +23,7 @@ import ro.neo.Invoice;
 import ro.neo.MemberPay;
 import ro.neo.Storage;
 import ro.sheet.GoogleSheet;
+import ro.sheet.ItemTO;
 
 import java.io.File;
 import java.time.Duration;
@@ -276,5 +277,31 @@ public class BTGoSteps extends TestBase {
         int value = 200000;
         btGo.transferBetweenConts(value, credentials.getContDeEconomii(), credentials.getContCurent());
         btGo.createDepozit(value + "");
+    }
+
+    @SneakyThrows
+    @And("in BTGo I pay deconts:")
+    public void inBTGoIPayDeconts(List<ItemTO> deconts) {
+        for (ItemTO item : deconts) {
+            String decontPath = decont2025() + item.getDecont();
+            File file = new File(decontPath);
+            Invoice invoice = new Invoice();
+            invoice.setCategory(item.getCategory());
+            if (file.exists()) {
+                String text = FileUtility.getPDFContent(file);
+                List<String> list = text.lines().toList();
+                invoice = appUtils.collectForDecont(invoice, list);
+                double doubleValue = Double.parseDouble(invoice.getValue());
+                int intValue = (int) doubleValue + 1;
+                btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
+
+                boolean success = btGo.invoicePayment(invoice, dovada2025());
+                if (success) {
+                    String fileName = Storage.get("fileName");
+                    double value = Double.parseDouble(invoice.getValue());
+                    appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
+                }
+            }
+        }
     }
 }

@@ -72,9 +72,16 @@ Feature: As a Customer I pay all my invoices
 #    And I login in BTGo
 #    And I create depozit from Cont de Economii in BTGo
 
+  Scenario: Plata decont in BTGo
+    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
+    And I login in BTGo
+    And in BTGo I pay deconts:
+      | decont      | category   |
+      | Decont1.pdf | Alimentare |
+
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | extrasCard      | type       | plata | category   | data       | value | description        |
+#      | fileName      | extrasCard      | decont      | type    | plata | category   | data       | value  | description                        |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -97,7 +104,7 @@ Feature: As a Customer I pay all my invoices
 #      | Factura71.pdf | Factura | Cont  | Femei    | 26.03.2025 | 195.88 | produse pentru Mops |
 #      | Factura12.pdf          | Factura | Cont  | Invitati   | 12.01.2025 | 2289   | cazare Marius Cruceru + mese |
 #      | Factura33.pdf | Bon cu CUI | Cash  | Alimentare | 22.02.2025 | 306.40 | Produse alimentare (Mariana) |
-#      | Factura82.pdf | Factura | Cash  | Alimentare | 12.04.2025 | 196.25 | Produse alimentare (sora Mariana) |
+#      | Factura88.pdf | ExtrasCard3.pdf | Decont1.pdf | Factura | Cash  | Alimentare | 27.04.2025 | 147.40 | Gustari duminica seara (Ioana Pop) |
 #      | Factura63.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 1 (Dana Copaciu)  |
 #      | Factura64.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 2 (Dana Copaciu)  |
 #      | Factura86.pdf | ExtrasCard2.pdf | Bon cu CUI | Cash  | Alimentare | 17.04.2025 | 50.33 | Produse alimentare |

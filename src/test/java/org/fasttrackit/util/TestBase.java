@@ -44,6 +44,10 @@ public abstract class TestBase {
         return facturi2025() + "ExtrasCard\\";
     }
 
+    public static String decont2025() {
+        return facturi2025() + "Decont\\";
+    }
+
     public static String csv() {
         return location2025() + "CSV\\";
     }
