@@ -89,7 +89,10 @@ public class AppUtils {
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
         String linkFactura = uploadFileInDrive(facturaPath + item.getFileName(), facturiFolderId);
-        String linkExtrasCard = uploadFileInDrive(extrasCardPath + item.getExtrasCard(), extrasCardFolderId);
+        String linkExtrasCard = "";
+        if (!extrasCardPath.isEmpty()) {
+            linkExtrasCard = uploadFileInDrive(extrasCardPath + item.getExtrasCard(), extrasCardFolderId);
+        }
         Result result = addEmptyRowInGoogleSheet(localDate);
 
         List<Request> requests = new ArrayList<>();
@@ -101,7 +104,9 @@ public class AppUtils {
         GoogleSheet.addItemForUpdateV2(value, result.id(), 3, result.sheetId(), requests);
         GoogleSheet.addItemForUpdate(item.getDescription(), result.id(), 4, result.sheetId(), requests);
         GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", result.id(), 5, result.sheetId(), requests);
-        GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
+        if (!extrasCardPath.isEmpty()) {
+            GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
+        }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -130,7 +135,9 @@ public class AppUtils {
             GoogleSheet.addItemForUpdateFormula("F" + id1 + "+D" + (id1 + 1) + "-E" + (id1 + 1), id1, 5, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", id1, 7, sheetId1, requests1);
-            GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", id1, 9, sheetId1, requests1);
+            if (!extrasCardPath.isEmpty()) {
+                GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", id1, 9, sheetId1, requests1);
+            }
             BatchUpdateSpreadsheetRequest batchUpdateRequest1 = new BatchUpdateSpreadsheetRequest().setRequests(requests1);
             BatchUpdateSpreadsheetResponse response1 = sheetsService.spreadsheets().batchUpdate(contSheetId, batchUpdateRequest1).execute();
             Utils.sleep(1);
