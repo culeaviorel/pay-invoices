@@ -1,6 +1,7 @@
 package ro.btgo;
 
 import com.google.common.base.Strings;
+import com.sdl.selenium.Go;
 import com.sdl.selenium.WebLocatorUtils;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.Operator;
@@ -71,21 +72,21 @@ public class BTGo {
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
             transfer.click();
             WebLocator container = new WebLocator().setTag("fba-transfer-accounts-container");
-            WebLocatorUtils.scrollToWebLocator(container);
+            container.scrollIntoView(Go.NEAREST);
             Card cardFromCont = new Card(container, fromCont);
             if (!cardFromCont.isSource()) {
                 Button change = new Button(container).setClasses("exchange-icon");
                 change.click();
             }
             Card cardToCont = new Card(container, toCont);
-            String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue + 5);
+            String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue);
             cardToCont.setValue(moveValue);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             Utils.sleep(1000);
-            WebLocatorUtils.scroll(0, 1000);
+//            WebLocatorUtils.scroll(0, 1000);
             scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
-            WebLocatorUtils.scroll(0, 2000);
+//            WebLocatorUtils.scroll(0, 2000);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
             goHomeAndBack();
@@ -94,11 +95,10 @@ public class BTGo {
 
     @SneakyThrows
     public boolean invoicePayment(Invoice invoice, String dovada) {
-        boolean utilitati =
-                invoice.getCategory().equals("Curent")
+        boolean utilitati = invoice.getCategory().equals("Curent")
 //                        || invoice.getCategory().equals("Apa")
 //                || invoice.getCategory().equals("Gunoi")
-                        || invoice.getCategory().equals("Gaz");
+                || invoice.getCategory().equals("Gaz");
         if (utilitati) {
             WebLocator textEl = new WebLocator().setText(" Plată nouă ");
             WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
@@ -106,7 +106,7 @@ public class BTGo {
             WebLocator platesteUtilitati = new WebLocator().setText(" Plătește utilități ");
             platesteUtilitati.click();
             TextField search = new TextField().setId("searchInput");
-            WebLocatorUtils.scrollToWebLocator(search);
+            search.scrollIntoView(Go.NEAREST);
             search.setValue(invoice.getFurnizor());
             WebLocator list = new WebLocator().setId("providersList");
             WebLocator row = new WebLocator(list).setClasses("row").setText(invoice.getFurnizor(), SearchType.DEEP_CHILD_NODE_OR_SELF);
@@ -118,12 +118,12 @@ public class BTGo {
             TextField codAbonatEl = new TextField().setId("paymentRef1Input");
             codAbonatEl.setValue(invoice.getCod());
             TextField facturaEl = new TextField().setId("paymentRef2Input");
-            WebLocatorUtils.scrollToWebLocator(facturaEl);
+            facturaEl.scrollIntoView(Go.NEAREST);
             facturaEl.setValue(invoice.getNr());
             scrollAndDoClickOn(maiDeparteButton);
             Utils.sleep(1000);
             WebLocator nrFacturaEl = new WebLocator().setText(" Numar factura");
-            WebLocatorUtils.scrollToWebLocator(nrFacturaEl);
+            nrFacturaEl.scrollIntoView(Go.NEAREST);
             Button semneazaButton = new Button(null, "Semnează", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(semneazaButton);
         } else {
@@ -146,43 +146,34 @@ public class BTGo {
                 TextField nume = new TextField().setId("partnerNameInput");
                 nume.setValue(invoice.getFurnizor());
                 TextField iban = new TextField().setId("ibanInput");
+                iban.scrollIntoView(Go.CENTER);
                 iban.setValue(invoice.getIban());
                 iban.sendKeys(Keys.ENTER);
-                Utils.sleep(1000);
-                WebLocatorUtils.scroll(0, 1000);
-                log.info("scroll-2");
             }
             Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(maiDeparteButton);
             TextField sumaEL = new TextField().setId("transferAmountInput");
             sumaEL.setValue(invoice.getValue());
             TextField descriptionInput = new TextField().setId("descriptionInput");
+            descriptionInput.scrollIntoView(Go.CENTER);
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
-            Utils.sleep(2000);
-            WebLocatorUtils.scroll(0, 1000);
-            log.info("scroll-3");
             scrollAndDoClickOn(maiDeparteButton);
-            Utils.sleep(2000);
-            WebLocatorUtils.scroll(0, 1000);
-            log.info("scroll-4");
+            WebLocator ibanEl = new WebLocator().setTag("span").setText(invoice.getIban(), SearchType.TRIM);
+            ibanEl.scrollIntoView(Go.START);
             Utils.sleep(500);
             Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(laSemnareButton);
         }
-        Utils.sleep(5000); // wait for accept from BTGo
-        WebLocatorUtils.scroll(0, 200);
-        log.info("scroll-5");
+        Utils.sleep(4000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
         scrollAndDoClickOn(download);
         Utils.sleep(1000);
-        Files.walk(Paths.get(WebDriverConfig.getDownloadPath()))
-                .filter(Files::isRegularFile)
-                .forEach(file -> {
-                    String fileName = file.toString();
-                    if (fileName.contains("pdf")) {
-                        Storage.set("filePath", fileName);
-                    }
-                });
+        Files.walk(Paths.get(WebDriverConfig.getDownloadPath())).filter(Files::isRegularFile).forEach(file -> {
+            String fileName = file.toString();
+            if (fileName.contains("pdf")) {
+                Storage.set("filePath", fileName);
+            }
+        });
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
         String extra = getExtra(invoice, month);
         String fileName = "DovadaPlata" + extra + ".pdf";
@@ -215,16 +206,19 @@ public class BTGo {
     }
 
     private void scrollAndDoClickOn(WebLocator button) {
-        WebLocatorUtils.scroll(0, 2000);
-        button.ready(Duration.ofSeconds(10));
+        Utils.sleep(300);
+        boolean ready = button.ready(Duration.ofSeconds(10));
+        log.info("scrollAndDoClickOnReady: {}", ready);
+        button.scrollIntoView(Go.NEAREST);
         RetryUtils.retry(15, () -> {
             boolean doClick = button.doClick();
             if (!doClick) {
-                Utils.sleep(50);
-                WebLocatorUtils.scrollToWebLocator(button);
+                Utils.sleep(200);
+                button.scrollIntoView(Go.CENTER);
             }
             return doClick;
         });
+        Utils.sleep(1000);
     }
 
     public String saveReport(String cont, String firstDayOfMonth, String lastDayOfMonth, String location) {
@@ -321,7 +315,7 @@ public class BTGo {
         Card fromCont = new Card(depozitClasicCointainer);
         fromCont.setValue(value);
         WebLocator periodEl = new WebLocator().setId("slider-item-2");
-        WebLocatorUtils.scrollToWebLocator(periodEl);
+        periodEl.scrollIntoView(Go.NEAREST);
         periodEl.click();
         WebLocator autoRollover = new WebLocator().setId("autoRolloverSwitch");
         CheckBox automat = new CheckBox(autoRollover);
@@ -340,7 +334,7 @@ public class BTGo {
 
     private void goHomeAndBack() {
         Utils.sleep(1000);
-        WebLocatorUtils.scroll(0, 100);
+        goHome.scrollIntoView(Go.NEAREST);
         goHome.ready(Duration.ofSeconds(10));
         goHome.doClick();
         Utils.sleep(1000);
