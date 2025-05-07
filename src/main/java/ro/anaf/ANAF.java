@@ -3,7 +3,7 @@ package ro.anaf;
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.Request;
-import com.sdl.selenium.WebLocatorUtils;
+import com.sdl.selenium.Go;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
@@ -78,7 +78,7 @@ public class ANAF {
                 if (dateRow.contains(".2025") && !files.contains(actualName) && !excludeFiles.contains(actualName)) {
                     Cell cell = tableRow.getCell(5);
                     WebLink downloadPDF = new WebLink(cell, "Descarca PDF");
-                    WebLocatorUtils.scrollToWebLocator(downloadPDF);
+                    downloadPDF.scrollIntoView(Go.CENTER);
                     downloadPDF.click();
 
                     File file = FileUtility.getFileFromDownload(actualName);
