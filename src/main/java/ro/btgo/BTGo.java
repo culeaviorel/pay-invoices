@@ -39,6 +39,7 @@ public class BTGo {
     private final Locale roLocale = new Locale("ro", "RO");
     private final WebLink goHome = new WebLink().setId("homeScreenBtn");
     private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
+    private final TextField descriptionInput = new TextField().setId("descriptionInput");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("user");
@@ -82,11 +83,8 @@ public class BTGo {
             String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue);
             cardToCont.setValue(moveValue);
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
-            Utils.sleep(1000);
-//            WebLocatorUtils.scroll(0, 1000);
+            descriptionInput.scrollIntoView(Go.START);
             scrollAndDoClickOn(nextButton);
-            Utils.sleep(1000);
-//            WebLocatorUtils.scroll(0, 2000);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
             goHomeAndBack();
@@ -154,7 +152,6 @@ public class BTGo {
             scrollAndDoClickOn(maiDeparteButton);
             TextField sumaEL = new TextField().setId("transferAmountInput");
             sumaEL.setValue(invoice.getValue());
-            TextField descriptionInput = new TextField().setId("descriptionInput");
             descriptionInput.scrollIntoView(Go.CENTER);
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
             scrollAndDoClickOn(maiDeparteButton);
