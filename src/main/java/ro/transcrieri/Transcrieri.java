@@ -11,15 +11,11 @@ import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.support.ui.Select;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 public class Transcrieri {
@@ -44,6 +40,14 @@ public class Transcrieri {
     private final CheckBox acord1 = new CheckBox().setId("acord0");
     private final CheckBox acord2 = new CheckBox().setId("termen0");
     private final InputButton continua = new InputButton().setId("inreg");
+    private final WebLocator acordLicenta = new WebLocator().setClasses("acord_licenta");
+    private final WebLocator eula = new WebLocator().setClasses("container_eula");
+    private final WebLocator contract = new WebLocator(acordLicenta).setText("Pentru orice întrebări sau probleme, utilizatorii pot contacta S.P.C.L.E.P. ORADEA, Compartimentul Stare Civilă.").setTag("p");
+
+//    public static void clickElement(WebElement element) {
+//        JavascriptExecutor jse = (JavascriptExecutor) WebDriverConfig.getDriver();
+//        jse.executeScript("arguments[0].click();", element);
+//    }
 
     public void make(List<Item> items) {
         programare.click();
@@ -74,15 +78,12 @@ public class Transcrieri {
 
             typeEachChar(item.name().toUpperCase(), nameSiPrenume);
             typeEachChar(item.nr(), nrCertificatCetatenie);
-            dataCertificat.click();
             selectDate(item);
             taraEl.setValue(item.tara());
-            WebLocator taraEl2 = new WebLocator(taraEl).setClasses("ui-menu-item-wrapper").setText(item.tara());
-            taraEl2.click();
             typeEachChar(item.email(), emailEl);
 
-            acord1.click();
-            acord2.click();
+            acord1.check(true);
+            acord2.check(true);
 
             incarcaFisierulEl.click();
             dragAndDrop.click();
@@ -95,29 +96,16 @@ public class Transcrieri {
         }
     }
 
-    private static void selectDate(Item item) {
+    private void selectDate(Item item) {
+        dataCertificat.click();
         LocalDate now = LocalDate.parse(item.data(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String year = now.getYear() + "";
         ComboBox yearEl = new ComboBox().setClasses("ui-datepicker-year");
-        Select selectYear = new Select(yearEl.getWebElement());
-        RetryUtils.retry(2, () -> {
-            selectYear.selectByValue(year);
-            String selectedOption = selectYear.getFirstSelectedOption().getText();
-            log.info("Selected year: {}", selectedOption);
-            return selectedOption.equals(year);
-        });
-
-        String substring = now.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ro", "RO")).substring(0, 3);
-        String month = StringUtils.capitalize(substring).replace("Noi", "Noe");
+        yearEl.selectByValue(year);
+//        yearEl.selectByIndex(4);
         ComboBox monthEl = new ComboBox().setClasses("ui-datepicker-month");
-        Select selectMonth = new Select(monthEl.getWebElement());
-        RetryUtils.retry(2, () -> {
-            selectMonth.selectByValue(month);
-            String selectedOption = selectMonth.getFirstSelectedOption().getText();
-            log.info("Selected month: {}", selectedOption);
-            return selectedOption.equals(month);
-        });
-
+        int month = now.getMonthValue() - 1;
+        monthEl.selectByIndex(month);
         String day = now.getDayOfMonth() + "";
         WebLocator dayCalendarEl = new WebLocator().setTag("td").setAttribute("data-handler", "selectDay");
         WebLink dayEl = new WebLink(dayCalendarEl).setText(day).setClasses("ui-state-default");
