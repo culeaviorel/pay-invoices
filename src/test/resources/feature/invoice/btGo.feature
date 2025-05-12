@@ -81,7 +81,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName      | extrasCard | decont | type    | plata | category | data       | value | description   |
+#      | fileName      | extrasCard | decont | type    | plata | category   | data       | value  | description              |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -94,7 +94,7 @@ Feature: As a Customer I pay all my invoices
 #      | WhatsApp Image 2024-12-22 at 20.23.47.jpeg | Bon cu CUI | Cash  | Copiii   | 02.12.2024 | 115   | Produce pentru copii (Damaris) |
 #      | Factura184.pdf                             | Bon cu CUI | Cash  | Copiii   | 16.12.2024 | 69.98 | Produce pentru copii (Damaris) |
 #      | Factura73.pdf | Factura | Cash  | Femei    | 02.04.2025 | 40.00  | Panglica Momco            |
-#      | Factura74.pdf | Factura | Cash  | Femei    | 02.04.2025 | 28.00  | Pliante Momco             |
+#      | Factura99.pdf |            |        | Factura | Cont  | Femei      | 10.05.2025 | 234.00 | Sandviciuri pentru Momco |
 #      | Factura97.pdf |            |        | Factura | Cont  | Femei    | 09.05.2025 | 58.79 | Produse Momco |
 #      | Factura72.pdf | Factura | Cont  | Tehnic   | 02.04.2025 | 3158.00 | multi efect chitara |
 #      | Factura53.pdf | Factura | Cont  | Dotari   | 12.03.2025 | 942   | mese de la IKEA |
@@ -109,7 +109,7 @@ Feature: As a Customer I pay all my invoices
 #      | Factura88.pdf | ExtrasCard3.pdf | Decont1.pdf | Factura | Cash  | Alimentare | 27.04.2025 | 147.40 | Gustari duminica seara (Ioana Pop) |
 #      | Factura63.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 1 (Dana Copaciu)  |
 #      | Factura64.pdf | Factura | Cash  | Decor      | 10.03.2025 | 229.00 | Decor 2 (Dana Copaciu)  |
-#      | Factura86.pdf | ExtrasCard2.pdf | Bon cu CUI | Cash  | Alimentare | 17.04.2025 | 50.33 | Produse alimentare |
+      | Factura98.pdf |            |        | Factura | Cont  | Alimentare | 10.05.2025 | 209.18 | Produse alimentare       |
 #      | Factura65.pdf | Factura | Cash  | Alimentare | 22.03.2025 | 108.87 | Produse (Pop Ioana)     |
 #      | Factura66.pdf | Factura | Cash  | Alimentare | 20.03.2025 | 172.79 | Produse (Pop Ioana)     |
 #      | Factura67.pdf | Factura | Cash  | Alimentare | 09.02.2025 | 336.52 | Pizza (Florin)          |

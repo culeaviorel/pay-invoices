@@ -1,5 +1,6 @@
 package ro.transcrieri;
 
+import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
 import com.sdl.selenium.web.button.Button;
@@ -11,6 +12,8 @@ import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -43,11 +46,12 @@ public class Transcrieri {
     private final WebLocator acordLicenta = new WebLocator().setClasses("acord_licenta");
     private final WebLocator eula = new WebLocator().setClasses("container_eula");
     private final WebLocator contract = new WebLocator(acordLicenta).setText("Pentru orice întrebări sau probleme, utilizatorii pot contacta S.P.C.L.E.P. ORADEA, Compartimentul Stare Civilă.").setTag("p");
+    private final Button continueButonEl = new Button().setId("btn_continue2");
 
-//    public static void clickElement(WebElement element) {
-//        JavascriptExecutor jse = (JavascriptExecutor) WebDriverConfig.getDriver();
-//        jse.executeScript("arguments[0].click();", element);
-//    }
+    public static void clickElement(WebElement element) {
+        JavascriptExecutor jse = (JavascriptExecutor) WebDriverConfig.getDriver();
+        jse.executeScript("arguments[0].click();", element);
+    }
 
     public void make(List<Item> items) {
         programare.click();
