@@ -77,7 +77,7 @@ public class BTGoSteps extends TestBase {
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
-            int extraValue = invoice.getIban().contains("RNCB") ? 5 : 1;
+            int extraValue = invoice.getIban().contains("RNCB") || invoice.getIban().contains("CECE") ? 5 : 1;
             int intValue = (int) doubleValue + extraValue;
             btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
 
