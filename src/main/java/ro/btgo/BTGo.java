@@ -183,7 +183,7 @@ public class BTGo {
         return success;
     }
 
-    private static String getExtra(Invoice invoice, String month) {
+    private String getExtra(Invoice invoice, String month) {
         String extra;
         if (Strings.isNullOrEmpty(invoice.getFileName())) {
             extra = invoice.getCategory().replaceAll(" ", "");
@@ -193,7 +193,8 @@ public class BTGo {
             extra = extra + month;
         } else {
             if (Strings.isNullOrEmpty(invoice.getNr())) {
-                extra = "";
+                extra = invoice.getCategory().replaceAll(" ", "");
+                extra = extra + invoice.getData().getMonth().getDisplayName(TextStyle.FULL, roLocale);
             } else {
                 extra = "Factura" + invoice.getNr();
             }
