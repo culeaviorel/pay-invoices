@@ -36,10 +36,11 @@ public class Transcrieri {
     private final TextField nrCertificatCetatenie = new TextField().setId("nr_cet0");
     private final TextField dataCertificat = new TextField().setId("data_cet0");
     private final TextField taraEl = new TextField().setId("tara_cet0");
+    private final WebLocator taraTip = new WebLocator().setClasses("ui-menu-item-wrapper").setText("Ucraina");
     private final TextField emailEl = new TextField().setId("email0");
     private final InputButton incarcaFisierulEl = new InputButton().setId("but_up_fis0");
     private final WebLocator dragAndDrop = new WebLocator().setId("cos_upload");
-    private final WebLocator upload = new WebLocator().setId("aux_file0");
+    private final WebLocator upload = new WebLocator().setTag("input").setType("file").setClasses("dz-hidden-input");
     private final CheckBox acord1 = new CheckBox().setId("acord0");
     private final CheckBox acord2 = new CheckBox().setId("termen0");
     private final InputButton continua = new InputButton().setId("inreg");
@@ -84,13 +85,14 @@ public class Transcrieri {
             typeEachChar(item.nr(), nrCertificatCetatenie);
             selectDate(item);
             taraEl.setValue(item.tara());
+            taraTip.click();
             typeEachChar(item.email(), emailEl);
 
             acord1.check(true);
             acord2.check(true);
 
             incarcaFisierulEl.click();
-            dragAndDrop.click();
+            Utils.sleep(200);
             String pathFile = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", item.file()).toString();
             upload.sendKeys(pathFile);
 
