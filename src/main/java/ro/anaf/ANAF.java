@@ -106,13 +106,15 @@ public class ANAF {
                                 String rowValue = rows.get(j + 1);
                                 String valueString = rowValue.split(" ")[2];
                                 value = Double.parseDouble(valueString);
+                                if (value == null) {
+                                    Utils.sleep(1);
+                                }
                             }
                             if (!date.isEmpty() && value != null && dataScadenta != null) {
                                 break;
                             }
                         }
-                        Double expected = Double.parseDouble("81.00");
-                        if (value.equals(expected)) {
+                        if (value == null) {
                             Utils.sleep(1);
                         }
                         String finalDate = date;

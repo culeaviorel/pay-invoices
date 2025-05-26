@@ -20,12 +20,19 @@ public class FileUtility {
         List<Path> list = RetryUtils.retry(Duration.ofSeconds(20), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
             if (!paths.isEmpty()) {
-                return paths;
+                boolean present = paths.stream().anyMatch(i -> !i.toFile().getName().contains(".crdownload"));
+                if (present) {
+                    return paths;
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
         });
-        if (list != null) {
+        if (list == null) {
+            return null;
+        } else {
             Optional<Path> first = list.stream().filter(p -> {
                 String name = p.toFile().getName();
                 return !Files.isDirectory(p) && name.startsWith(fileName);
@@ -36,8 +43,6 @@ public class FileUtility {
             } else {
                 return null;
             }
-        } else {
-            return null;
         }
     }
 
