@@ -85,6 +85,7 @@ public class BTGo {
             Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             descriptionInput.scrollIntoView(Go.START);
             scrollAndDoClickOn(nextButton);
+            cardToCont.scrollIntoView(Go.START);
             Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(transferaButton);
             goHomeAndBack();
@@ -141,10 +142,11 @@ public class BTGo {
             } else {
                 WebLink destinatarNou = new WebLink(null, "Beneficiar nou", SearchType.TRIM);
                 destinatarNou.click();
+                Utils.sleep(500);
                 TextField nume = new TextField().setId("partnerNameInput");
                 nume.setValue(invoice.getFurnizor());
                 TextField iban = new TextField().setId("ibanInput");
-                iban.scrollIntoView(Go.CENTER);
+                iban.scrollIntoView(Go.START);
                 iban.setValue(invoice.getIban());
                 iban.sendKeys(Keys.ENTER);
             }
