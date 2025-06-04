@@ -19,6 +19,7 @@ import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.fasttrackit.util.FileUtility;
 import org.openqa.selenium.Keys;
 import ro.neo.Invoice;
 import ro.neo.Storage;
@@ -146,9 +147,9 @@ public class BTGo {
                 TextField nume = new TextField().setId("partnerNameInput");
                 nume.setValue(invoice.getFurnizor());
                 TextField iban = new TextField().setId("ibanInput");
-                iban.scrollIntoView(Go.START);
                 iban.setValue(invoice.getIban());
                 iban.sendKeys(Keys.ENTER);
+                iban.scrollIntoView(Go.START);
             }
             Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(maiDeparteButton);
@@ -250,22 +251,9 @@ public class BTGo {
         filtering.click();
         Button export = new Button().setId("exportBtn");
         export.click();
-        List<Path> list = RetryUtils.retry(Duration.ofSeconds(25), () -> {
-            List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
-            if (!paths.isEmpty()) {
-                return paths;
-            } else {
-                return null;
-            }
-        });
-        Optional<Path> first = list.stream().filter(i -> !Files.isDirectory(i)).findFirst();
-        String fileName = "";
-        if (first.isPresent()) {
-            Path path = first.get();
-            File file = path.toFile();
-            fileName = file.getName();
-            file.renameTo(new File(location + fileName));
-        }
+        File file = FileUtility.getFileFromDownload();
+        String fileName = file.getName();
+        file.renameTo(new File(location + fileName));
         return fileName;
     }
 

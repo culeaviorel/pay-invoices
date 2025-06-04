@@ -1,5 +1,6 @@
 package org.fasttrackit.util;
 
+import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.RetryUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -15,6 +16,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class FileUtility {
+
+    public static File getFileFromDownload() {
+        return getFileFromDownload(null);
+    }
 
     public static File getFileFromDownload(String fileName) {
         List<Path> list = RetryUtils.retry(Duration.ofSeconds(20), () -> {
@@ -35,7 +40,7 @@ public class FileUtility {
         } else {
             Optional<Path> first = list.stream().filter(p -> {
                 String name = p.toFile().getName();
-                return !Files.isDirectory(p) && name.startsWith(fileName);
+                return !Files.isDirectory(p) && (Strings.isNullOrEmpty(fileName) || name.startsWith(fileName));
             }).findFirst();
             if (first.isPresent()) {
                 Path path = first.get();
