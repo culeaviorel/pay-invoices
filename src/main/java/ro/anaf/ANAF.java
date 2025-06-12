@@ -75,13 +75,10 @@ public class ANAF {
                     File file = FileUtility.getFileFromDownload(actualName);
                     if (file != null) {
                         Result result = getValuesFromPDF(file);
-                        String finalDate = result.date();
                         Double finalValue = result.value();
-                        LocalDate finalDataEmitere = result.dataEmitere();
-                        LocalDate finalDataScadenta = result.dataScadenta();
                         Optional<RowRecord> first = list.stream().filter(f -> {
-                            boolean data1 = f.data().equals(finalDate);
-                            boolean between = isBetween(f.data(), finalDataEmitere, finalDataScadenta);
+                            boolean data1 = f.data().equals(result.date());
+                            boolean between = isBetween(f.data(), result.dataEmitere(), result.dataScadenta());
                             Double tmpDouble = Double.parseDouble(f.value().replace(".", "").replace(",", "."));
                             boolean isValue = tmpDouble.equals(finalValue) || tmpDouble.equals(finalValue + 0.01);
                             return (data1 || between) && isValue;
