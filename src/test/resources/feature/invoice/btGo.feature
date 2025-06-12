@@ -56,9 +56,9 @@ Feature: As a Customer I pay all my invoices
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
 #      | fileName       | category |
-#      | Factura103.pdf | Apa      |
+#      | Factura118.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
-#      | Factura104.pdf | Gunoi    |
+#      | Factura119.pdf | Gunoi    |
 
 #  Scenario: Generate extras conturi in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"

@@ -23,6 +23,7 @@ import ro.sheet.GoogleSheet;
 import ro.sheet.RowRecord;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,17 +54,7 @@ public class ANAF {
     public void getAllInvoices(int days, List<RowRecord> rowsList, String folderId, List<String> files) {
         List<RowRecord> list = new ArrayList<>(rowsList);
         list.remove(0);
-        WebLocator daysEl = new WebLocator().setId("form2:zile");
-        Select selectDays = new Select(daysEl.getWebElement());
-        selectDays.selectByValue(days + "");
-
-        WebLocator cuiEl = new WebLocator().setId("form2:cui");
-        Select selectCui = new Select(cuiEl.getWebElement());
-        selectCui.selectByValue("26392200");
-
-        InputButton facturi = new InputButton(null, "Obţine Răspunsuri");
-        facturi.click();
-        Utils.sleep(1000);
+        openAnaf(days);
         Table table = new Table();
         int size = table.getCount();
         AppUtils appUtils = new AppUtils();
@@ -83,59 +74,22 @@ public class ANAF {
 
                     File file = FileUtility.getFileFromDownload(actualName);
                     if (file != null) {
-                        String pdfContent = FileUtility.getPDFContent(file);
-                        List<String> rows = pdfContent.lines().toList();
-                        LocalDate dataEmitere = null;
-                        LocalDate dataScadenta = null;
-                        String date = "";
-                        Double value = null;
-                        for (int j = 0; j < rows.size(); j++) {
-                            String row = rows.get(j);
-                            if (row.contains("Data emitere")) {
-                                date = row.split("Data emitere")[1].trim();
-                                dataEmitere = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
-                                date = dataEmitere.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("ro", "RO")));
-                            } else if (row.contains("Data scadenta")) {
-                                try {
-                                    String dateTMP = row.split("Data scadenta")[1].trim();
-                                    dataScadenta = LocalDate.parse(dateTMP, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
-                                } catch (ArrayIndexOutOfBoundsException e) {
-                                    Utils.sleep(1);
-                                }
-                            } else if (row.endsWith("Codul tipului")) {
-                                String rowValue = rows.get(j + 1);
-                                String valueString = rowValue.split(" ")[2];
-                                value = Double.parseDouble(valueString);
-                                if (value == null) {
-                                    Utils.sleep(1);
-                                }
-                            }
-                            if (!date.isEmpty() && value != null && dataScadenta != null) {
-                                break;
-                            }
-                        }
-                        if (value == null) {
-                            Utils.sleep(1);
-                        }
-                        String finalDate = date;
-                        Double finalValue = value;
-                        LocalDate finalDataEmitere = dataEmitere;
-                        LocalDate finalDataScadenta = dataScadenta;
+                        Result result = getValuesFromPDF(file);
+                        String finalDate = result.date();
+                        Double finalValue = result.value();
+                        LocalDate finalDataEmitere = result.dataEmitere();
+                        LocalDate finalDataScadenta = result.dataScadenta();
                         Optional<RowRecord> first = list.stream().filter(f -> {
                             boolean data1 = f.data().equals(finalDate);
                             boolean between = isBetween(f.data(), finalDataEmitere, finalDataScadenta);
                             Double tmpDouble = Double.parseDouble(f.value().replace(".", "").replace(",", "."));
-                            if (tmpDouble.equals(Double.parseDouble("1075.17"))) {
-                                Utils.sleep(1);
-                            }
                             boolean isValue = tmpDouble.equals(finalValue) || tmpDouble.equals(finalValue + 0.01);
                             return (data1 || between) && isValue;
                         }).findFirst();
-                        int index;
                         if (first.isPresent()) {
                             RowRecord findRow = first.get();
                             if (findRow.eFactura().isEmpty()) {
-                                index = list.indexOf(findRow);
+                               int index = list.indexOf(findRow);
                                 String link = appUtils.uploadFileInDrive(file.getAbsolutePath(), folderId);
                                 List<Request> requests = new ArrayList<>();
                                 GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
@@ -160,6 +114,62 @@ public class ANAF {
             Utils.sleep(800);
             size = table.getCount();
         } while (next);
+    }
+
+    private static void openAnaf(int days) {
+        WebLocator daysEl = new WebLocator().setId("form2:zile");
+        Select selectDays = new Select(daysEl.getWebElement());
+        selectDays.selectByValue(days + "");
+
+        WebLocator cuiEl = new WebLocator().setId("form2:cui");
+        Select selectCui = new Select(cuiEl.getWebElement());
+        selectCui.selectByValue("26392200");
+
+        InputButton facturi = new InputButton(null, "Obţine Răspunsuri");
+        facturi.click();
+        Utils.sleep(1000);
+    }
+
+    private static Result getValuesFromPDF(File file) throws IOException {
+        String pdfContent = FileUtility.getPDFContent(file);
+        List<String> rows = pdfContent.lines().toList();
+        LocalDate dataEmitere = null;
+        LocalDate dataScadenta = null;
+        String date = "";
+        Double value = null;
+        for (int j = 0; j < rows.size(); j++) {
+            String row = rows.get(j);
+            if (row.contains("Data emitere")) {
+                date = row.split("Data emitere")[1].trim();
+                dataEmitere = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
+                date = dataEmitere.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("ro", "RO")));
+            } else if (row.contains("Data scadenta")) {
+                try {
+                    String dateTMP = row.split("Data scadenta")[1].trim();
+                    dataScadenta = LocalDate.parse(dateTMP, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    Utils.sleep(1);
+                }
+            } else if (row.endsWith("Codul tipului")) {
+                String rowValue = rows.get(j + 1);
+                String valueString = rowValue.split(" ")[2];
+                value = Double.parseDouble(valueString);
+                if (value == null) {
+                    Utils.sleep(1);
+                }
+            }
+            if (!date.isEmpty() && value != null && dataScadenta != null) {
+                break;
+            }
+        }
+        if (value == null) {
+            Utils.sleep(1);
+        }
+        Result result = new Result(dataEmitere, dataScadenta, date, value);
+        return result;
+    }
+
+    private record Result(LocalDate dataEmitere, LocalDate dataScadenta, String date, Double value) {
     }
 
     public static boolean hasNextPage(String input) {
