@@ -13,21 +13,21 @@ Feature: As a Customer I pay all my invoices
 #    And I login in BTGo
 #    And in BTGo I send Sustinere educatie from google sheet
 
-  Scenario: Save reports din BTGo
-    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
-    And I login in BTGo
-    And in BTGo I save report from "Mai" month
+#  Scenario: Save reports din BTGo
+#    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
+#    And I login in BTGo
+#    And in BTGo I save report from "Mai" month
 
 #  Scenario: Plateste orice factura in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName       | category | value   | furnizor                                    | iban                     | nr      | description   |
+#      | fileName       | category         | value   | furnizor                     | iban                     | nr      | description      |
 #      |          | TitluriDeStat | 470000.00 | BT Capital Partners | RO96BTRL01301202925690XX | 3  | titluri de stat (3) |
 #      |          | Materiale Grup | 700   | ASOCIATIA CURSUL ALPHA ROMANIA | RO28BTRLRONCRT0372089601 | 1  | Cursuri pentru grupuri |
-#      | Factura96.pdf | Inchinare | 810.00 | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0625 | Cursuri canto |
+#      | Factura116.pdf | Inchinare | 270.00 | AMA DEUM MUSICA SRL | RO80BTRLRONCRT0CU5601301 | AS0727 | Cursuri canto |
 #      | Factura108.pdf | Inchinare | 530   | MUSIC STUDIO THE BEAT SRL | RO57BTRLRONCRT0CJ0776801 | MSTB2025311 | Cursuri canto |
-#      | Factura83.pdf | SchimbDestinatie | 7197.95 | SC BEJAN & PARTNERS TEAM SRL | RO81BTRLRONCRT0535890801 | BEJ0255 | Intocmire documentatie aviz ISU |
+#      | Factura117.pdf | SchimbDestinatie | 1600.19 | SC BEJAN & PARTNERS TEAM SRL | RO81BTRLRONCRT0535890801 | BEJ0264 | Emitere aviz ISU |
 #      | BIS BAPT 11.pdf | Adolescenti | 2000  | Fundatia ELPIS | RO04BTRLRONCRT0093426202 | FE044 | avans tabara |
 #      | Contract donatie Momco.pdf | Femei    | 900   | ASOCIATIA MOPS CLUJ | RO72BTRLRONCRT0642499201 | CD01 | conferinta MomCo |
 #      | Factura18.pdf | Mentenanta | 250   | S.C HARRER HEATING SRL | RO61BTRLRONCRT0665737301 | 0211 | verificarea centralei |
@@ -39,8 +39,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                         | category       | value | furnizor                        | description                                       | iban                     |
-#      | ContractDeDonatieRazeDeSoare.pdf | RazeDeSoareOut | 1200  | Asociatia Raze de soare in sate | Donatie conform contract donatie 7 din 29.05.2025 | RO42RNCB0162121946580001 |
+#      | fileName                    | category   | value | furnizor               | description                                       | iban                     |
+#      | Donatie_BCB11_MG_6_2025.pdf | DonatiiOut | 5000  | ASOCIAȚIA MAGNA GRATIA | Donatie conform contract donatie 6 din 06.06.2025 | RO11BACX0000001498738001 |
 #      | Decizie comitet donatie1.pdf | Sustinere alte biserici | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj | Donatie pentru Semina Pop | RO02RNCB0106026606820001 |
 #      | CONTRACT DE DONATIE MomCo.pdf | Femei    | 300   | Asociatia Mops Cluj | Donatie     | RO72BTRLRONCRT0642499201 |
 #      | Sustinere familii | 10000 | Asociatia pentru Integritatea Familiei | Donatie pentru Marius Cruceru | RO18BTRLRONCRT0320656501 |
@@ -84,7 +84,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName       | extrasCard      | decont | type    | plata | category | data       | value | description                    |
+#      | fileName                | extrasCard                                          | decont | type    | plata | category   | data       | value  | description                      |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -93,7 +93,8 @@ Feature: As a Customer I pay all my invoices
 #      | DispozitieDePlata12.pdf |            |        | Dovada | Cash  | Invitati | 18.05.2025 | 500   | donatie Alin Instrate |
 #      | DispozitieDePlata16.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 200    | premium olimpiada Estera, Sofia        |
 #      | DispozitieDePlata17.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 300    | premium olimpiada Siena, Titus, Andrei |
-#      | DispozitieDePlata18.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 200    | premium olimpiada Daniel, Andrei       |
+#      | DispozitieDePlata20.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii     | 08.06.2025 | 200    | premium olimpiada David, Ionatan |
+#      | DispozitieDePlata21.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii     | 08.06.2025 | 100    | premium olimpiada Stefan         |
 #      | DovadaDepunere.jpg |            |        | Dovada | Cash  | In Cont  | 14.05.2025 | 3350.00 | depunere in cont |
 #      | Factura152.pdf | Factura | Cash  | Dotari   | 17.11.2024 | 449.99 | Router 3         |
 #      | Factura173.pdf | Factura | Cash  | Mentenanta | 19.12.2024 | 262.40 | Tablou electric |
@@ -124,10 +125,10 @@ Feature: As a Customer I pay all my invoices
 #      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
 #      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
 #      | Factura54.pdf | Factura | Cont  | Diverse  | 05.03.2025 | 18.00 | Taxa anuala de custodie |
-#      | Factura61.pdf | Factura | Cash  | Sanitare   | 18.03.2025 | 85.92  | Produse sanitare (Doru) |
+#      | Factura113.pdf          |                                                     |        | Factura | Cash  | Sanitare   | 04.06.2025 | 181.54 | Produse sanitare (Doru)          |
 #      | Factura48.pdf | Factura | Cash  | Sanitare   | 19.02.2025 | 39.95  | Saci (Doru)                                    |
 #      | Factura70.pdf | Factura | Cash  | Tiparituri | 25.03.2025 | 205.98 | Hartie A4   |
-#      | Factura47.pdf | Factura | Cash  | Alimentare | 10.01.2025 | 227.58 | Apa (Doru)                                     |
+#      | Factura114.pdf          |                                                     |        | Factura | Cash  | Alimentare | 06.06.2025 | 164.44 | Apa (Doru)                       |
 #      | Factura11.pdf          | Factura | Cont  | Alimentare | 12.01.2025 | 776.55 | Pizza pentru biserica        |
 #      | Factura31.pdf | Bon cu CUI | Cash  | Femei      | 16.02.2025 | 120    | Flori pentru invitata (Catalina) |
 #      | Factura49.pdf | Factura | Cash  | Femei      | 08.03.2025 | 539.94 | Produse pentru intalnirea femeilor (Valentina) |
@@ -136,7 +137,8 @@ Feature: As a Customer I pay all my invoices
 #      | Factura34.pdf | Factura    | Cash  | Sanitare   | 16.02.2025 | 49.95  | Hartie egienica (Doru)       |
 #      | Factura76.pdf | Factura    | Cash  | Adolescenti | 02.04.2025 | 123.05 | Produse pentru adolescenti (Oti)   |
 #      | Factura77.pdf | Factura    | Cash  | Comunitate  | 03.04.2025 | 400.00 | Slujire pentru comunitate (Florin) |
-#      | Factura78.pdf | Factura    | Cash  | Femei       | 05.04.2025 | 220.57 | Produse pentru Momco (Andreea)     |
+#      | Factura112.pdf          | ExtrasCard10.pdf                                    |        | Factura | Cash  | Femei      | 07.06.2025 | 503.99 | Produse pentru Momco (Ovidu)     |
+#      | Factura115.pdf          | ExtrasCard11.pdf                                    |        | Factura | Cont  | Femei      | 04.06.2025 | 735.00 | Produse pentru Momco             |
 #      | Factura106.pdf |                 |        | Factura | Cont  | Copiii   | 25.05.2025 | 637.54 | pizza pentru copii             |
 #      | Factura174.pdf | Bon cu CUI | Cash  | Adolescenti | 18.12.2024 | 212.5  | Produse pentru adolescenti (Patri) |
 #      | Factura175.pdf | Bon cu CUI | Cash  | Adolescenti | 18.12.2024 | 69.62  | Produse pentru adolescenti (Patri) |
