@@ -86,7 +86,7 @@ public class ANAF {
                         if (first.isPresent()) {
                             RowRecord findRow = first.get();
                             if (findRow.eFactura().isEmpty()) {
-                               int index = list.indexOf(findRow);
+                                int index = list.indexOf(findRow);
                                 String link = appUtils.uploadFileInDrive(file.getAbsolutePath(), folderId);
                                 List<Request> requests = new ArrayList<>();
                                 GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
@@ -96,7 +96,7 @@ public class ANAF {
                                 list.set(index, rowRecord);
                             }
                         } else {
-                            log.info("Nu am gasit un rand cu ce sa asociez:");
+                            log.info("Nu am gasit un rand cu ce sa asociez: {}", result.content);
                         }
                     } else {
                         log.info("Nu se mai descarca fisierul cu numele, trebuie pus in lista de exludes: {}", actualName);
@@ -162,11 +162,11 @@ public class ANAF {
         if (value == null) {
             Utils.sleep(1);
         }
-        Result result = new Result(dataEmitere, dataScadenta, date, value);
+        Result result = new Result(dataEmitere, dataScadenta, date, value, pdfContent);
         return result;
     }
 
-    private record Result(LocalDate dataEmitere, LocalDate dataScadenta, String date, Double value) {
+    private record Result(LocalDate dataEmitere, LocalDate dataScadenta, String date, Double value, String content) {
     }
 
     public static boolean hasNextPage(String input) {
