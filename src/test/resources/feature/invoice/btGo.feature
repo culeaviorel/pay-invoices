@@ -39,14 +39,14 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                    | category   | value | furnizor               | description                                       | iban                     |
+#      | fileName | category | value | furnizor                                         | description | iban                     |
 #      | Donatie_BCB11_MG_6_2025.pdf | DonatiiOut | 5000  | ASOCIAȚIA MAGNA GRATIA | Donatie conform contract donatie 6 din 06.06.2025 | RO11BACX0000001498738001 |
-#      | Decizie comitet donatie1.pdf | Sustinere alte biserici | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj | Donatie pentru Semina Pop | RO02RNCB0106026606820001 |
+#      | Decizie comitet donatie2.pdf | Sustinere alte biserici | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj | Donatie pentru Semina Pop | RO02RNCB0106026606820001 |
 #      | CONTRACT DE DONATIE MomCo.pdf | Femei    | 300   | Asociatia Mops Cluj | Donatie     | RO72BTRLRONCRT0642499201 |
 #      | Sustinere familii | 10000 | Asociatia pentru Integritatea Familiei | Donatie pentru Marius Cruceru | RO18BTRLRONCRT0320656501 |
 #      | ProVitaOut | 1000  | Fundatia Clinica Pro-vita | Donatie pentru Marsul pt Viata | RO98BTRL01301205R83319XX |
-###      | RVE      | 12000 | Asociatia RADIO VOCEA EVANGHELIEI sucursala Cluj | donatie     |
-###      | CredoTV     | 2000  | ASOCIATIA CREDO TELEVISION NETWORK | donatie     |
+#      |          | RVE      | 2000  | Asociatia RADIO VOCEA EVANGHELIEI sucursala Cluj | donatie     | RO38RNCB0106026613860001 |
+#      | Decizie comitet donatie2.pdf | CredoTV  | 10000.00 | ASOCIATIA CREDO TELEVISION NETWORK | donatie     | RO28RNCB0074029224060001 |
 ##      | SeerRomania | 500   | Fundatia Seer Romania | donatie     |
 #      | Comunitate | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj    | donatie     |                          |
 #      | Comunitate | 1000  | Uniunea Bisericilor Crestine Baptiste din Romania | donatie     | RO26RNCB0072049718910001 |
@@ -84,7 +84,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName                | extrasCard                                          | decont | type    | plata | category   | data       | value  | description                      |
+#      | fileName                | extrasCard                                          | decont | type    | plata | category | data       | value  | description             |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -94,12 +94,12 @@ Feature: As a Customer I pay all my invoices
 #      | DispozitieDePlata16.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 200    | premium olimpiada Estera, Sofia        |
 #      | DispozitieDePlata17.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 300    | premium olimpiada Siena, Titus, Andrei |
 #      | DispozitieDePlata20.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii     | 08.06.2025 | 200    | premium olimpiada David, Ionatan |
-#      | DispozitieDePlata21.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii     | 08.06.2025 | 100    | premium olimpiada Stefan         |
+#      | DispozitieDePlata22.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii   | 22.06.2025 | 100    | premium olimpiada Elias |
 #      | DovadaDepunere.jpg |            |        | Dovada | Cash  | In Cont  | 14.05.2025 | 3350.00 | depunere in cont |
 #      | Factura152.pdf | Factura | Cash  | Dotari   | 17.11.2024 | 449.99 | Router 3         |
 #      | Factura173.pdf | Factura | Cash  | Mentenanta | 19.12.2024 | 262.40 | Tablou electric |
 #      | Factura176.pdf | Factura    | Cash  | Adolescenti | 20.12.2024 | 224.51 | Pizza (Simona)                     |
-#      | WhatsApp Image 2024-12-22 at 20.23.38.jpeg | Factura    | Cash  | Copiii   | 15.12.2024 | 50.64 | Produce pentru copii (Damaris) |
+#      | Factura129.pdf          |                                                     |        | Factura | Cont  | Copiii   | 15.06.2025 | 583.53 | Pizza pentru copii      |
 #      | WhatsApp Image 2024-12-22 at 20.23.47.jpeg | Bon cu CUI | Cash  | Copiii   | 02.12.2024 | 115   | Produce pentru copii (Damaris) |
 #      | Factura184.pdf                             | Bon cu CUI | Cash  | Copiii   | 16.12.2024 | 69.98 | Produce pentru copii (Damaris) |
 #      | Factura73.pdf | Factura | Cash  | Femei    | 02.04.2025 | 40.00  | Panglica Momco            |
@@ -139,11 +139,15 @@ Feature: As a Customer I pay all my invoices
 #      | Factura77.pdf | Factura    | Cash  | Comunitate  | 03.04.2025 | 400.00 | Slujire pentru comunitate (Florin) |
 #      | Factura112.pdf          | ExtrasCard10.pdf                                    |        | Factura | Cash  | Femei      | 07.06.2025 | 503.99 | Produse pentru Momco (Ovidu)     |
 #      | Factura115.pdf          | ExtrasCard11.pdf                                    |        | Factura | Cont  | Femei      | 04.06.2025 | 735.00 | Produse pentru Momco             |
-#      | Factura106.pdf |                 |        | Factura | Cont  | Copiii   | 25.05.2025 | 637.54 | pizza pentru copii             |
-#      | Factura174.pdf | Bon cu CUI | Cash  | Adolescenti | 18.12.2024 | 212.5  | Produse pentru adolescenti (Patri) |
+#      | Factura120.pdf | ExtrasCard12.pdf |        | Factura    | Cont  | Copiii   | 12.06.2025 | 38.95  | marker, plicuri Olimpiada |
+#      | Factura126.pdf |                  |        | Chitanta   | Cash  | Copiii   | 14.06.2025 | 1200.00 | pentru Olimpiada           |
+#      | Factura125.pdf | ExtrasCard15.pdf |        | Bon cu CUI | Cont  | Copiii   | 14.06.2025 | 62.82   | Apa pentru Olimpiada       |
+#      | Factura123.pdf | ExtrasCard14.pdf |        | Factura    | Cont  | Copiii   | 14.06.2025 | 101.89  | corector pentru Olimpiada  |
+#      | Factura124.pdf |                  |        | Factura    | Cont  | Copiii   | 14.06.2025 | 2440.16 | mancare pentru Olimpiada   |
+#      | Factura127.pdf |                  |        | Factura    | Cont  | Copiii   | 15.06.2025 | 1545.10 | mancare pentru Olimpiada 2 |
 #      | Factura175.pdf | Bon cu CUI | Cash  | Adolescenti | 18.12.2024 | 69.62  | Produse pentru adolescenti (Patri) |
-#      | Factura111.pdf | ExtrasCard9.pdf |        | Factura | Cash  | Tineri   | 02.06.2025 | 80.54 | Produse pentru tineri (Ovidiu) |
-#      | Bonuri-facturi tineri-dec-2-3.pdf | Bon cu CUI | Cash  | Tineri     | 16.12.2024 | 376    | Produse pentru tineri (Ovidiu) |
+#      | Factura128.pdf | ExtrasCard9.pdf |        | Bon cu CUI | Cash  | Tineri   | 02.06.2025 | 80.54 | Produse pentru tineri (Ovidiu) |
+#      | Factura128.pdf | ExtrasCard16.pdf |        | Bon cu CUI | Cash  | Tineri   | 16.12.2024 | 646.00 | Produse pentru tineri (Ovidiu) |
 #      | FF tineri March 24.pdf | Factura | Cash  | Tineri   | 24.03.2025 | 126.82 | produse pentru tineri |
 #      | Factura2000.jpeg | Factura | Cont  | Sustinere familii | 10.04.2025 | 2000.00 | Factura de curent Husar Alexandru |
 #      | SCRISOARE DONATIE  09.12.2024.pdf | Donatie | Cont  | Diverse  | 08.11.2024 | 109.48 | Hartie A4   |
