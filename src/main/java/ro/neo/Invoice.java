@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Invoice {
     private String fileName;
+    private String decizia;
     private String category;
     private String value;
     private String description;

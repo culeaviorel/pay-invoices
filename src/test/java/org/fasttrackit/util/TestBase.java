@@ -47,6 +47,9 @@ public abstract class TestBase {
     public static String decont2025() {
         return facturi2025() + "Decont\\";
     }
+    public static String deciziile2025() {
+        return facturi2025() + "Deciziile\\";
+    }
 
     public static String csv() {
         return location2025() + "CSV\\";

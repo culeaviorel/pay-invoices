@@ -37,6 +37,7 @@ public class AppUtils {
     private final String contSheetId = "1UMkkX0VPDrRzu8RlLq2wILIx1VEJ5Sv2nQQDEBjEC8o";
     private final String facturiFolderId = "1g6ySt6dEBEE7YgBpvC9E5VoPGejoq3Fp";// 2025/Facturi
     private final String eFacturaFolderId = "1RYfZhFf2GUkDggn6LdEGz_BubzaVfbpC";// 2025/Facturi/eFactura
+    private final String deciziileFolderId = "1RMJunfcbwX6nZFPPMCff4Nb6CSaSpqtR";// 2025/Facturi/Deciziile
     private final String dovadaFolderId = "1K6eKD5GJwUGz9dlOecAOi1OWLkQwKODT";// 2025/Dovada
     private final String extrasCardFolderId = "1bXiP7dmAaasre_6ghEp_vWQUB49R2lgC";// 2025/ExtrasCard
     private final String decontFolderId = "1qSc0ZHUwPoetQZI_j2V61tSqBdlDvEca";// 2025/Decont
@@ -51,13 +52,18 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String category, String description, double value, LocalDate date) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String deciziaFilePath, String category, String description, double value, LocalDate date) {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
+        boolean hasDecizia = !Strings.isNullOrEmpty(deciziaFilePath);
         String facturaLink = "";
         if (hasFactura) {
             facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId);
         }
         String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId);
+        String deciziaLink = "";
+        if (hasDecizia) {
+            deciziaLink = uploadFileInDrive(deciziaFilePath, deciziileFolderId);
+        }
         List<Request> requests = new ArrayList<>();
         Result result = addEmptyRowInGoogleSheet(date);
         GoogleSheet.addItemForUpdate(category, result.id(), 0, result.sheetId(), requests);
@@ -70,6 +76,9 @@ public class AppUtils {
         if (hasFactura) {
             GoogleSheet.addItemForUpdate("Factura", facturaLink, ";", result.id(), 5, result.sheetId(), requests);
             columnIndex++;
+        }
+        if (hasDecizia) {
+            GoogleSheet.addItemForUpdate("Decizia", deciziaLink, ";", result.id(), 7, result.sheetId(), requests);
         }
         GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", result.id(), columnIndex, result.sheetId(), requests);
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);

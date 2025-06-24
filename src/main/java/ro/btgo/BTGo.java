@@ -177,6 +177,7 @@ public class BTGo {
         String month = StringUtils.capitalize(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, roLocale));
         String extra = getExtra(invoice, month);
         String fileName = "DovadaPlata" + extra + ".pdf";
+        log.info("File name: {}", fileName);
         Storage.set("fileName", fileName);
         String pdfPath = Storage.get("filePath");
         File pdfFile = new File(pdfPath);

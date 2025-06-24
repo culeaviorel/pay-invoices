@@ -85,7 +85,7 @@ public class BTGoSteps extends TestBase {
             if (success) {
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(invoice.getValue());
-                appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, deciziile2025() + invoice.getDecizia(), invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
             }
         }
     }
@@ -177,14 +177,14 @@ public class BTGoSteps extends TestBase {
                 Beneficiar beneficiar = beneficiars.stream().filter(i -> i.name().equals(key)).findFirst().orElseGet(() -> new Beneficiar(key, "", "", ""));
                 LocalDate localDate = LocalDate.now();
                 localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                Invoice invoice = new Invoice(null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, beneficiar.beneficiar(), beneficiar.iban(), localDate);
+                Invoice invoice = new Invoice(null, null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, beneficiar.beneficiar(), beneficiar.iban(), localDate);
                 boolean successPayment = btGo.invoicePayment(invoice, dovada2025());
                 if (successPayment) {
                     changeMonthInSheetNew(month, payDistinct, pays, sheetId);
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(String.valueOf(sumForDestination));
                     String category = invoice.getCategory().replaceAll(" ", "") + "Out";
-                    appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, category, "plata", value, localDate);
+                    appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, null, category, "plata", value, localDate);
                 }
             }
         }
@@ -227,13 +227,13 @@ public class BTGoSteps extends TestBase {
         int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
         btGo.transferBetweenConts(total, credentials.getContDeEconomii(), credentials.getContCurent());
         for (MemberPay memberPay : memberPayList) {
-            Invoice invoice = new Invoice(null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban(), now);
+            Invoice invoice = new Invoice(null, null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban(), now);
             boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
                 changeStatusInSheet(memberPay);
                 String fileName = Storage.get("fileName");
                 double value = Double.parseDouble(memberPay.sum());
-                appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, "Sustinere Educatie", "pentru " + memberPay.name(), value, now);
+                appUtils.uploadFileAndAddRowInFacturiAndContForItem(null, dovada2025() + fileName, null, "Sustinere Educatie", "pentru " + memberPay.name(), value, now);
             }
         }
     }
@@ -300,7 +300,7 @@ public class BTGoSteps extends TestBase {
                 if (success) {
                     String fileName = Storage.get("fileName");
                     double value = Double.parseDouble(invoice.getValue());
-                    appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
+                    appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, null, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
                 }
             }
         }

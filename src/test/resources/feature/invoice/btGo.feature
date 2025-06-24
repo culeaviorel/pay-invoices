@@ -39,8 +39,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName | category | value | furnizor                                         | description | iban                     |
-#      | Donatie_BCB11_MG_6_2025.pdf | DonatiiOut | 5000  | ASOCIAȚIA MAGNA GRATIA | Donatie conform contract donatie 6 din 06.06.2025 | RO11BACX0000001498738001 |
+#      | fileName                                    | decizia                      | category   | value    | furnizor                        | description                                       | iban                     |
+#      | Contract de donatie nr.8 din 2025.06.23.pdf | Decizie comitet donatie3.pdf | DonatiiOut | 10000.00 | EMBASSY CONNECTIONS ASSOCIATION | Donatie conform contract donatie 8 din 23.06.2025 | RO03BTRLRONCRT0CR6004301 |
 #      | Decizie comitet donatie2.pdf | Sustinere alte biserici | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj | Donatie pentru Semina Pop | RO02RNCB0106026606820001 |
 #      | CONTRACT DE DONATIE MomCo.pdf | Femei    | 300   | Asociatia Mops Cluj | Donatie     | RO72BTRLRONCRT0642499201 |
 #      | Sustinere familii | 10000 | Asociatia pentru Integritatea Familiei | Donatie pentru Marius Cruceru | RO18BTRLRONCRT0320656501 |
