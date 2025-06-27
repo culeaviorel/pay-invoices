@@ -81,12 +81,12 @@ public class Transcrieri {
             oreEl.doClick();
             label3.click(); // Tipul actului de transcris
 
-            typeEachChar(item.name().toUpperCase(), nameSiPrenume);
-            typeEachChar(item.nr(), nrCertificatCetatenie);
+            typeEachChar(item.name().toUpperCase(), nameSiPrenume, 10);
+            typeEachChar(item.nr(), nrCertificatCetatenie, 10);
             selectDate(item);
             taraEl.setValue(item.tara());
             taraTip.click();
-            typeEachChar(item.email(), emailEl);
+            typeEachChar(item.email(), emailEl, 50);
 
             acord1.check(true);
             acord2.check(true);
@@ -118,9 +118,10 @@ public class Transcrieri {
         RetryUtils.retry(2, dayEl::doClick);
     }
 
-    private static void typeEachChar(String value, TextField textField) {
+    private static void typeEachChar(String value, TextField textField, int delay) {
         char[] chars = value.toCharArray();
         for (char aChar : chars) {
+            Utils.sleep(delay);
             textField.doSendKeys(aChar + "");
         }
     }
