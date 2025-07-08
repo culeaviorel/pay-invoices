@@ -155,6 +155,7 @@ public class BTGo {
             scrollAndDoClickOn(maiDeparteButton);
             TextField sumaEL = new TextField().setId("transferAmountInput");
             sumaEL.setValue(invoice.getValue());
+            Utils.sleep(1000);
             descriptionInput.scrollIntoView(Go.CENTER);
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
             scrollAndDoClickOn(maiDeparteButton);
@@ -164,8 +165,9 @@ public class BTGo {
             Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
             scrollAndDoClickOn(laSemnareButton);
         }
-        Utils.sleep(4000); // wait for accept from BTGo
+        Utils.sleep(2000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
+        goHome.scrollIntoView(Go.CENTER);
         scrollAndDoClickOn(download);
         Utils.sleep(1000);
         Files.walk(Paths.get(WebDriverConfig.getDownloadPath())).filter(Files::isRegularFile).forEach(file -> {

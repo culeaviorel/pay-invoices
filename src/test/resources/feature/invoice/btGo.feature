@@ -1,11 +1,11 @@
 @screen
 Feature: As a Customer I pay all my invoices
 
-#  Scenario: Donatii cu destinatie speciala in BTGo
-#    And I prepare data for Donatii cu destinatie speciala New from google sheet
-#    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
-#    And I login in BTGo
-#    And in BTGo I send Donatii cu destinatie speciala from google sheet
+  Scenario: Donatii cu destinatie speciala in BTGo
+    And I prepare data for Donatii cu destinatie speciala New from google sheet
+    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
+    And I login in BTGo
+    And in BTGo I send Donatii cu destinatie speciala from google sheet
 
 #  Scenario: Sustinere educatie in BTGo
 #    And I prepare data for Sustinere educatie from google sheet
@@ -16,7 +16,7 @@ Feature: As a Customer I pay all my invoices
 #  Scenario: Save reports din BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
-#    And in BTGo I save report from "Mai" month
+#    And in BTGo I save report from "Iunie" month
 
 #  Scenario: Plateste orice factura in BTGo
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
@@ -39,8 +39,8 @@ Feature: As a Customer I pay all my invoices
 #    And I open url "https://goapp.bancatransilvania.ro/app/auth/login"
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
-#      | fileName                                    | decizia                      | category   | value    | furnizor                        | description                                       | iban                     |
-#      | Contract de donatie nr.8 din 2025.06.23.pdf | Decizie comitet donatie3.pdf | DonatiiOut | 10000.00 | EMBASSY CONNECTIONS ASSOCIATION | Donatie conform contract donatie 8 din 23.06.2025 | RO03BTRLRONCRT0CR6004301 |
+#      | fileName                                    | decizia                      | category   | value    | furnizor                             | description                                       | iban                     |
+#      | Contract de donatie nr.8 din 2025.06.23.pdf | Decizie comitet donatie4.pdf | DonatiiOut | 10000.00 | Biserica Crestina Baptista Chiuiesti | Donatie conform contract donatie 9 din 26.06.2025 | RO89BTRLRONCRT0CR7184601 |
 #      | Decizie comitet donatie2.pdf | Sustinere alte biserici | 1000  | Comunitatea Bisericilor Crestine Baptiste Cluj | Donatie pentru Semina Pop | RO02RNCB0106026606820001 |
 #      | CONTRACT DE DONATIE MomCo.pdf | Femei    | 300   | Asociatia Mops Cluj | Donatie     | RO72BTRLRONCRT0642499201 |
 #      | Sustinere familii | 10000 | Asociatia pentru Integritatea Familiei | Donatie pentru Marius Cruceru | RO18BTRLRONCRT0320656501 |
@@ -56,7 +56,7 @@ Feature: As a Customer I pay all my invoices
 #    And I login in BTGo
 #    And in BTGo I pay invoices:
 #      | fileName       | category |
-#      | Factura118.pdf | Apa      |
+#      | Factura131.pdf | Apa      |
 #      | FacturaGazFeb.pdf | Gaz      |
 #      | Factura119.pdf | Gunoi    |
 
@@ -84,7 +84,7 @@ Feature: As a Customer I pay all my invoices
 
 #  Scenario: Add facturile sau bonuri in google sheets
 #    And I add in Facturi or Bonuri in google sheet:
-#      | fileName                | extrasCard                                          | decont | type    | plata | category | data       | value  | description             |
+#      | fileName       | extrasCard | decont | type    | plata | category | data       | value  | description               |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -124,7 +124,7 @@ Feature: As a Customer I pay all my invoices
 #      | Factura67.pdf | Factura | Cash  | Alimentare | 09.02.2025 | 336.52 | Pizza (Florin)          |
 #      | Factura29.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 694.13 | Susi (Florin)                    |
 #      | Factura30.pdf | Factura    | Cash  | Alimentare | 16.02.2025 | 359.02 | Pizza (Florin)                   |
-#      | Factura54.pdf | Factura | Cont  | Diverse  | 05.03.2025 | 18.00 | Taxa anuala de custodie |
+#      | Factura130.pdf |            |        | Factura | Cont  | Diverse  | 25.06.2025 | 218.09 | Decont motorina Chiuiesti |
 #      | Factura113.pdf          |                                                     |        | Factura | Cash  | Sanitare   | 04.06.2025 | 181.54 | Produse sanitare (Doru)          |
 #      | Factura48.pdf | Factura | Cash  | Sanitare   | 19.02.2025 | 39.95  | Saci (Doru)                                    |
 #      | Factura70.pdf | Factura | Cash  | Tiparituri | 25.03.2025 | 205.98 | Hartie A4   |
