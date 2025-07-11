@@ -55,6 +55,7 @@ public class Transcrieri {
     }
 
     public void make(List<Item> items) {
+//        boolean exists = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", items.get(0).file()).toFile().exists();
         programare.click();
         RetryUtils.retry(15, () -> {
             boolean isVisible = informare.isPresent();
@@ -81,11 +82,13 @@ public class Transcrieri {
             oreEl.doClick();
             label3.click(); // Tipul actului de transcris
 
-            typeEachChar(item.name().toUpperCase(), nameSiPrenume, 10);
-            typeEachChar(item.nr(), nrCertificatCetatenie, 10);
+            typeEachChar(item.name().toUpperCase(), nameSiPrenume, 20);
+            Utils.sleep(10);
+            typeEachChar(item.nr(), nrCertificatCetatenie, 20);
             selectDate(item);
             taraEl.setValue(item.tara());
             taraTip.click();
+            Utils.sleep(20);
             typeEachChar(item.email(), emailEl, 50);
 
             acord1.check(true);
