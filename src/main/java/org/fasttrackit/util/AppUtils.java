@@ -186,6 +186,7 @@ public class AppUtils {
         String total = "";
         String nume = "";
         String iban = "";
+        String data = "";
         for (String row : list) {
             if (row.contains("TOTAL")) {
                 total = row.split("TOTAL")[1].trim();
@@ -193,12 +194,14 @@ public class AppUtils {
                 nume = row.split("Nume:")[1].trim();
             } else if (row.contains("Cont IBAN:")) {
                 iban = row.split("Cont IBAN:")[1].trim();
+            }else if (row.contains("Data:")) {
+                data = row.split("Data:")[1].trim();
             }
-            if (!total.isEmpty() && !nume.isEmpty() && !iban.isEmpty()) {
+            if (!total.isEmpty() && !nume.isEmpty() && !iban.isEmpty() && !data.isEmpty()) {
                 invoice.setValue(total.replaceAll(",", "."));
                 invoice.setFurnizor(nume);
                 invoice.setIban(iban);
-                invoice.setDescription("conform Decont1");
+                invoice.setDescription("conform decont intocmit de " + nume + ", in " + data);
                 break;
             }
         }

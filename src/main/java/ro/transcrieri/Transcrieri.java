@@ -65,7 +65,7 @@ public class Transcrieri {
             return isVisible;
         });
         for (Item item : items) {
-            RetryUtils.retry(5, () -> {
+            RetryUtils.retry(3, () -> {
                 dayEl.click();
                 boolean success;
                 boolean isVisible = informare.isPresent();

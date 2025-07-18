@@ -184,6 +184,9 @@ public class BTGo {
         String pdfPath = Storage.get("filePath");
         File pdfFile = new File(pdfPath);
         boolean success = pdfFile.exists();
+        if (!success) {
+            Utils.sleep(1);
+        }
         pdfFile.renameTo(new File(dovada + fileName));
         goHomeAndBack();
         return success;
