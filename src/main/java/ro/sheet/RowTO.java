@@ -13,5 +13,9 @@ public class RowTO {
     private String data;
     private String value;
     private String description;
-    private String type;
+    private String link;
+    private String dovada;
+    private String eFactura;
+    private String decont;
+    private String plataDecont;
 }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Getter
 public class AppUtils {
@@ -55,6 +56,7 @@ public class AppUtils {
     public void uploadFileAndAddRowInFacturiAndContForItem(String facturaFilePath, String dovadaFilePath, String deciziaFilePath, String category, String description, double value, LocalDate date) {
         boolean hasFactura = !Strings.isNullOrEmpty(facturaFilePath);
         boolean hasDecizia = !Strings.isNullOrEmpty(deciziaFilePath);
+        boolean hasDovada = !Strings.isNullOrEmpty(dovadaFilePath);
         String facturaLink = "";
         if (hasFactura) {
             facturaLink = uploadFileInDrive(facturaFilePath, facturiFolderId);
@@ -80,7 +82,30 @@ public class AppUtils {
         if (hasDecizia) {
             GoogleSheet.addItemForUpdate("Decizia", deciziaLink, ";", result.id(), 7, result.sheetId(), requests);
         }
-        GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", result.id(), columnIndex, result.sheetId(), requests);
+        if (hasDovada) {
+            GoogleSheet.addItemForUpdate("Dovada", dovadaLink, ";", result.id(), columnIndex, result.sheetId(), requests);
+        } else {
+            GoogleSheet.addItemForUpdate("Dovada0", result.id(), columnIndex, result.sheetId(), requests);
+        }
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+        BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
+        Utils.sleep(1);
+    }
+
+    @SneakyThrows
+    public void uploadFileAndAddRowInFacturiAndCont(String dovadaFilePath, String decontName) {
+        boolean hasDovada = !Strings.isNullOrEmpty(dovadaFilePath);
+        List<Request> requests = new ArrayList<>();
+        List<Result> results = getRowId(decontName);
+        int columnIndex = 9;
+        String dovadaLink = uploadFileInDrive(dovadaFilePath, dovadaFolderId);
+        for (Result result : results) {
+            if (hasDovada) {
+                GoogleSheet.addItemForUpdate("PlataDecont", dovadaLink, ";", result.id(), columnIndex, result.sheetId(), requests);
+            } else {
+                GoogleSheet.addItemForUpdate("PlataDecont0", result.id(), columnIndex, result.sheetId(), requests);
+            }
+        }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
         Utils.sleep(1);
@@ -131,7 +156,12 @@ public class AppUtils {
             ValueRange valueRange1 = sheetsService.spreadsheets().values().get(contSheetId, month + "!A1:I").execute();
             List<List<Object>> values1 = valueRange1.getValues();
             values1 = values1.stream().filter(i -> i.size() > 7).toList();
-            List<RowTO> list1 = values1.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(4), (String) i.get(6), (String) i.get(7))).toList();
+            List<RowTO> list1 = values1.stream().map(i ->
+                    new RowTO(
+                            (String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(4),
+                            (String) i.get(6), (String) i.get(7), "", "", "", ""
+                    )
+            ).toList();
             Optional<RowTO> firstRow1 = list1.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> first);
             int id1 = list1.size();
             if (firstRow1.isPresent()) {
@@ -168,7 +198,11 @@ public class AppUtils {
     private Result addEmptyRowInGoogleSheet(LocalDate localDate) {
         int year = localDate.getYear();
         List<List<Object>> values = getValues(facturiSheetId, year + "!A1:G");
-        List<RowTO> list = values.stream().map(i -> new RowTO((String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3), (String) i.get(4), (String) i.get(5))).toList();
+        List<RowTO> list = values.stream().map(i ->
+                new RowTO(
+                        (String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3),
+                        (String) i.get(4), (String) i.get(5), "", "", "", ""
+                )).toList();
         Optional<RowTO> firstRow = list.stream().filter(i -> isBefore(i, localDate)).reduce((first, second) -> first);
         int id = list.size();
         if (firstRow.isPresent()) {
@@ -180,6 +214,28 @@ public class AppUtils {
         BatchUpdateSpreadsheetRequest batchInsertRequest = new BatchUpdateSpreadsheetRequest().setRequests(insertRequests);
         BatchUpdateSpreadsheetResponse insertResponse = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchInsertRequest).execute();
         return new Result(id, sheetId);
+    }
+
+    @SneakyThrows
+    private List<Result> getRowId(String decontName) {
+        int year = LocalDate.now().getYear();
+        List<List<Object>> values = getValues(facturiSheetId, year + "!A1:J");
+        List<RowTO> list = values.stream().map(i ->
+                new RowTO(
+                        (String) i.get(0), (String) i.get(1), (String) i.get(2), (String) i.get(3),
+                        (String) i.get(4), (String) i.get(5),
+                        i.size() != 7 ? "" : (String) i.get(6),
+                        i.size() != 8 ? "" : (String) i.get(7),
+                        i.size() != 9 ? "" : (String) i.get(8),
+                        i.size() != 10 ? "" : (String) i.get(9)
+                )
+        ).toList();
+        Integer sheetId = getSheetId(facturiSheetId, year + "");
+        List<Result> results = IntStream.range(0, list.size())
+                .filter(i -> list.get(i).getDecont().equals(decontName))
+                .mapToObj(i -> new Result(i, sheetId))
+                .toList();
+        return results;
     }
 
     public Invoice collectForDecont(Invoice invoice, List<String> list) {
@@ -194,14 +250,14 @@ public class AppUtils {
                 nume = row.split("Nume:")[1].trim();
             } else if (row.contains("Cont IBAN:")) {
                 iban = row.split("Cont IBAN:")[1].trim();
-            }else if (row.contains("Data:")) {
+            } else if (row.contains("Data:")) {
                 data = row.split("Data:")[1].trim();
             }
             if (!total.isEmpty() && !nume.isEmpty() && !iban.isEmpty() && !data.isEmpty()) {
                 invoice.setValue(total.replaceAll(",", "."));
                 invoice.setFurnizor(nume);
                 invoice.setIban(iban);
-                invoice.setDescription("conform decont intocmit de " + nume + ", in " + data);
+                invoice.setDescription("conform decont intocmit de " + nume + " in " + data);
                 break;
             }
         }

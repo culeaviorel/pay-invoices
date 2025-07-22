@@ -182,13 +182,19 @@ public class BTGo {
         log.info("File name: {}", fileName);
         Storage.set("fileName", fileName);
         String pdfPath = Storage.get("filePath");
-        File pdfFile = new File(pdfPath);
-        boolean success = pdfFile.exists();
-        if (!success) {
-            Utils.sleep(1);
+        boolean success;
+        if (!Strings.isNullOrEmpty(pdfPath)) {
+            File pdfFile = new File(pdfPath);
+            success = pdfFile.exists();
+            if (success) {
+                pdfFile.renameTo(new File(dovada + fileName));
+                goHomeAndBack();
+            } else {
+                Utils.sleep(1);
+            }
+        } else {
+            success = true;
         }
-        pdfFile.renameTo(new File(dovada + fileName));
-        goHomeAndBack();
         return success;
     }
 

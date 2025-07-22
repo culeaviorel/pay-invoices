@@ -77,20 +77,24 @@ public class BTGoSteps extends TestBase {
                 }
             }
             double doubleValue = Double.parseDouble(invoice.getValue());
-            int extraValue = invoice.getIban().contains("RNCB") || invoice.getIban().contains("CECE") || invoice.getIban().contains("BACX") ? 5 : 1;
+            int extraValue = getExtraValue(invoice);
             int intValue = (int) doubleValue + extraValue;
             btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
 
             boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
                 String fileName = Storage.get("fileName");
-                double value = Double.parseDouble(invoice.getValue());
-                String facturaFilePath = invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName();
+                String facturaFilePath = invoice.getFileName() == null || fileName == null ? null : facturi2025() + invoice.getFileName();
                 String dovadaFilePath = dovada2025() + fileName;
                 String deciziaFilePath = invoice.getDecizia() == null ? null : deciziile2025() + invoice.getDecizia();
+                double value = Double.parseDouble(invoice.getValue());
                 appUtils.uploadFileAndAddRowInFacturiAndContForItem(facturaFilePath, dovadaFilePath, deciziaFilePath, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
             }
         }
+    }
+
+    private static int getExtraValue(Invoice invoice) {
+        return invoice.getIban().contains("RNCB") || invoice.getIban().contains("CECE") || invoice.getIban().contains("BACX") ? 5 : 1;
     }
 
     @And("in BTGo I save report from {string} month")
@@ -296,16 +300,21 @@ public class BTGoSteps extends TestBase {
                 List<String> list = text.lines().toList();
                 invoice = appUtils.collectForDecont(invoice, list);
                 double doubleValue = Double.parseDouble(invoice.getValue());
-                int intValue = (int) doubleValue + 1;
+                int intValue = (int) doubleValue + getExtraValue(invoice);
                 btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
 
                 boolean success = btGo.invoicePayment(invoice, dovada2025());
                 if (success) {
                     String fileName = Storage.get("fileName");
-                    double value = Double.parseDouble(invoice.getValue());
-                    appUtils.uploadFileAndAddRowInFacturiAndContForItem((invoice.getFileName() == null ? null : facturi2025() + invoice.getFileName()), dovada2025() + fileName, null, invoice.getCategory(), invoice.getDescription(), value, invoice.getData());
+                    appUtils.uploadFileAndAddRowInFacturiAndCont(dovada2025() + fileName, item.getDecont());
                 }
             }
         }
+    }
+
+    @And("I upload file {string}")
+    public void iUploadFile(String fileName) {
+        String dovadaFilePath = dovada2025() + fileName;
+        appUtils.uploadFileAndAddRowInFacturiAndCont(dovadaFilePath, "Decont5.pdf");
     }
 }
