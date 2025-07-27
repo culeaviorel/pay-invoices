@@ -199,13 +199,12 @@ public class BTGo {
     }
 
     private String getExtra(Invoice invoice, String month) {
-        String extra;
+        String extra = "";
         if (Strings.isNullOrEmpty(invoice.getFileName())) {
-            extra = invoice.getCategory().replaceAll(" ", "");
             if (invoice.getCategory().equals("Sustinere Educatie") && !Strings.isNullOrEmpty(invoice.getFurnizor())) {
-                extra = extra + invoice.getFurnizor().replaceAll(" ", "");
+                extra = invoice.getCategory().replaceAll(" ", "");
             }
-            extra = extra + month;
+            extra = extra + invoice.getFurnizor().replaceAll(" ", "") + month;
         } else {
             if (Strings.isNullOrEmpty(invoice.getNr())) {
                 extra = invoice.getCategory().replaceAll(" ", "");

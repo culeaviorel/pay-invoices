@@ -55,7 +55,8 @@ public class Transcrieri {
     }
 
     public void make(List<Item> items) {
-//        boolean exists = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", items.get(0).file()).toFile().exists();
+        String folder = "C:\\Users\\vculea\\Desktop\\Transcrieri";
+        boolean exists = Paths.get(folder, items.get(0).file()).toFile().exists();
         programare.click();
         RetryUtils.retry(15, () -> {
             boolean isVisible = informare.isPresent();
@@ -79,12 +80,13 @@ public class Transcrieri {
                 return success;
             });
 
+            oreEl.setResultIdx(4);
             oreEl.doClick();
             label3.click(); // Tipul actului de transcris
 
             typeEachChar(item.name().toUpperCase(), nameSiPrenume, 20);
-            Utils.sleep(10);
-            typeEachChar(item.nr(), nrCertificatCetatenie, 20);
+            Utils.sleep(50);
+            typeEachChar(item.nr(), nrCertificatCetatenie, 30);
             selectDate(item);
             taraEl.setValue(item.tara());
             taraTip.click();
@@ -96,7 +98,7 @@ public class Transcrieri {
 
             incarcaFisierulEl.click();
             Utils.sleep(200);
-            String pathFile = Paths.get("C:\\Users\\vculea\\Desktop\\Transcrieri", item.file()).toString();
+            String pathFile = Paths.get(folder, item.file()).toString();
             upload.sendKeys(pathFile);
 
             continua.click();

@@ -147,7 +147,8 @@ public class AppUtils {
             GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
         }
         if (!decontPath.isEmpty()) {
-            GoogleSheet.addItemForUpdate("Decont", linkDecont, ";", result.id(), 8, result.sheetId(), requests);
+            String decontName = new java.io.File(item.getDecont()).getName();
+            GoogleSheet.addItemForUpdate(decontName, linkDecont, ";", result.id(), 8, result.sheetId(), requests);
         }
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
         BatchUpdateSpreadsheetResponse response = sheetsService.spreadsheets().batchUpdate(facturiSheetId, batchUpdateRequest).execute();
