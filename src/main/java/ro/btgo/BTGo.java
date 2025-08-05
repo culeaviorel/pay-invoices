@@ -41,6 +41,7 @@ public class BTGo {
     private final WebLink goHome = new WebLink().setId("homeScreenBtn");
     private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
     private final TextField descriptionInput = new TextField().setId("descriptionInput");
+    private final Button nextButton = new Button().setId("moveForwardBtn");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("user");
@@ -70,8 +71,7 @@ public class BTGo {
         float tmpValue = Float.parseFloat(sumaInCont);
         int actualValue = (int) tmpValue;
         if (value == 0 || actualValue < value) {
-            WebLocator textEl = new WebLocator().setText(" Transfer intern ");
-            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
+            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setId("transferInternalBtn");
             transfer.click();
             WebLocator container = new WebLocator().setTag("fba-transfer-accounts-container");
             container.scrollIntoView(Go.NEAREST);
@@ -83,12 +83,10 @@ public class BTGo {
             Card cardToCont = new Card(container, toCont);
             String moveValue = String.valueOf(value == 0 ? actualValue : value - actualValue);
             cardToCont.setValue(moveValue);
-            Button nextButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
             descriptionInput.scrollIntoView(Go.START);
             scrollAndDoClickOn(nextButton);
             cardToCont.scrollIntoView(Go.START);
-            Button transferaButton = new Button(null, "Transferă", SearchType.TRIM).setId("moveForwardBtn");
-            scrollAndDoClickOn(transferaButton);
+            scrollAndDoClickOn(nextButton);
             goHomeAndBack();
         }
     }
@@ -111,8 +109,7 @@ public class BTGo {
             WebLocator list = new WebLocator().setId("providersList");
             WebLocator row = new WebLocator(list).setClasses("row").setText(invoice.getFurnizor(), SearchType.DEEP_CHILD_NODE_OR_SELF);
             row.click();
-            Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
-            scrollAndDoClickOn(maiDeparteButton);
+            scrollAndDoClickOn(nextButton);
             TextField sumaEl = new TextField().setId("transferAmountInput");
             sumaEl.setValue(invoice.getValue());
             TextField codAbonatEl = new TextField().setId("paymentRef1Input");
@@ -120,20 +117,19 @@ public class BTGo {
             TextField facturaEl = new TextField().setId("paymentRef2Input");
             facturaEl.scrollIntoView(Go.NEAREST);
             facturaEl.setValue(invoice.getNr());
-            scrollAndDoClickOn(maiDeparteButton);
+            scrollAndDoClickOn(nextButton);
             Utils.sleep(1000);
             WebLocator nrFacturaEl = new WebLocator().setText(" Numar factura");
             nrFacturaEl.scrollIntoView(Go.NEAREST);
-            Button semneazaButton = new Button(null, "Semnează", SearchType.TRIM).setId("moveForwardBtn");
-            scrollAndDoClickOn(semneazaButton);
+            scrollAndDoClickOn(nextButton);
         } else {
-            WebLocator textEl = new WebLocator().setText(" Plată nouă ");
-            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setChildNodes(textEl);
+            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setId("newPaymentBtn");
             transfer.click();
-            WebLocator transferBani = new WebLocator().setText(" Transferă bani ");
+            WebLocator transferBani = new WebLocator().setId("selection0Btn");
             transferBani.click();
+            WebLocator beneficiar = new WebLocator().setId("partnerSwitch");
             if (Strings.isNullOrEmpty(invoice.getIban())) {
-                WebLink alegeBeneficiarul = new WebLink(null, "Alege beneficiarul", SearchType.TRIM);
+                WebLink alegeBeneficiarul = new WebLink(beneficiar).setClasses("switch-item-0");
                 alegeBeneficiarul.click();
                 TextField search = new TextField().setId("searchInput");
                 search.setValue(invoice.getFurnizor());
@@ -141,7 +137,7 @@ public class BTGo {
                 WebLocator card = new WebLocator().setClasses("card", "flex-row").setChildNodes(nameEl);
                 scrollAndDoClickOn(card);
             } else {
-                WebLink destinatarNou = new WebLink(null, "Beneficiar nou", SearchType.TRIM);
+                WebLink destinatarNou = new WebLink(beneficiar).setClasses("switch-item-1");
                 destinatarNou.click();
                 Utils.sleep(500);
                 TextField nume = new TextField().setId("partnerNameInput");
@@ -151,19 +147,17 @@ public class BTGo {
                 iban.sendKeys(Keys.ENTER);
                 iban.scrollIntoView(Go.START);
             }
-            Button maiDeparteButton = new Button(null, "Mergi mai departe", SearchType.TRIM).setId("moveForwardBtn");
-            scrollAndDoClickOn(maiDeparteButton);
+            scrollAndDoClickOn(nextButton);
             TextField sumaEL = new TextField().setId("transferAmountInput");
             sumaEL.setValue(invoice.getValue());
             Utils.sleep(1000);
             descriptionInput.scrollIntoView(Go.CENTER);
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
-            scrollAndDoClickOn(maiDeparteButton);
+            scrollAndDoClickOn(nextButton);
             WebLocator ibanEl = new WebLocator().setTag("span").setText(invoice.getIban(), SearchType.TRIM);
             ibanEl.scrollIntoView(Go.START);
             Utils.sleep(500);
-            Button laSemnareButton = new Button(null, "Mergi la semnare", SearchType.TRIM).setId("moveForwardBtn");
-            scrollAndDoClickOn(laSemnareButton);
+            scrollAndDoClickOn(nextButton);
         }
         Utils.sleep(2000); // wait for accept from BTGo
         Button download = new Button().setId("successPageActionBtn");
