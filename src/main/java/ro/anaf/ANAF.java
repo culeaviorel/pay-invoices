@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -75,31 +76,41 @@ public class ANAF {
                     File file = FileUtility.getFileFromDownload(actualName);
                     if (file != null) {
                         Result result = getValuesFromPDF(file);
-                        Double finalValue = result.value();
-                        Optional<RowRecord> first = list.stream().filter(f -> {
-                            boolean data1 = f.data().equals(result.date());
-                            boolean between = isBetween(f.data(), result.dataEmitere(), result.dataScadenta());
-                            Double tmpDouble = Double.parseDouble(f.value().replace(".", "").replace(",", "."));
-                            boolean isValue = tmpDouble.equals(finalValue) || tmpDouble.equals(finalValue + 0.01);
-                            return (data1 || between) && isValue;
-                        }).findFirst();
-                        if (first.isPresent()) {
-                            RowRecord findRow = first.get();
-                            if (findRow.eFactura().isEmpty()) {
-                                int index = list.indexOf(findRow);
-                                String link = appUtils.uploadFileInDrive(file.getAbsolutePath(), folderId);
-                                List<Request> requests = new ArrayList<>();
-                                GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
-                                BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-                                BatchUpdateSpreadsheetResponse response = appUtils.getSheetsService().spreadsheets().batchUpdate(appUtils.getFacturiSheetId(), batchUpdateRequest).execute();
-                                RowRecord rowRecord = new RowRecord(findRow.category(), findRow.method(), findRow.data(), findRow.value(), findRow.description(), findRow.link(), findRow.dovada(), "eFactura");
-                                list.set(index, rowRecord);
+                        if (result.value != null) {
+                            Double finalValue = result.value();
+                            Optional<RowRecord> first = list.stream().filter(f -> {
+                                String data = f.data();
+                                String dataEFactura = result.date();
+                                boolean dataEqual = data.equals(dataEFactura);
+                                LocalDate now = LocalDate.parse(dataEFactura, DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("ro", "RO")));
+                                LocalDate dayMinus5 = now.minusDays(5);
+                                LocalDate dayPlus1 = now.plusDays(1);
+                                boolean between = isBetween(data, result.dataEmitere(), result.dataScadenta()) || isBetween(data, dayMinus5, dayPlus1);
+                                Double val = Double.parseDouble(f.value().replace(".", "").replace(",", "."));
+//                                log.info("val: {}, finalValue: {}, data: {}, dataEFactura: {}, dayMinus1: {}, dayPlus5: {}", val, finalValue, data, dataEFactura, dayMinus5, dayPlus1);
+                                boolean isValue = val.equals(finalValue) || val.equals(finalValue + 0.01);
+                                return (dataEqual || between) && isValue;
+                            }).findFirst();
+                            if (first.isPresent()) {
+                                RowRecord findRow = first.get();
+                                if (findRow.eFactura().isEmpty()) {
+                                    int index = list.indexOf(findRow);
+                                    String link = appUtils.uploadFileInDrive(file.getAbsolutePath(), folderId);
+                                    List<Request> requests = new ArrayList<>();
+                                    GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
+                                    BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+                                    BatchUpdateSpreadsheetResponse response = appUtils.getSheetsService().spreadsheets().batchUpdate(appUtils.getFacturiSheetId(), batchUpdateRequest).execute();
+                                    RowRecord rowRecord = new RowRecord(findRow.category(), findRow.method(), findRow.data(), findRow.value(), findRow.description(), findRow.link(), findRow.dovada(), "eFactura");
+                                    list.set(index, rowRecord);
+                                }
+                            } else {
+                                log.info("Nu am gasit un rand cu ce sa asociez: {}", result.content);
                             }
                         } else {
-                            log.info("Nu am gasit un rand cu ce sa asociez: {}", result.content);
+                            log.info("Nu se mai descarca fisierul cu numele, trebuie pus in lista de exludes: {}", actualName);
                         }
                     } else {
-                        log.info("Nu se mai descarca fisierul cu numele, trebuie pus in lista de exludes: {}", actualName);
+                        log.info("Nu am citit corect: {}", actualName);
                     }
                 }
             }
@@ -138,8 +149,12 @@ public class ANAF {
             String row = rows.get(j);
             if (row.contains("Data emitere")) {
                 date = row.split("Data emitere")[1].trim();
-                dataEmitere = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
-                date = dataEmitere.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("ro", "RO")));
+                try {
+                    dataEmitere = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
+                    date = dataEmitere.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("ro", "RO")));
+                } catch (DateTimeParseException e) {
+                    break;
+                }
             } else if (row.contains("Data scadenta")) {
                 try {
                     String dateTMP = row.split("Data scadenta")[1].trim();
