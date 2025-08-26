@@ -196,9 +196,9 @@ public class BTGo {
         String extra = "";
         if (Strings.isNullOrEmpty(invoice.getFileName())) {
             if (invoice.getCategory().equals("Sustinere Educatie") && !Strings.isNullOrEmpty(invoice.getFurnizor())) {
-                extra = invoice.getCategory().replaceAll(" ", "");
+                extra = invoice.getCategory().replaceAll(" ", "") + month;
             }
-            extra = extra + invoice.getFurnizor().replaceAll(" ", "") + month;
+            extra = extra + invoice.getFurnizor().replaceAll(" ", "") + invoice.getData();
         } else {
             if (Strings.isNullOrEmpty(invoice.getNr())) {
                 extra = invoice.getCategory().replaceAll(" ", "");

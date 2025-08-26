@@ -17,9 +17,9 @@ public class GoogleSheetSteps extends TestBase {
     public void iAddInFacturiOrBonuriInGoogleSheet(List<ItemTO> items) {
         for (ItemTO item : items) {
             String facturaPath = item.getType().equals("Dovada") ? dovada2025() : facturi2025();
-            String extrasCardPath = Strings.isNullOrEmpty(item.getExtrasCard()) ? "" : extrasCard2025();
+            String deciziilePath = Strings.isNullOrEmpty(item.getDecizia()) ? "" : deciziile2025();
             String decontPath = Strings.isNullOrEmpty(item.getDecont()) ? "" : decont2025();
-            appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturaPath, extrasCardPath, decontPath);
+            appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturaPath, deciziilePath, decontPath);
         }
     }
 }

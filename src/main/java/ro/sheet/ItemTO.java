@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 public class ItemTO {
     private String fileName;
-    private String extrasCard;
+    private String decizia;
     private String decont;
     private String type;
     private String plata;

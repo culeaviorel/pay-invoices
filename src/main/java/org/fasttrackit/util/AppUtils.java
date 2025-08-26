@@ -119,14 +119,14 @@ public class AppUtils {
     }
 
     @SneakyThrows
-    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String facturaPath, String extrasCardPath, String decontPath) {
+    public void uploadFileAndAddRowInFacturiAndContForItem(ItemTO item, String facturaPath, String deciziilePath, String decontPath) {
         String dataValue = item.getData();
         LocalDate localDate = LocalDate.parse(dataValue, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         String month = StringUtils.capitalize(localDate.getMonth().getDisplayName(TextStyle.FULL, new Locale("ro", "RO")));
         String linkFactura = uploadFileInDrive(facturaPath + item.getFileName(), facturiFolderId);
-        String linkExtrasCard = "";
-        if (!extrasCardPath.isEmpty()) {
-            linkExtrasCard = uploadFileInDrive(extrasCardPath + item.getExtrasCard(), extrasCardFolderId);
+        String linkDeciziile = "";
+        if (!deciziilePath.isEmpty()) {
+            linkDeciziile = uploadFileInDrive(deciziilePath + item.getDecizia(), deciziileFolderId);
         }
         String linkDecont = "";
         if (!decontPath.isEmpty()) {
@@ -143,8 +143,8 @@ public class AppUtils {
         GoogleSheet.addItemForUpdateV2(value, result.id(), 3, result.sheetId(), requests);
         GoogleSheet.addItemForUpdate(item.getDescription(), result.id(), 4, result.sheetId(), requests);
         GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", result.id(), 5, result.sheetId(), requests);
-        if (!extrasCardPath.isEmpty()) {
-            GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", result.id(), 6, result.sheetId(), requests);
+        if (!deciziilePath.isEmpty()) {
+            GoogleSheet.addItemForUpdate("Decizia", linkDeciziile, ";", result.id(), 6, result.sheetId(), requests);
         }
         if (!decontPath.isEmpty()) {
             String decontName = new java.io.File(item.getDecont()).getName();
@@ -183,8 +183,8 @@ public class AppUtils {
             GoogleSheet.addItemForUpdateFormula("F" + id1 + "+D" + (id1 + 1) + "-E" + (id1 + 1), id1, 5, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getDescription(), id1, 6, sheetId1, requests1);
             GoogleSheet.addItemForUpdate(item.getType(), linkFactura, ";", id1, 7, sheetId1, requests1);
-            if (!extrasCardPath.isEmpty()) {
-                GoogleSheet.addItemForUpdate("ExtrasCard", linkExtrasCard, ";", id1, 9, sheetId1, requests1);
+            if (!deciziilePath.isEmpty()) {
+                GoogleSheet.addItemForUpdate("Decizia", linkDeciziile, ";", id1, 9, sheetId1, requests1);
             }
             if (!decontPath.isEmpty()) {
                 GoogleSheet.addItemForUpdate("Decont", linkDecont, ";", id1, 10, sheetId1, requests1);

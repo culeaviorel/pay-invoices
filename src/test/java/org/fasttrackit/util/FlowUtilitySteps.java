@@ -2,12 +2,16 @@ package org.fasttrackit.util;
 
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.Utils;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,5 +55,20 @@ public class FlowUtilitySteps extends TestBase {
     @When("^I switch browser to last tab$")
     public void I_switch_last_browser_tab() {
         WebDriverConfig.switchToLastTab();
+    }
+
+    @And("I stop test")
+    public void iStopTest() {
+        LOGGER.info("Stopping test execution");
+    }
+
+    @And("I save cookies")
+    public void iSaveCookies() {
+        Set<Cookie> cookies = WebDriverConfig.getDriver().manage().getCookies();
+        for (Cookie cookie : cookies) {
+            LOGGER.info("Cookie: {}", cookie);
+        }
+
+        Utils.sleep(1);
     }
 }
