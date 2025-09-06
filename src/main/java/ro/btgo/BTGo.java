@@ -14,6 +14,7 @@ import com.sdl.selenium.web.form.CheckBox;
 import com.sdl.selenium.web.form.TextField;
 import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.table.Table;
+import com.sdl.selenium.web.utils.Result;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
@@ -42,25 +43,29 @@ public class BTGo {
     private final WebLocator goBack = new WebLocator().setId("historyBackBtn");
     private final TextField descriptionInput = new TextField().setId("descriptionInput");
     private final Button nextButton = new Button().setId("moveForwardBtn");
+    private final WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setId("newPaymentBtn");
 
     public void login(String id, String password) {
         TextField idEl = new TextField().setId("user");
         TextField passwordEl = new TextField().setId("password");
         InputButton logIn = new InputButton().setText("Mergi mai departe");
-        idEl.ready(Duration.ofSeconds(40));
-        WebLink accept = new WebLink(null, " Am înțeles");
-        accept.click();
-        RetryUtils.retry(40, () -> idEl.setValue(id));
-        WebLocatorUtils.scrollToWebLocator(passwordEl);
-        passwordEl.setValue(password);
-        RetryUtils.retry(5, () -> {
-            boolean doClick = logIn.doClick();
-            if (!doClick) {
-                Utils.sleep(100);
-                WebLocatorUtils.scrollToWebLocator(logIn);
-            }
-            return doClick;
-        });
+        Result<Boolean> result = RetryUtils.retryUntilOneIs(Duration.ofSeconds(40),
+                idEl::isPresent, //1
+                transfer::isPresent //2
+        );
+        if (result.position() == 1) {
+            RetryUtils.retry(40, () -> idEl.setValue(id));
+            WebLocatorUtils.scrollToWebLocator(passwordEl);
+            passwordEl.setValue(password);
+            RetryUtils.retry(5, () -> {
+                boolean doClick = logIn.doClick();
+                if (!doClick) {
+                    Utils.sleep(100);
+                    WebLocatorUtils.scrollToWebLocator(logIn);
+                }
+                return doClick;
+            });
+        }
     }
 
     public void transferBetweenConts(int value, String fromCont, String toCont) {
@@ -123,7 +128,6 @@ public class BTGo {
             nrFacturaEl.scrollIntoView(Go.NEAREST);
             scrollAndDoClickOn(nextButton);
         } else {
-            WebLocator transfer = new WebLocator().setTag("fba-dashboard-navigation-button").setId("newPaymentBtn");
             transfer.click();
             WebLocator transferBani = new WebLocator().setId("selection0Btn");
             transferBani.click();
@@ -153,6 +157,7 @@ public class BTGo {
             Utils.sleep(1000);
             descriptionInput.scrollIntoView(Go.CENTER);
             descriptionInput.setValue(Strings.isNullOrEmpty(invoice.getNr()) ? invoice.getDescription() : "factura " + invoice.getNr());
+            Utils.sleep(500);
             scrollAndDoClickOn(nextButton);
             WebLocator ibanEl = new WebLocator().setTag("span").setText(invoice.getIban(), SearchType.TRIM);
             ibanEl.scrollIntoView(Go.START);

@@ -318,4 +318,10 @@ public class BTGoSteps extends TestBase {
         String dovadaFilePath = dovada2025() + fileName;
         appUtils.uploadFileAndAddRowInFacturiAndCont(dovadaFilePath, "Decont5.pdf");
     }
+
+    @And("I read pdf {string}")
+    public void iReadPdf(String filePath) {
+        File file = new File(filePath);
+        FileUtility.getPDFContentV2(file);
+    }
 }
