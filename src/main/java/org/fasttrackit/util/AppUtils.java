@@ -424,6 +424,28 @@ public class AppUtils {
                 break;
             }
         }
+        for (int i = 0; i < list.size(); i++) {
+            String row = list.get(i);
+            if (row.contains("TOTAL PLATA")) { //157.85TOTAL PLATA
+                total = row.split("TOTAL PLATA")[0].trim();
+            } else if (row.contains("Nr. factura")) { //CJL1C000944592Nr. factura
+                nrFacturii = row.split("Nr. factura")[0].trim();
+            } else if (row.contains("Data emitere")) { //Data emitere 2025-08-10
+                String dataString = row.split("Data emitere")[1].trim();
+                date = LocalDate.parse(dataString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }
+            if (!total.isEmpty() && !nrFacturii.isEmpty() && date != null) {
+                invoice.setValue(total);
+                invoice.setNr(nrFacturii.replaceAll("\\s+", ""));
+                invoice.setCod("SWMCL463473");
+                invoice.setDescription("factura de Gunoi");
+                invoice.setFurnizor("SUPERCOM SA");
+                invoice.setIban("RO85CECEB00030RON2670130");
+                invoice.setData(date);
+                break;
+            }
+        }
+        Utils.sleep(1);
     }
 
     public void collectForApa(Invoice invoice, List<String> list) {
