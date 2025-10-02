@@ -1,7 +1,9 @@
 package ro.appsheet;
 
+import com.sdl.selenium.Go;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
+import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,10 +19,24 @@ public class Dashboard {
         WebLocator categoryField = new WebLocator(window).setClasses("ButtonSelectButton").setText(item.category(), SearchType.DEEP_CHILD_NODE_OR_SELF);
         categoryField.click();
         WebLocator subCategorieComboBox = new WebLocator(window).setAttribute("aria-label", "SubCategorie");
-        subCategorieComboBox.click();
-        WebLocator options = new WebLocator().setAttribute("role", "presentation").setAttribute("x-placement", "top");
-        WebLocator option = new WebLocator(options).setTag("li").setText(item.subcategory(), SearchType.DEEP_CHILD_NODE_OR_SELF);
-        option.click();
+        RetryUtils.retry(2, () -> {
+            subCategorieComboBox.doClick();
+            WebLocator options = new WebLocator().setAttribute("role", "presentation").setAttribute("x-placement", "top");
+            WebLocator optionWithText = new WebLocator(options).setTag("li").setText(item.subcategory(), SearchType.DEEP_CHILD_NODE_OR_SELF);
+            if (optionWithText.isPresent()) {
+                optionWithText.click();
+            } else {
+                WebLocator option = new WebLocator(options).setTag("li");
+                int size = option.size();
+                option.setResultIdx(size);
+                option.scrollIntoView(Go.START);
+                if (optionWithText.isPresent()) {
+                    optionWithText.click();
+                }
+            }
+            String value = WebLocator.getExecutor().getValue(subCategorieComboBox);
+            return value.equals(item.subcategory());
+        });
         WebLocator priceField = new WebLocator(window).setAttribute("aria-label", "Suma");
         priceField.sendKeys(item.price());
         WebLocator paymentField = new WebLocator(window).setClasses("ButtonSelectButton").setText(item.payment(), SearchType.DEEP_CHILD_NODE_OR_SELF);
