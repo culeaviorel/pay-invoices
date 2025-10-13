@@ -5,16 +5,16 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @CucumberOptions(
-        plugin = {"pretty", "html:target/cucumber", "json:target/jsonReports/ANAFRunner.json"},
+        plugin = {"pretty", "html:target/cucumber", "json:target/jsonReports/OblioRunner.json"},
         glue = {
                 "org.fasttrackit.util",
                 "ro.sheet",
-                "ro.anaf"
+                "ro.oblio"
         },
         features = {
-                "src/test/resources/feature/invoice/anaf.feature"
+                "src/test/resources/feature/invoice/oblio.feature"
         }
 )
 @RunWith(Cucumber.class)
-public class ANAFRunner {
+public class OblioRunner {
 }

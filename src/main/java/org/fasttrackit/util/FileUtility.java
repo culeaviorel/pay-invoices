@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.sdl.selenium.utils.config.WebDriverConfig;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -65,7 +66,8 @@ public class FileUtility {
         }
     }
 
-    public static String getPDFContent(File file) throws IOException {
+    @SneakyThrows
+    public static String getPDFContent(File file) {
         PDDocument document = PDDocument.load(file);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);

@@ -202,8 +202,12 @@ public class BTGo {
         if (Strings.isNullOrEmpty(invoice.getFileName())) {
             if (invoice.getCategory().equals("Sustinere Educatie") && !Strings.isNullOrEmpty(invoice.getFurnizor())) {
                 extra = invoice.getCategory().replaceAll(" ", "") + month;
+                extra = extra + invoice.getFurnizor().replaceAll(" ", "") + invoice.getData();
+            } else if (!Strings.isNullOrEmpty(invoice.getDecont())) {
+                extra = extra + invoice.getDecont().split("\\.")[0];
+            } else {
+                extra = extra + invoice.getFurnizor().replaceAll(" ", "") + invoice.getData();
             }
-            extra = extra + invoice.getFurnizor().replaceAll(" ", "") + invoice.getData();
         } else {
             if (Strings.isNullOrEmpty(invoice.getNr())) {
                 extra = invoice.getCategory().replaceAll(" ", "");
@@ -313,7 +317,7 @@ public class BTGo {
         Card fromCont = new Card(depozitClasicCointainer);
         fromCont.setValue(value);
         WebLocator periodEl = new WebLocator().setId("slider-item-2");
-        periodEl.scrollIntoView(Go.NEAREST);
+        periodEl.scrollIntoView(Go.CENTER);
         periodEl.click();
         WebLocator autoRollover = new WebLocator().setId("autoRolloverSwitch");
         CheckBox automat = new CheckBox(autoRollover);

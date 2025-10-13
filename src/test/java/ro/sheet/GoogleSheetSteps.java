@@ -5,6 +5,7 @@ import io.cucumber.java.en.And;
 import lombok.extern.slf4j.Slf4j;
 import org.fasttrackit.util.AppUtils;
 import org.fasttrackit.util.TestBase;
+import ro.neo.Storage;
 
 import java.util.List;
 
@@ -21,5 +22,24 @@ public class GoogleSheetSteps extends TestBase {
             String decontPath = Strings.isNullOrEmpty(item.getDecont()) ? "" : decont2025();
             appUtils.uploadFileAndAddRowInFacturiAndContForItem(item, facturaPath, deciziilePath, decontPath);
         }
+    }
+
+    @And("in Google Sheets I get all items from Factura")
+    public void inANAFIGetAllItemsFromFractura() {
+        List<List<Object>> values = appUtils.getValues(appUtils.getFacturiSheetId(), "2025!A1:H");
+        List<RowRecord> list = values.stream().map(i -> {
+            RowRecord rowRecord = new RowRecord(
+                    (String) i.get(0),
+                    (String) i.get(1),
+                    (String) i.get(2),
+                    (String) i.get(3),
+                    (String) i.get(4),
+                    (String) i.get(5),
+                    i.size() != 7 ? "" : (String) i.get(6),
+                    i.size() != 8 ? "" : (String) i.get(7)
+            );
+            return rowRecord;
+        }).filter(i -> i.value().contains(",")).toList();
+        Storage.set("items", list);
     }
 }

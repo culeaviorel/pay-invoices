@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class Invoice {
     private String fileName;
     private String decizia;
+    private String decont;
     private String category;
     private String value;
     private String description;

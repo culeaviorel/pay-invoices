@@ -64,4 +64,11 @@ public class UserCredentials extends PropertiesReader {
     public String getContCurent() {
         return getProperty("cont.curent");
     }
+
+    public String getOblioEmail() {
+        return getProperty("oblio.email");
+    }
+    public String getOblioPassword() {
+        return getProperty("oblio.password");
+    }
 }

@@ -185,7 +185,7 @@ public class BTGoSteps extends TestBase {
                 Beneficiar beneficiar = beneficiars.stream().filter(i -> i.name().equals(key)).findFirst().orElseGet(() -> new Beneficiar(key, "", "", ""));
                 LocalDate localDate = LocalDate.now();
                 localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                Invoice invoice = new Invoice(null, null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, beneficiar.beneficiar(), beneficiar.iban(), localDate);
+                Invoice invoice = new Invoice(null, null, null, key, String.valueOf(sumForDestination), "Donatie de la " + descriptionString, null, null, beneficiar.beneficiar(), beneficiar.iban(), localDate);
                 boolean successPayment = btGo.invoicePayment(invoice, dovada2025());
                 if (successPayment) {
                     changeMonthInSheetNew(month, payDistinct, pays, sheetId);
@@ -235,7 +235,7 @@ public class BTGoSteps extends TestBase {
         int total = memberPayList.stream().flatMapToInt(i -> IntStream.of(Integer.parseInt(i.sum()))).sum();
         btGo.transferBetweenConts(total, credentials.getContDeEconomii(), credentials.getContCurent());
         for (MemberPay memberPay : memberPayList) {
-            Invoice invoice = new Invoice(null, null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban(), now);
+            Invoice invoice = new Invoice(null, null, null, "Sustinere Educatie", memberPay.sum(), memberPay.description(), null, null, memberPay.name(), memberPay.iban(), now);
             boolean success = btGo.invoicePayment(invoice, dovada2025());
             if (success) {
                 changeStatusInSheet(memberPay);
@@ -300,10 +300,10 @@ public class BTGoSteps extends TestBase {
                 String text = FileUtility.getPDFContent(file);
                 List<String> list = text.lines().toList();
                 invoice = appUtils.collectForDecont(invoice, list);
+                invoice.setDecont(item.getDecont());
                 double doubleValue = Double.parseDouble(invoice.getValue());
                 int intValue = (int) doubleValue + getExtraValue(invoice);
                 btGo.transferBetweenConts(intValue, credentials.getContDeEconomii(), credentials.getContCurent());
-
                 boolean success = btGo.invoicePayment(invoice, dovada2025());
                 if (success) {
                     String fileName = Storage.get("fileName");
