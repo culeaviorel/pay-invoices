@@ -78,8 +78,9 @@ public class Oblio {
                 Cell cell = rowEl.getCell(6);
                 WebLink download = new WebLink(cell);
                 download.click();
-                WebLink export = new WebLink(table, "Vizualizeaza Document");
+                WebLink export = new WebLink(rowEl, "Vizualizeaza Document");
                 export.click();
+                Utils.sleep(1000);
                 File pdfFile = FileUtility.getFileFromDownload();
                 String content = FileUtility.getPDFContent(pdfFile);
                 List<String> rows = content.lines().toList();
@@ -95,13 +96,17 @@ public class Oblio {
                 }
                 RowRecord findRow = first.get();
                 if (findRow.eFactura().isEmpty()) {
-                    int index = list.indexOf(findRow);
+                    int index = list.indexOf(findRow) - 1;
                     List<Request> requests = new ArrayList<>();
                     GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
                     BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
                     BatchUpdateSpreadsheetResponse response = appUtils.getSheetsService().spreadsheets().batchUpdate(appUtils.getFacturiSheetId(), batchUpdateRequest).execute();
                     RowRecord rowRecord = new RowRecord(findRow.category(), findRow.method(), findRow.data(), findRow.value(), findRow.description(), findRow.link(), findRow.dovada(), "eFactura");
-                    list.set(index, rowRecord);
+                    try {
+                        list.set(index, rowRecord);
+                    } catch (UnsupportedOperationException e) {
+                        list.add(rowRecord);
+                    }
                 }
             }
         }

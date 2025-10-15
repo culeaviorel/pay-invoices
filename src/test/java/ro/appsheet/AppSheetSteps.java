@@ -8,12 +8,19 @@ import java.util.List;
 
 @Slf4j
 public class AppSheetSteps extends TestBase {
+    private final Dashboard appSheetUtils = new Dashboard();
 
     @And("in AppSheet I add following values:")
     public void inAppSheetIAddFollowingValues(List<ItemRecord> items) {
-        Dashboard appSheetUtils = new Dashboard();
         for (ItemRecord item : items) {
             appSheetUtils.addItem(item);
+        }
+    }
+
+    @And("in AppSheet I edit following values:")
+    public void inAppSheetIEditFollowingValues(List<ItemRecord> items) {
+        for (ItemRecord item : items) {
+            appSheetUtils.editItem(item);
         }
     }
 }

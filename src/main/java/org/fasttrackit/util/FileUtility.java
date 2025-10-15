@@ -37,7 +37,7 @@ public class FileUtility {
 
     public static File getFileFromDownload(String fileName) {
         Utils.sleep(500);
-        List<Path> list = RetryUtils.retry(Duration.ofSeconds(20), () -> {
+        List<Path> list = RetryUtils.retry(Duration.ofSeconds(40), () -> {
             List<Path> paths = Files.list(Paths.get(WebDriverConfig.getDownloadPath())).toList();
             if (!paths.isEmpty()) {
                 boolean present = paths.stream().anyMatch(i -> !i.toFile().getName().contains(".crdownload"));

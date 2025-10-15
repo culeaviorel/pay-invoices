@@ -3,14 +3,31 @@ package ro.appsheet;
 import com.sdl.selenium.Go;
 import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
+import com.sdl.selenium.web.button.Button;
+import com.sdl.selenium.web.form.TextField;
 import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 @Slf4j
 public class Dashboard {
+    private final Button prevBtn = new Button().setAttribute("aria-label", "Prev");
+    private final Button nextBtn = new Button().setAttribute("title", "Next");
+    private final Button editBtn = new Button().setAttribute("aria-label", "Edit");
+    private final Button saveBtn = new Button(null, "Save", SearchType.DEEP_CHILD_NODE_OR_SELF);
+    private final Locale locale = new Locale("ro", "RO");
+    private final TextField startDateEl = new TextField().setAttribute("aria-label", "Start Date");
+    private final WebLocator table = new WebLocator().setId("Dashboard___FilteredDataView");
+    private final WebLocator row = new WebLocator(table).setClasses("DeckRow");
+    private final TextField priceField = new TextField().setAttribute("aria-label", "Suma");
+    private final WebLocator dashboard = new WebLocator().setTag("li").setText("Dashboard", SearchType.DEEP_CHILD_NODE_OR_SELF);
+
     public void addItem(ItemRecord item) {
-        WebLocator addButton = new WebLocator().setTag("button").setText("Add", SearchType.DEEP_CHILD_NODE_OR_SELF);
+        Button addButton = new Button(null, "Add", SearchType.DEEP_CHILD_NODE_OR_SELF);
         addButton.click();
         WebLocator header = new WebLocator().setAttribute("role", "heading").setText("FilteredData");
         WebLocator window = new WebLocator().setAttribute("role", "presentation").setVisibility(true).setChildNodes(header);
@@ -43,8 +60,43 @@ public class Dashboard {
         paymentField.click();
         WebLocator dateField = new WebLocator(window).setAttribute("aria-label", "Date");
         dateField.sendKeys(item.date());
-        WebLocator saveButton = new WebLocator(window).setTag("button").setText("Save", SearchType.DEEP_CHILD_NODE_OR_SELF);
+        Button saveButton = new Button(window, "Save", SearchType.DEEP_CHILD_NODE_OR_SELF);
         saveButton.click();
+        Utils.sleep(1);
+    }
+
+    public void editItem(ItemRecord item) {
+        LocalDate itemDate = LocalDate.parse(item.date(), DateTimeFormatter.ofPattern("MM/dd/yyyy", locale));
+        int month = itemDate.getMonthValue();
+        RetryUtils.retry(12, () -> {
+            String value = startDateEl.getValue();
+            LocalDate startDate = LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd", locale));
+            int monthValue = startDate.getMonthValue();
+            if (month > monthValue) {
+                prevBtn.click();
+            } else if (month < monthValue) {
+                nextBtn.click();
+            }
+            return month == monthValue;
+        });
+        WebLocator group = new WebLocator(table).setClasses("GroupedHeaderRow").setText(item.category(), SearchType.DEEP_CHILD_NODE_OR_SELF);
+        int size = row.size();
+        WebLocator next = group.next().setTag("following-sibling::*").setText(item.name(), SearchType.DEEP_CHILD_NODE_OR_SELF);
+        RetryUtils.retry(2, () -> {
+            boolean present = next.isPresent();
+            if (!present) {
+                row.setResultIdx(size);
+                row.scrollIntoView(Go.START);
+            } else {
+                next.scrollIntoView(Go.CENTER);
+            }
+            return present;
+        });
+        next.click();
+        editBtn.click();
+        priceField.setValue(item.price());
+        saveBtn.click();
+        dashboard.click();
         Utils.sleep(1);
     }
 }
