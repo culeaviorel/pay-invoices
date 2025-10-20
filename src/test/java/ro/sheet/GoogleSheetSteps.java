@@ -7,6 +7,7 @@ import org.fasttrackit.util.AppUtils;
 import org.fasttrackit.util.TestBase;
 import ro.neo.Storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -40,6 +41,7 @@ public class GoogleSheetSteps extends TestBase {
             );
             return rowRecord;
         }).filter(i -> i.value().contains(",")).toList();
-        Storage.set("items", list);
+        List<RowRecord> existingItems = new ArrayList<>(list);
+        Storage.set("items", existingItems);
     }
 }

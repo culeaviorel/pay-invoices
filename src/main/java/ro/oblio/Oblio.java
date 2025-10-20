@@ -12,6 +12,7 @@ import com.sdl.selenium.web.link.WebLink;
 import com.sdl.selenium.web.table.Cell;
 import com.sdl.selenium.web.table.Row;
 import com.sdl.selenium.web.table.Table;
+import com.sdl.selenium.web.utils.RetryUtils;
 import com.sdl.selenium.web.utils.Utils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class Oblio {
             acceptCookie.click();
         }
         TextField emailEl = new TextField().setId("username");
-        emailEl.setValue(email);
+        RetryUtils.retry(2, () -> emailEl.setValue(email));
         TextField passEl = new TextField().setId("password");
         passEl.setValue(pass);
         Button login = new Button(null, "Intra in cont", SearchType.DEEP_CHILD_NODE_OR_SELF);
@@ -80,7 +81,7 @@ public class Oblio {
                 download.click();
                 WebLink export = new WebLink(rowEl, "Vizualizeaza Document");
                 export.click();
-                Utils.sleep(1000);
+                Utils.sleep(2000);
                 File pdfFile = FileUtility.getFileFromDownload();
                 String content = FileUtility.getPDFContent(pdfFile);
                 List<String> rows = content.lines().toList();
@@ -88,7 +89,9 @@ public class Oblio {
                 for (String row : rows) {
                     if (row.contains("Index descarcare: ")) {
                         String index = row.split("Index descarcare: ")[1].trim();
-                        File file = new File(index);
+                        String name = pdfFile.getName();
+                        String parent = pdfFile.getAbsolutePath().split(name)[0];
+                        File file = new File(parent + index + ".pdf");
                         pdfFile.renameTo(file);
                         link = appUtils.uploadFileInDrive(file.getAbsolutePath(), appUtils.getEFacturaFolderId());
                         break;
@@ -96,7 +99,7 @@ public class Oblio {
                 }
                 RowRecord findRow = first.get();
                 if (findRow.eFactura().isEmpty()) {
-                    int index = list.indexOf(findRow) - 1;
+                    int index = list.indexOf(findRow);
                     List<Request> requests = new ArrayList<>();
                     GoogleSheet.addItemForUpdate("eFactura", link, ";", index + 1, 7, sheetId, requests);
                     BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
