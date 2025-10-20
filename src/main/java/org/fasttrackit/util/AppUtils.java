@@ -313,12 +313,22 @@ public class AppUtils {
             default -> null;
         };
         Drive driveService = GoogleSheet.getDriveService();
-        File fileMetadata = new File();
-        fileMetadata.setName(name);
-        fileMetadata.setParents(List.of(driveFolderId));
-        FileContent mediaContent = new FileContent(type, file);
-        File uploadFile = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
-        return driveService.files().get(uploadFile.getId()).setFields("webViewLink").execute().getWebViewLink();
+        String query = String.format("name='%s' and '%s' in parents and trashed=false", name, driveFolderId);
+        List<File> files = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, webViewLink)")
+                .execute()
+                .getFiles();
+        if (files != null && !files.isEmpty()) {
+            return files.get(0).getWebViewLink();
+        } else {
+            File fileMetadata = new File();
+            fileMetadata.setName(name);
+            fileMetadata.setParents(List.of(driveFolderId));
+            FileContent mediaContent = new FileContent(type, file);
+            File uploadFile = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+            return driveService.files().get(uploadFile.getId()).setFields("webViewLink").execute().getWebViewLink();
+        }
     }
 
     public Integer getSheetId(String spreadsheetId, String number) {
