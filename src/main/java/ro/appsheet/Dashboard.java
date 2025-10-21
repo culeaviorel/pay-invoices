@@ -68,16 +68,22 @@ public class Dashboard {
     public void editItem(ItemRecord item) {
         LocalDate itemDate = LocalDate.parse(item.date(), DateTimeFormatter.ofPattern("MM/dd/yyyy", locale));
         int month = itemDate.getMonthValue();
+        int year = itemDate.getYear();
         RetryUtils.retry(12, () -> {
             String value = startDateEl.getValue();
             LocalDate startDate = LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd", locale));
-            int monthValue = startDate.getMonthValue();
-            if (month > monthValue) {
+            int actualMonth = startDate.getMonthValue();
+            int actualYear = startDate.getYear();
+            if (month > actualMonth) {
                 prevBtn.click();
-            } else if (month < monthValue) {
+            } else if (year > actualYear) {
+                prevBtn.click();
+            } else if (month < actualMonth) {
+                nextBtn.click();
+            } else if (year < actualYear) {
                 nextBtn.click();
             }
-            return month == monthValue;
+            return month == actualMonth;
         });
         WebLocator group = new WebLocator(table).setClasses("GroupedHeaderRow").setText(item.category(), SearchType.DEEP_CHILD_NODE_OR_SELF);
         int size = row.size();

@@ -24,29 +24,18 @@ public abstract class TestBase {
         }
     }
 
-    public static String dovada() {
-        return facturi() + "Dovada\\";
-    }
-
     public static String dovada2025() {
         return facturi2025() + "Dovada\\";
-    }
-
-    public static String facturi() {
-        return location() + "Facturi\\";
     }
 
     public static String facturi2025() {
         return location2025() + "Facturi\\";
     }
 
-    public static String extrasCard2025() {
-        return facturi2025() + "ExtrasCard\\";
-    }
-
     public static String decont2025() {
         return facturi2025() + "Decont\\";
     }
+
     public static String deciziile2025() {
         return facturi2025() + "Deciziile\\";
     }
@@ -59,12 +48,8 @@ public abstract class TestBase {
         return location2025() + "Extrase\\";
     }
 
-    public static String location() {
-        return "C:\\Users\\vculea\\Desktop\\Biserica\\2024\\";
-    }
-
     public static String location2025() {
-        return "C:\\Users\\vculea\\Desktop\\Biserica\\2025\\";
+        return "C:\\Users\\vculea\\OneDrive - RWS\\Desktop\\Biserica\\2025\\";
     }
 
     public static String bt() {

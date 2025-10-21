@@ -57,7 +57,7 @@ public class NeoSteps extends TestBase {
 
     @And("in NeoBT I save report from {string} month")
     public void inNeoBTISaveReportFromMonth(String month) {
-        String location = location() + "CSV\\";
+        String location = location2025() + "CSV\\";
         neo.saveReportFrom("RO46BTRL06701205T61531XX", month, location);
         String fileName = Storage.get("fileName");
         String csvFolderId = "1Uc2IebVqTxFSYJSDcnBXdjHCw9ioHDmR"; //2024/CSV

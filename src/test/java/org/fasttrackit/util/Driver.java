@@ -16,9 +16,11 @@ public class Driver {
         if (driver == null) {
             driver = WebDriverConfig.getWebDriver("chrome.properties");
             try {
-                File directory = new File(WebDriverConfig.getDownloadPath());
+                String downloadPath = WebDriverConfig.getDownloadPath();
+                File download = new File(downloadPath.substring(0, downloadPath.lastIndexOf("\\") + 1));
+                FileUtils.cleanDirectory(download);
+                File directory = new File(downloadPath);
                 FileUtils.forceMkdir(directory);
-                FileUtils.cleanDirectory(directory);
             } catch (IOException e) {
                 log.error("{}", e.toString());
             }

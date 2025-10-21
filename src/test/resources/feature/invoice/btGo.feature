@@ -91,7 +91,7 @@ Feature: As a Customer I pay all my invoices
 
   Scenario: Add facturile sau bonuri in google sheets
     And I add in Facturi or Bonuri in google sheet:
-      | fileName       | decizia | decont | type    | plata | category | data       | value  | description              |
+      | fileName            | decizia | decont | type   | plata | category | data       | value   | description      |
 #      | DovadaPlataSomethingNewDecembrie.pdf   | Dovada | Cont  | SomethingNewOut  | 13.12.2024 | 371   | plata       |
 #      | DovadaPlataTeenChallengeDecembrie.pdf  | Dovada | Cont  | TeenChallengeOut | 13.12.2024 | 100   | plata       |
 #      | DovadaPlataCasaFilipDecembrie.pdf      | Dovada | Cont  | CasaFilipOut     | 13.12.2024 | 200   | plata       |
@@ -102,7 +102,7 @@ Feature: As a Customer I pay all my invoices
 #      | DispozitieDePlata17.pdf | Decizie comitet premiere participanti olimpiada.pdf |             | Dovada  | Cash  | Copiii     | 01.06.2025 | 300    | premium olimpiada Siena, Titus, Andrei |
 #      | DispozitieDePlata20.pdf | Decizie comitet premiere participanti olimpiada.pdf |        | Dovada  | Cash  | Copiii     | 08.06.2025 | 200    | premium olimpiada David, Ionatan |
 #      | DispozitieDePlata25.pdf | Decizie comitet donatie9.pdf |        | Dovada | Cash  | Sustinere alte biserici | 25.09.2025 | 1000.00 | donatie pentru familia Husar |
-#      | DovadaDepuneri2.pdf |         |        | Dovada | Cash  | In Cont  | 01.09.2025 | 1500.00 | depunere in cont |
+      | DovadaDepuneri3.pdf |         |        | Dovada | Cash  | In Cont  | 20.10.2025 | 1700.00 | depunere in cont |
 #      | Factura152.pdf | Factura | Cash  | Dotari   | 17.11.2024 | 449.99 | Router 3         |
 #      | Factura173.pdf | Factura | Cash  | Mentenanta | 19.12.2024 | 262.40 | Tablou electric |
 #      | Factura176.pdf | Factura    | Cash  | Adolescenti | 20.12.2024 | 224.51 | Pizza (Simona)                     |
@@ -126,9 +126,9 @@ Feature: As a Customer I pay all my invoices
 #      | Factura209.pdf |         |        | Factura | Cash  | Deplasari  | 28.09.2025 | 576.07 | Drum Ilva (Florin) |
 #      | Factura130.pdf |            |        | Factura | Cont  | Diverse  | 25.06.2025 | 218.09 | Decont motorina Chiuiesti |
 #      | Factura113.pdf          |                                                     |        | Factura | Cash  | Sanitare   | 04.06.2025 | 181.54 | Produse sanitare (Doru)          |
-      | Factura226.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 20.30  | Produse pentru curatenie |
-      | Factura227.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 285.95 | Produse pentru curatenie |
-      | Factura228.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 182.13 | Produse pentru curatenie |
+#      | Factura226.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 20.30  | Produse pentru curatenie |
+#      | Factura227.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 285.95 | Produse pentru curatenie |
+#      | Factura228.pdf |         |        | Factura | Cont  | Sanitare | 20.10.2025 | 182.13 | Produse pentru curatenie |
 #      | Factura198.pdf |         |        | Factura | Cont  | Sanitare | 11.09.2025 | 1117.62 | Produse pentru curatenie |
 #      | Factura70.pdf | Factura | Cash  | Tiparituri | 25.03.2025 | 205.98 | Hartie A4   |
 #      | Factura31.pdf | Bon cu CUI | Cash  | Femei      | 16.02.2025 | 120    | Flori pentru invitata (Catalina) |
